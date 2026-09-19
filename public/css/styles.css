@@ -1,0 +1,307 @@
+/* ============================================
+   VARIABLES
+   ============================================ */
+:root {
+    --bg-body: #0a0e27;
+    --bg-card: #151b3d;
+    --bg-hover: #1e2650;
+    --border: #2a3155;
+    --border-hover: #3a4370;
+    --text-primary: #e8eaf6;
+    --text-secondary: #8b92b8;
+    --accent: #00d4ff;
+    --accent-hover: #33ddff;
+    --radius: 12px;
+}
+
+/* ============================================
+   GENERAL
+   ============================================ */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    max-width: 880px;
+    margin: 48px auto;
+    padding: 0 24px;
+    background-color: var(--bg-body);
+    background-image: radial-gradient(circle at 20% 80%, rgba(0, 212, 255, 0.05) 0%, transparent 60%);
+    color: var(--text-primary);
+    line-height: 1.6;
+    min-height: 100vh;
+}
+
+h1 {
+    font-weight: 600;
+    font-size: 28px;
+    letter-spacing: -0.5px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 32px;
+}
+
+/* ============================================
+   NAVEGACIÓN
+   ============================================ */
+.nav {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 28px;
+    flex-wrap: wrap;
+}
+
+.nav a {
+    color: var(--text-secondary);
+    text-decoration: none;
+    padding: 8px 20px;
+    border: 1px solid var(--border);
+    border-radius: 40px;
+    font-size: 14px;
+    transition: all 0.25s;
+}
+
+.nav a:hover {
+    background: var(--bg-hover);
+    color: var(--text-primary);
+    border-color: var(--border-hover);
+}
+
+/* ============================================
+   LISTA
+   ============================================ */
+ul {
+    list-style: none;
+    padding: 0;
+}
+
+li {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 18px 22px;
+    margin-bottom: 14px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 14px;
+    transition: all 0.3s;
+}
+
+li:hover {
+    border-color: var(--border-hover);
+    background: var(--bg-hover);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+}
+
+.info strong {
+    color: var(--text-primary);
+    font-weight: 600;
+    display: block;
+    margin-bottom: 4px;
+    font-size: 16px;
+}
+
+.info {
+    color: var(--text-secondary);
+    font-size: 14px;
+    flex: 1;
+}
+
+.info span {
+    display: inline-block;
+    margin-right: 16px;
+}
+
+/* ============================================
+   PÁGINA PRINCIPAL
+   ============================================ */
+.nav-principal {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    margin-top: 40px;
+}
+
+.nav-principal a {
+    display: block;
+    padding: 20px 24px;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    color: var(--text-primary);
+    font-size: 18px;
+    font-weight: 500;
+    text-decoration: none;
+    transition: all 0.3s;
+    position: relative;
+    overflow: hidden;
+}
+
+.nav-principal a::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    height: 100%;
+    width: 4px;
+    background: var(--accent);
+    transform: scaleY(0);
+    transition: transform 0.3s;
+}
+
+.nav-principal a:hover {
+    border-color: var(--accent);
+    transform: translateX(8px);
+}
+
+.nav-principal a:hover::before {
+    transform: scaleY(1);
+}
+
+/* ============================================
+   FOOTER
+   ============================================ */
+footer {
+    margin-top: 64px;
+    padding-top: 24px;
+    border-top: 1px solid var(--border);
+    text-align: center;
+    color: var(--text-secondary);
+    font-size: 13px;
+}
+
+
+/* ============================================
+   BOTONES
+   ============================================ */
+button {
+    padding: 6px 18px;
+    border: 1px solid var(--border);
+    border-radius: 40px;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 500;
+    background: transparent;
+    color: var(--text-secondary);
+    transition: all 0.25s;
+}
+
+button:hover {
+    background: var(--bg-hover);
+    color: var(--text-primary);
+    border-color: var(--border-hover);
+}
+
+.btn-editar {
+    color: var(--text-primary);
+}
+
+.btn-editar:hover {
+    color: var(--accent);
+    border-color: var(--accent);
+}
+
+.btn-eliminar {
+    color: var(--text-primary);
+}
+
+.btn-eliminar:hover {
+    color: #f87171;
+    border-color: #f87171;
+}
+
+.acciones {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+/* ============================================
+   FORMULARIOS
+   ============================================ */
+form {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 24px;
+    margin-top: 24px;
+    max-width: 500px;
+}
+
+form label {
+    display: block;
+    margin-top: 16px;
+    margin-bottom: 6px;
+    color: var(--text-secondary);
+    font-size: 14px;
+    font-weight: 500;
+}
+
+form label:first-child {
+    margin-top: 0;
+}
+
+form input {
+    width: 100%;
+    padding: 10px 14px;
+    background: var(--bg-body);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    color: var(--text-primary);
+    font-size: 15px;
+    transition: all 0.25s;
+    box-sizing: border-box;
+}
+
+form input:focus {
+    border-color: var(--accent);
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(0, 212, 255, 0.1);
+}
+
+form button {
+    margin-top: 24px;
+    padding: 10px 28px;
+    background: var(--accent);
+    color: var(--bg-body);
+    border: none;
+    border-radius: var(--radius);
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.25s;
+}
+
+form button:hover {
+    background: var(--accent-hover);
+    transform: translateY(-1px);
+}
+
+/* ============================================
+   TÍTULOS DE SECCIÓN
+   ============================================ */
+h2 {
+    font-size: 20px;
+    font-weight: 600;
+    margin-top: 32px;
+    margin-bottom: 16px;
+    color: var(--text-primary);
+}
+
+/* ============================================
+   FORMULARIOS EN LÍNEA (para botones de lista)
+   ============================================ */
+.form-inline {
+    background: transparent;
+    border: none;
+    padding: 0;
+    margin: 0;
+    max-width: none;
+    display: inline;
+}

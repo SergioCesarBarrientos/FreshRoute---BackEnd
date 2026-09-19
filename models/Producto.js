@@ -8,7 +8,7 @@ class Producto {
     this.stock = stock;
 
     this.validar();
-  
+  }
 
   validar() {
     if (!this.nombre || typeof this.nombre !== 'string' || this.nombre.trim() === '') {

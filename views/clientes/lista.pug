@@ -1,0 +1,22 @@
+extends ../layout
+
+block content
+    h1 Lista de Clientes
+    .nav
+        a(href="/") Volver al inicio
+        a(href="/clientes/nuevo") Agregar cliente
+
+    ul
+        each cliente in clientes
+            li
+                .info
+                    strong #{cliente.nombre}
+                    span #{cliente.email}
+                    span #{cliente.telefono}
+                .acciones
+                    form(action=`/clientes/editar/${cliente.id}` method="GET" class="form-inline")
+                        button(type="submit").btn-editar Editar
+                    form(action=`/clientes/eliminar/${cliente.id}` method="POST" class="form-inline")
+                        button(type="submit" onclick="return confirm('¿Eliminar este cliente?')").btn-eliminar Eliminar
+        else
+            li No hay clientes registrados.

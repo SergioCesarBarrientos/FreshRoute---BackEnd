@@ -10,5 +10,17 @@
     "nombre": "Bananas",
     "precio": 1800,
     "stock": 30
+  },
+  {
+    "id": 4,
+    "nombre": "Pera Cuadradas",
+    "precio": 1000,
+    "stock": 100
+  },
+  {
+    "id": 5,
+    "nombre": "papa",
+    "precio": 120,
+    "stock": 12
   }
 ]
