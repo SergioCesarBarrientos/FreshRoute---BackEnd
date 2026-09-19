@@ -1,0 +1,21 @@
+{
+  "name": "freshroute",
+  "version": "1.0.0",
+  "description": "API REST - FreshRoute",
+  "main": "app.js",
+  "scripts": {
+   "start": "node app.js",
+    "dev": "nodemon app.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "dependencies": {
+    "express": "^5.2.1",
+    "pug": "^3.0.4"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.14"
+  }
+}
