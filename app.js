@@ -1,114 +1,90 @@
-const express = require("express"); // importo express para poder crear el servidor y manejar rutas
-const path = require("path"); // importo path para trabajar con rutas de archivos y carpetas
-
+const express = require("express");
+const path = require("path");
 
 // importo las rutas de clientes y productos
 const clientesRoutes = require("./routes/clientesRoutes");
 const productosRoutes = require("./routes/productosRoutes");
 
-const app = express(); // creamos la aplicación de Express
- 
-const PORT = 3000; //puerto donde se ejecutará el servidor
+const app = express();
 
-app.use(express.json());    // permite que express pueda recibir datos enviados en formato JSON
-// Los datos enviados por POST o PUT estarán disponibles en req.body
+const PORT = 3000;
 
+app.use(express.json());
 
-//permite recibir datos enviados desde formularios HTML/Pug también estarán disponibles en req.body
-app.use(express.urlencoded({
-  extended: true
-}));
+app.use(
+  express.urlencoded({
+    extended: true,
+  }),
+);
 
+// ============================================
+// ARCHIVOS ESTÁTICOS (CSS)
+// Agregado por Miguel para que funcione el CSS
+// ============================================
+app.use(express.static("public"));
 
 // indicamos a Express que vamos a utilizar pug como motor de vistas
-app.set(
-  "view engine",
-  "pug"
-);
+app.set("view engine", "pug");
 
-// indicamos a express dónde están guardados los archivos .pug en este caso dentro de la carpeta "views"
-app.set(
-  "views",
-  path.join(__dirname, "views")
-);
-
+// indicamos a express dónde están guardados los archivos .pug
+app.set("views", path.join(__dirname, "views"));
 
 // =============================
 // RUTAS DE LA API
 // =============================
 
-app.use(
-  "/api/clientes",
-  clientesRoutes
-);
-
-app.use(
-  "/api/productos",
-  productosRoutes
-);
-
+app.use("/api/clientes", clientesRoutes);
+app.use("/api/productos", productosRoutes);
 
 // =============================
 // VISTAS
 // =============================
 
-// Cuando alguien entra a http://localhost:3000/ express busca views/index.pug y le pasa el título "FreshRoute"
 app.get("/", (req, res) => {
   res.render("index", {
-    titulo: "FreshRoute"
+    titulo: "FreshRoute",
   });
 });
 
-// Cuando alguien entra a: http://localhost:3000/clientes express busca views/clientes.pug
+// Ruta para ver la lista de clientes
 app.get("/clientes", (req, res) => {
-  res.render("clientes", {
-    titulo: "Clientes"
-  });
+    const clientesController = require("./controllers/clientesController");
+    const clientes = clientesController.obtenerClientesParaVista();
+    res.render("clientes/lista", { titulo: "Clientes", clientes });
 });
 
-// Cuando alguien entra a: http://localhost:3000/productos express busca views/productos.pug
+// Ruta para ver la lista de productos
 app.get("/productos", (req, res) => {
-  res.render("productos", {
-    titulo: "Productos"
-  });
+    const productosController = require("./controllers/productosController");
+    const productos = productosController.obtenerProductosParaVista();
+    res.render("productos/lista", { titulo: "Productos", productos });
 });
-
 
 // =============================
 // RUTA NO ENCONTRADA
 // =============================
 
-// si ninguna de las rutas anteriores coincide con la petición se devuelve un error 404
 app.use((req, res) => {
   res.status(404).json({
-    error: "Ruta no encontrada"
+    error: "Ruta no encontrada",
   });
 });
-
 
 // =============================
 // MANEJO DE ERRORES
 // =============================
 
-// Si ocurre un error en alguna parte de la aplicación este middleware lo captura
 app.use((error, req, res, next) => {
-
-  // Mostramos el error en la consola
   console.error(error);
-
-  // Respondemos al cliente con código 500
   res.status(500).json({
-    error: "Error interno del servidor"
+    error: "Error interno del servidor",
   });
 });
-
 
 // =============================
 // INICIAR SERVIDOR
 // =============================
 
 app.listen(PORT, () => {
-  console.log(
-    `Servidor ejecutándose en http://localhost:${PORT}`
-  );
+  console.log(`Servidor ejecutándose en http://localhost:${PORT}`);
 });

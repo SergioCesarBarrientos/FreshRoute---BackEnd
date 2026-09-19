@@ -1,0 +1,16 @@
+extends ../layout
+
+block content
+    h1 Lista de Clientes
+    .nav
+        a(href="/") Volver al inicio
+
+    ul
+        each cliente in clientes
+            li
+                .info
+                    strong #{cliente.nombre}
+                    span #{cliente.email}
+                    span #{cliente.telefono}
+        else
+            li No hay clientes registrados.

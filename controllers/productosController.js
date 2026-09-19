@@ -265,10 +265,19 @@ function eliminarProducto(req, res) {
     }
 }
 
+// ============================================
+// FUNCIÓN PARA VISTAS
+// Agregado por Miguel para que funcione la vista productos/lista.pug
+// ============================================
+function obtenerProductosParaVista() {
+    return leerProductos();
+}
+
 module.exports = {
     obtenerProductos,
     crearProducto,
     obtenerProductoPorId,
     actualizarProducto,
-    eliminarProducto
+    eliminarProducto,
+    obtenerProductosParaVista
 };

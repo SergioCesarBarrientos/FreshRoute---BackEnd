@@ -224,10 +224,19 @@ function eliminarCliente(req, res) {
     }
 }
 
+// ============================================
+// FUNCIÓN PARA VISTAS
+// Agregado por Miguel para que funcione la vista clientes/lista.pug
+// ============================================
+function obtenerClientesParaVista() {
+    return leerClientes();
+}
+
 module.exports = {
     obtenerClientes,
     crearCliente,
     obtenerClientePorId,
     actualizarCliente,
-    eliminarCliente
+    eliminarCliente,
+     obtenerClientesParaVista  // miguel
 };

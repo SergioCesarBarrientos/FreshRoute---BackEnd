@@ -1,0 +1,16 @@
+extends ../layout
+
+block content
+    h1 Lista de Productos
+    .nav
+        a(href="/") Volver al inicio
+
+    ul
+        each producto in productos
+            li
+                .info
+                    strong #{producto.nombre}
+                    span Precio: $#{producto.precio}
+                    span Stock: #{producto.stock}
+        else
+            li No hay productos registrados.
