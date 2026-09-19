@@ -1,22 +1,18 @@
-const express = require("express");
+const express = require("express"); //llamo al paquete express para el manejo de rutas
+const { obtenerProductos, obtenerProductoPorId, crearProducto, actualizarProducto, eliminarProducto } = require("../controllers/productosController");
+// llamo las funciones  hechas de controllers
+
 
 const router = express.Router();
 
-const productosController = require("../controllers/productosController");
+router.get("/", obtenerProductos);
 
-// GET /productos
-router.get("/", productosController.obtenerProductos);
+router.get("/:id", obtenerProductoPorId);
 
-// POST /productos
-router.post("/", productosController.crearProducto);
+router.post("/", crearProducto);
 
-// GET /productos/:id
-router.get("/:id", productosController.obtenerProductoPorId);
+router.put("/:id", actualizarProducto);
 
-// PUT /productos/:id
-router.put("/:id", productosController.actualizarProducto);
-
-// DELETE /productos/:id
-router.delete("/:id", productosController.eliminarProducto);
+router.delete("/:id", eliminarProducto);
 
 module.exports = router;
