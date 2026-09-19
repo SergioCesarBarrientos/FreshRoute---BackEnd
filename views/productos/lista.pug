@@ -4,6 +4,7 @@ block content
     h1 Lista de Productos
     .nav
         a(href="/") Volver al inicio
+        a(href="/productos/nuevo") Agregar producto
 
     ul
         each producto in productos
@@ -12,5 +13,10 @@ block content
                     strong #{producto.nombre}
                     span Precio: $#{producto.precio}
                     span Stock: #{producto.stock}
+                .acciones
+                    form(action=`/productos/editar/${producto.id}` method="GET" class="form-inline")
+                        button(type="submit").btn-editar Editar
+                    form(action=`/productos/eliminar/${producto.id}` method="POST" class="form-inline")
+                        button(type="submit" onclick="return confirm('¿Eliminar este producto?')").btn-eliminar Eliminar
         else
             li No hay productos registrados.

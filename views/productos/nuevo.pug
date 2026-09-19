@@ -1,0 +1,21 @@
+extends ../layout
+
+block content
+    h1 Nuevo Producto
+    a(href="/productos") Volver a la lista
+
+    form(action="/productos/guardar" method="POST")
+        label(for="nombre") Nombre:
+        input(type="text" name="nombre" id="nombre" required)
+        br
+
+        label(for="precio") Precio:
+        input(type="number" name="precio" id="precio" required)
+        br
+
+        label(for="stock") Stock:
+        input(type="number" name="stock" id="stock" required)
+        br
+        br
+
+        button(type="submit") Guardar Producto

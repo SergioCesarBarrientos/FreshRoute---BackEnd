@@ -1,0 +1,21 @@
+extends ../layout
+
+block content
+    h1 Editar Producto
+    a(href="/productos") Volver a la lista
+
+    form(action=`/productos/editar/${producto.id}` method="POST")
+        label(for="nombre") Nombre:
+        input(type="text" name="nombre" id="nombre" value=producto.nombre required)
+        br
+
+        label(for="precio") Precio:
+        input(type="number" name="precio" id="precio" value=producto.precio required)
+        br
+
+        label(for="stock") Stock:
+        input(type="number" name="stock" id="stock" value=producto.stock required)
+        br
+        br
+
+        button(type="submit") Guardar Cambios

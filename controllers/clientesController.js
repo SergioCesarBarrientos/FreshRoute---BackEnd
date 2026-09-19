@@ -232,11 +232,59 @@ function obtenerClientesParaVista() {
     return leerClientes();
 }
 
+function obtenerClienteParaVista(id) {
+    const clientes = leerClientes();
+    return clientes.find(c => c.id === Number(id)) || null;
+}
+
+function crearClienteParaVista(datos) {
+    const clientes = leerClientes();
+    const nuevoId = clientes.length > 0
+        ? Math.max(...clientes.map(c => c.id)) + 1
+        : 1;
+    const nuevoCliente = {
+        id: nuevoId,
+        nombre: datos.nombre,
+        email: datos.email,
+        telefono: datos.telefono
+    };
+    clientes.push(nuevoCliente);
+    guardarClientes(clientes);
+    return nuevoCliente;
+}
+
+function actualizarClienteParaVista(id, datos) {
+    const clientes = leerClientes();
+    const indice = clientes.findIndex(c => c.id === Number(id));
+    if (indice === -1) return null;
+    clientes[indice].nombre = datos.nombre;
+    clientes[indice].email = datos.email;
+    clientes[indice].telefono = datos.telefono;
+    guardarClientes(clientes);
+    return clientes[indice];
+}
+
+function eliminarClienteParaVista(id) {
+    const clientes = leerClientes();
+    const indice = clientes.findIndex(c => c.id === Number(id));
+    if (indice === -1) return false;
+    clientes.splice(indice, 1);
+    guardarClientes(clientes);
+    return true;
+}
+
+
 module.exports = {
     obtenerClientes,
     crearCliente,
     obtenerClientePorId,
     actualizarCliente,
     eliminarCliente,
-     obtenerClientesParaVista  // miguel
+    //funciones para las vistas
+     obtenerClientesParaVista,
+     obtenerClienteParaVista,
+     crearClienteParaVista,
+     actualizarClienteParaVista,
+     eliminarClienteParaVista  
 };
+

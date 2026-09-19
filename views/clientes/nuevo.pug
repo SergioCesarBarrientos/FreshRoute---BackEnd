@@ -1,0 +1,21 @@
+extends ../layout
+
+block content
+    h1 Nuevo Cliente
+    a(href="/clientes") Volver a la lista
+
+    form(action="/clientes/guardar" method="POST")
+        label(for="nombre") Nombre:
+        input(type="text" name="nombre" id="nombre" required)
+        br
+
+        label(for="email") Email:
+        input(type="email" name="email" id="email" required)
+        br
+
+        label(for="telefono") Teléfono:
+        input(type="text" name="telefono" id="telefono" required)
+        br
+        br
+
+        button(type="submit") Guardar Cliente
