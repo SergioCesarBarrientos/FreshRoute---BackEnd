@@ -1,3 +1,5 @@
+// cargo las variables del archivo .env. debe ejecutarse antes de utilizar process.env.MONGO_URL o PORT.
+require("dotenv").config();
 const express = require("express");
 const path = require("path");
 
@@ -7,7 +9,8 @@ const productosRoutes = require("./routes/productosRoutes");
 
 const app = express();
 
-const PORT = 3000;
+// Leemos el puerto desde .env. Si PORT no está definido, utilizamos 3000 como valor predeterminado.
+const PORT = process.env.PORT || 3000;
 
 app.use(express.json());
 
@@ -16,6 +19,10 @@ app.use(
     extended: true,
   }),
 );
+
+
+// Importamos la función que conecta con MongoDB.
+const connectDB = require("./config/connectDB");
 
 // ============================================
 // ARCHIVOS ESTÁTICOS (CSS)
@@ -172,6 +179,17 @@ app.use((error, req, res, next) => {
 // INICIAR SERVIDOR
 // =============================
 
-app.listen(PORT, () => {
-  console.log(`Servidor ejecutándose en http://localhost:${PORT}`);
-});
+const iniciarServidor = async () => {
+  try {
+    await connectDB();
+
+    app.listen(PORT, () => {
+      console.log(`Servidor ejecutándose en http://localhost:${PORT}`);
+    });
+  } catch (error) {
+    console.error("No se pudo iniciar la aplicación:", error.message);
+    process.exit(1);
+  }
+};
+
+iniciarServidor();
