@@ -1,38 +1,24 @@
-// Clase Cliente: define qué es un cliente válido y lo valida antes de guardarlo.
+// Modelo Cliente: define los campos del cliente y sus validaciones para guardarlo en MongoDB.
 
-class Cliente {
-  constructor({ id, nombre, email, telefono }) {
-    this.id = id;
-    this.nombre = nombre;
-    this.email = email;
-    this.telefono = telefono;
+const mongoose = require('mongoose');
 
-    this.validar();
-  }
+const clienteSchema = new mongoose.Schema({
+  nombre: {
+    type: String,
+    required: [true, 'El nombre es obligatorio'],
+    trim: true,
+  },
+  email: {
+    type: String,
+    required: [true, 'El email es obligatorio'],
+    trim: true,
+    match: [/^[^\s@]+@[^\s@]+\.[^\s@]+$/, 'El email no tiene un formato válido'],
+  },
+  telefono: {
+    type: String,
+    required: [true, 'El teléfono es obligatorio'],
+    trim: true,
+  },
+});
 
-  validar() {
-    if (!this.nombre || typeof this.nombre !== 'string' || this.nombre.trim() === '') {
-      throw new Error('El cliente debe tener un nombre válido (texto no vacío)');
-    }
-
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!this.email || typeof this.email !== 'string' || !emailRegex.test(this.email)) {
-      throw new Error('El cliente debe tener un email válido');
-    }
-
-    if (!this.telefono || (typeof this.telefono !== 'string' && typeof this.telefono !== 'number')) {
-      throw new Error('El cliente debe tener un teléfono válido');
-    }
-  }
-
-  toJSON() {
-    return {
-      id: this.id,
-      nombre: this.nombre,
-      email: this.email,
-      telefono: this.telefono,
-    };
-  }
-}
-
-module.exports = Cliente;
+module.exports = mongoose.model('Cliente', clienteSchema);
