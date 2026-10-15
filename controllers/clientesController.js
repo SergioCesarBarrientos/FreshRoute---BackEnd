@@ -1,267 +1,207 @@
-const fs = require("fs");
-const path = require("path");
+
+const mongoose = require("mongoose");
 const Cliente = require("../models/Cliente");
 
-const clientesPath = path.join(__dirname, "..", "data", "clientes.json");
+// ========================================
+// FUNCIONES PARA LA API
+// ========================================
 
-// Leer clientes
-function leerClientes() {
-  const datos = fs.readFileSync(clientesPath, "utf-8");
-  return JSON.parse(datos);
-}
-
-// Guardar clientes
-function guardarClientes(clientes) {
-  fs.writeFileSync(clientesPath, JSON.stringify(clientes, null, 2));
-}
-
-// GET /clientes
-function obtenerClientes(req, res) {
+// GET: obtener todos los clientes
+const obtenerClientes = async (req, res) => {
   try {
-    const clientes = leerClientes();
-
+    const clientes = await Cliente.find();
     res.status(200).json(clientes);
   } catch (error) {
     res.status(500).json({
-      error: "Error al obtener los clientes",
+      mensaje: "Error al obtener los clientes",
+      error: error.message
     });
   }
-}
+};
 
-// POST /clientes
-function crearCliente(req, res) {
+// GET: obtener un cliente por ID
+const obtenerClientePorId = async (req, res) => {
   try {
-    const { nombre, telefono, email } = req.body;
-
-    // Validar campos obligatorios
-    if (!nombre || !telefono || !email) {
+    if (!mongoose.isValidObjectId(req.params.id)) {
       return res.status(400).json({
-        error: "Todos los campos son obligatorios",
+        mensaje: "El ID del cliente no es válido"
       });
     }
 
-    // Validar tipos
-    if (
-      typeof nombre !== "string" ||
-      typeof telefono !== "string" ||
-      typeof email !== "string"
-    ) {
-      return res.status(400).json({
-        error: "Los datos ingresados no tienen un formato válido",
-      });
-    }
-
-    const clientes = leerClientes();
-
-    // Generar nuevo ID
-    const nuevoId =
-      clientes.length > 0
-        ? Math.max(...clientes.map((cliente) => cliente.id)) + 1
-        : 1;
-
-    // Crear objeto utilizando la clase Cliente
-    const nuevoCliente = new Cliente({
-      id: nuevoId,
-      nombre: nombre,
-      email: email,
-      telefono: telefono,
-    });
-
-    //clientes.push(nuevoCliente);
-    clientes.push(nuevoCliente.toJSON());
-
-    guardarClientes(clientes);
-
-    res.status(201).json({
-      mensaje: "Cliente creado correctamente",
-      cliente: nuevoCliente,
-    });
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({
-      error: "Error al crear el cliente",
-    });
-  }
-}
-
-// GET /clientes/:id
-function obtenerClientePorId(req, res) {
-  try {
-    const id = parseInt(req.params.id);
-
-    if (isNaN(id)) {
-      return res.status(400).json({
-        error: "El ID debe ser un número",
-      });
-    }
-
-    const clientes = leerClientes();
-
-    const cliente = clientes.find((cliente) => cliente.id === id);
+    const cliente = await Cliente.findById(req.params.id);
 
     if (!cliente) {
       return res.status(404).json({
-        error: "Cliente no encontrado",
+        mensaje: "Cliente no encontrado"
       });
     }
 
     res.status(200).json(cliente);
   } catch (error) {
-    res.status(500).json({
-      error: "Error al buscar el cliente",
+    res.status(400).json({
+      mensaje: "Error al buscar el cliente",
+      error: error.message
     });
   }
-}
+};
 
-// PUT /clientes/:id
-function actualizarCliente(req, res) {
+// POST: registrar un cliente
+const crearCliente = async (req, res) => {
   try {
-    const id = parseInt(req.params.id);
+    const nuevoCliente = new Cliente({
+      nombre: req.body.nombre,
+      email: req.body.email,
+      telefono: req.body.telefono
+    });
 
-    if (isNaN(id)) {
+    const clienteGuardado = await nuevoCliente.save();
+
+    res.status(201).json({
+      mensaje: "Cliente registrado correctamente",
+      cliente: clienteGuardado
+    });
+  } catch (error) {
+    res.status(400).json({
+      mensaje: "Error al registrar el cliente",
+      error: error.message
+    });
+  }
+};
+
+// PUT: actualizar un cliente
+const actualizarCliente = async (req, res) => {
+  try {
+    if (!mongoose.isValidObjectId(req.params.id)) {
       return res.status(400).json({
-        error: "El ID debe ser un número",
+        mensaje: "El ID del cliente no es válido"
       });
     }
 
-    const { nombre, telefono, email } = req.body;
+    const clienteActualizado = await Cliente.findByIdAndUpdate(
+      req.params.id,
+      {
+        nombre: req.body.nombre,
+        email: req.body.email,
+        telefono: req.body.telefono
+      },
+      {
+        new: true,
+        runValidators: true
+      }
+    );
 
-    if (!nombre || !telefono || !email) {
-      return res.status(400).json({
-        error: "Todos los campos son obligatorios",
-      });
-    }
-
-    if (
-      typeof nombre !== "string" ||
-      typeof telefono !== "string" ||
-      typeof email !== "string"
-    ) {
-      return res.status(400).json({
-        error: "Los datos ingresados no tienen un formato válido",
-      });
-    }
-
-    const clientes = leerClientes();
-
-    const indice = clientes.findIndex((cliente) => cliente.id === id);
-
-    if (indice === -1) {
+    if (!clienteActualizado) {
       return res.status(404).json({
-        error: "Cliente no encontrado",
+        mensaje: "Cliente no encontrado"
       });
     }
-
-    clientes[indice].nombre = nombre;
-    clientes[indice].telefono = telefono;
-    clientes[indice].email = email;
-
-    guardarClientes(clientes);
 
     res.status(200).json({
       mensaje: "Cliente actualizado correctamente",
-      cliente: clientes[indice],
+      cliente: clienteActualizado
     });
   } catch (error) {
-    res.status(500).json({
-      error: "Error al actualizar el cliente",
+    res.status(400).json({
+      mensaje: "Error al actualizar el cliente",
+      error: error.message
     });
   }
-}
+};
 
-// DELETE /clientes/:id
-function eliminarCliente(req, res) {
+// DELETE: eliminar un cliente
+const eliminarCliente = async (req, res) => {
   try {
-    const id = parseInt(req.params.id);
-
-    if (isNaN(id)) {
+    if (!mongoose.isValidObjectId(req.params.id)) {
       return res.status(400).json({
-        error: "El ID debe ser un número",
+        mensaje: "El ID del cliente no es válido"
       });
     }
 
-    const clientes = leerClientes();
+    const clienteEliminado = await Cliente.findByIdAndDelete(
+      req.params.id
+    );
 
-    const indice = clientes.findIndex((cliente) => cliente.id === id);
-
-    if (indice === -1) {
+    if (!clienteEliminado) {
       return res.status(404).json({
-        error: "Cliente no encontrado",
+        mensaje: "Cliente no encontrado"
       });
     }
-
-    clientes.splice(indice, 1);
-
-    guardarClientes(clientes);
 
     res.status(200).json({
       mensaje: "Cliente eliminado correctamente",
+      cliente: clienteEliminado
     });
   } catch (error) {
-    res.status(500).json({
-      error: "Error al eliminar el cliente",
+    res.status(400).json({
+      mensaje: "Error al eliminar el cliente",
+      error: error.message
     });
   }
-}
+};
 
-// ============================================
-// FUNCIÓN PARA VISTAS
-// Agregado por Miguel para que funcione la vista clientes/lista.pug
-// ============================================
-function obtenerClientesParaVista() {
-  return leerClientes();
-}
+// ========================================
+// FUNCIONES PARA LAS VISTAS PUG
+// ========================================
 
-function obtenerClienteParaVista(id) {
-  const clientes = leerClientes();
-  return clientes.find((c) => c.id === Number(id)) || null;
-}
+// Listar clientes
+const obtenerClientesParaVista = async () => {
+  return await Cliente.find().sort({ nombre: 1 });
+};
 
-function crearClienteParaVista(datos) {
-  const clientes = leerClientes();
-  const nuevoId =
-    clientes.length > 0 ? Math.max(...clientes.map((c) => c.id)) + 1 : 1;
-  const nuevoCliente = {
-    id: nuevoId,
+// Buscar un cliente para editar
+const obtenerClienteParaVista = async (id) => {
+  if (!mongoose.isValidObjectId(id)) return null;
+  return await Cliente.findById(id);
+};
+
+// Crear cliente desde el formulario
+const crearClienteParaVista = async (datos) => {
+  const cliente = new Cliente({
     nombre: datos.nombre,
     email: datos.email,
-    telefono: datos.telefono,
-  };
-  clientes.push(nuevoCliente);
-  guardarClientes(clientes);
-  return nuevoCliente;
-}
+    telefono: datos.telefono
+  });
 
-function actualizarClienteParaVista(id, datos) {
-  const clientes = leerClientes();
-  const indice = clientes.findIndex((c) => c.id === Number(id));
-  if (indice === -1) return null;
-  clientes[indice].nombre = datos.nombre;
-  clientes[indice].email = datos.email;
-  clientes[indice].telefono = datos.telefono;
-  guardarClientes(clientes);
-  return clientes[indice];
-}
+  return await cliente.save();
+};
 
-function eliminarClienteParaVista(id) {
-  const clientes = leerClientes();
-  const indice = clientes.findIndex((c) => c.id === Number(id));
-  if (indice === -1) return false;
-  clientes.splice(indice, 1);
-  guardarClientes(clientes);
-  return true;
-}
+// Actualizar cliente desde el formulario
+const actualizarClienteParaVista = async (id, datos) => {
+  if (!mongoose.isValidObjectId(id)) return null;
+
+  return await Cliente.findByIdAndUpdate(
+    id,
+    {
+      nombre: datos.nombre,
+      email: datos.email,
+      telefono: datos.telefono
+    },
+    {
+      new: true,
+      runValidators: true
+    }
+  );
+};
+
+// Eliminar cliente desde el formulario
+const eliminarClienteParaVista = async (id) => {
+  if (!mongoose.isValidObjectId(id)) return null;
+  return await Cliente.findByIdAndDelete(id);
+};
+
+// ========================================
+// EXPORTAR TODAS LAS FUNCIONES
+// ========================================
 
 module.exports = {
   obtenerClientes,
-  crearCliente,
   obtenerClientePorId,
+  crearCliente,
   actualizarCliente,
   eliminarCliente,
-  //funciones para las vistas
   obtenerClientesParaVista,
   obtenerClienteParaVista,
   crearClienteParaVista,
   actualizarClienteParaVista,
-  eliminarClienteParaVista,
+  eliminarClienteParaVista
 };
