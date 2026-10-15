@@ -7,7 +7,7 @@ const connectDB = async () => {
 
     try {
         // intentamos conectarnos usando la URL guardada en el archivo .env., await espera a que la conexión termine antes de continuar.
-        await mongoose.connect(process.env.MONGO_URL)
+        await mongoose.connect(process.env.MONGO_URI);
 
         // Este mensaje aparece si la conexión se realiza correctamente.
         console.log('Se conectó la base de datos')

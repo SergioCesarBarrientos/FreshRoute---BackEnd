@@ -1,22 +1,30 @@
-const express = require("express"); //llamo al paquete express para crear y manejar rutas
-//const { obtenerClientes, obtenerClientePorId, crearCliente, actualizarCliente, eliminarCliente } = require("../controllers/clientesController");
-// llamo las funciones  hechas de controllers
 
-// creo un router de express para definir las rutas de clientes
+const express = require('express');
 const router = express.Router();
-const clientesController = require("../controllers/clientesController");
-//endpoint: metodo http GET + la ruta
-//Seguida de la funcion que ejecuta "obtenerClientes"
-router.get("/", clientesController.obtenerClientes);
 
-router.post("/", clientesController.crearCliente);
+// Importar las funciones del controller de clientes
+const {
+  obtenerClientes,
+  obtenerClientePorId,
+  crearCliente,
+  actualizarCliente,
+  eliminarCliente
+} = require('../controllers/clientesController');
 
-router.get("/:id", clientesController.obtenerClientePorId);
+// GET: Obtener todos los clientes
+router.get('/', obtenerClientes);
 
-router.put("/:id", clientesController.actualizarCliente);
+// GET: Obtener un cliente por su ID
+router.get('/:id', obtenerClientePorId);
 
-router.delete("/:id", clientesController.eliminarCliente);
+// POST: Registrar un nuevo cliente
+router.post('/', crearCliente);
 
+// PUT: Actualizar un cliente por su ID
+router.put('/:id', actualizarCliente);
 
-// exporto el router para poder utilizarlo en app.js
+// DELETE: Eliminar un cliente por su ID
+router.delete('/:id', eliminarCliente);
+
+// Exportar las rutas
 module.exports = router;

@@ -2,21 +2,25 @@ extends ../layout
 
 block content
     h1 Lista de Clientes
-    .nav
+
+    nav.nav
         a(href="/") Volver al inicio
         a(href="/clientes/nuevo") Agregar cliente
 
-    ul
-        each cliente in clientes
-            li
-                .info
-                    strong #{cliente.nombre}
-                    span #{cliente.email}
-                    span #{cliente.telefono}
-                .acciones
-                    form(action=`/clientes/editar/${cliente.id}` method="GET" class="form-inline")
-                        button(type="submit").btn-editar Editar
-                    form(action=`/clientes/eliminar/${cliente.id}` method="POST" class="form-inline")
-                        button(type="submit" onclick="return confirm('¿Eliminar este cliente?')").btn-eliminar Eliminar
-        else
-            li No hay clientes registrados.
+    if clientes && clientes.length > 0
+        ul
+            each cliente in clientes
+                li
+                    div.info
+                        strong= cliente.nombre
+                        span= cliente.email
+                        span= cliente.telefono
+
+                    div.acciones
+                        form(action="/clientes/editar/" + cliente._id method="GET" class="form-inline")
+                            button(type="submit" class="btn-editar") Editar
+
+                        form(action="/clientes/eliminar/" + cliente._id method="POST" class="form-inline")
+                            button(type="submit" class="btn-eliminar" onclick="return confirm('¿Eliminar este cliente?')") Eliminar
+    else
+        p No hay clientes registrados.

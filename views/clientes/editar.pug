@@ -1,21 +1,24 @@
+
 extends ../layout
 
 block content
     h1 Editar Cliente
+
     a(href="/clientes") Volver a la lista
 
-    form(action=`/clientes/editar/${cliente.id}` method="POST")
-        label(for="nombre") Nombre:
-        input(type="text" name="nombre" id="nombre" value=cliente.nombre required)
-        br
+    form(action="/clientes/editar/" + cliente._id method="POST")
+        div
+            label(for="nombre") Nombre:
+            input(type="text" name="nombre" id="nombre" value=cliente.nombre required)
 
-        label(for="email") Email:
-        input(type="email" name="email" id="email" value=cliente.email required)
-        br
+        div
+            label(for="email") Email:
+            input(type="email" name="email" id="email" value=cliente.email required)
 
-        label(for="telefono") Teléfono:
-        input(type="text" name="telefono" id="telefono" value=cliente.telefono required)
-        br
-        br
+        div
+            label(for="telefono") Teléfono:
+            input(type="tel" name="telefono" id="telefono" value=cliente.telefono required)
 
-        button(type="submit") Guardar Cambios
+        div
+            button(type="submit") Guardar cambios
+            a(href="/clientes") Cancelar
