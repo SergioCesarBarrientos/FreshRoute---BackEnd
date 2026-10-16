@@ -1,10 +1,9 @@
-
 extends ../layout
 
 block content
-    h1 Editar Cliente
+    a.volver(href="/clientes") ← Volver a la lista
 
-    a(href="/clientes") Volver a la lista
+    h1 Editar Cliente
 
     form(action="/clientes/editar/" + cliente._id method="POST")
         div
@@ -19,6 +18,6 @@ block content
             label(for="telefono") Teléfono:
             input(type="tel" name="telefono" id="telefono" value=cliente.telefono required)
 
-        div
+        div.acciones-form
             button(type="submit") Guardar cambios
-            a(href="/clientes") Cancelar
+            a(href="/clientes" class="btn-cancelar") Cancelar

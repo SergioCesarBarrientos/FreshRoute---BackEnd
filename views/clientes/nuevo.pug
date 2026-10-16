@@ -1,12 +1,11 @@
-
 extends ../layout
 
 block content
+    a.volver(href="/clientes") ← Volver a la lista
+
     h1 Nuevo Cliente
 
     p Completá los siguientes datos para registrar un cliente.
-
-    a(href="/clientes") Volver a la lista
 
     form(action="/clientes/guardar" method="POST")
         div
@@ -39,6 +38,6 @@ block content
                 required
             )
 
-        div
+        div.acciones-form
             button(type="submit") Guardar Cliente
-            a(href="/clientes") Cancelar
+            a(href="/clientes" class="btn-cancelar") Cancelar

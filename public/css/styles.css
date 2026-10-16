@@ -3,16 +3,28 @@
    ============================================ */
 :root {
     --bg-body: #0a0e27;
-    --bg-card: #151b3d;
-    --bg-hover: #1e2650;
-    --border: #2a3155;
-    --border-hover: #3a4370;
-    --text-primary: #e8eaf6;
-    --text-secondary: #8b92b8;
-    --accent: #00d4ff;
-    --accent-hover: #33ddff;
+    --bg-card: #0f172a;
+    --bg-hover: #1a2236;
+    --border: #1e293b;
+    --border-hover: #334155;
+    --text-primary: #f1f5f9;
+    --text-secondary: #94a3b8;
+    --accent: #38bdf8;
+    --accent-hover: #7dd3fc;
     --radius: 12px;
 }
+/* :root {
+    --bg-body: #0a1410;
+    --bg-card: #0f1f1a;
+    --bg-hover: #1a2e26;
+    --border: #1f3a2f;
+    --border-hover: #2d5545;
+    --text-primary: #ecfdf5;
+    --text-secondary: #86a89a;
+    --accent: #34d399;
+    --accent-hover: #6ee7b7;
+    --radius: 12px;
+} */
 
 /* ============================================
    GENERAL
@@ -164,6 +176,22 @@ li:hover {
     transform: scaleY(1);
 }
 
+.nav-principal a {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.nav-principal .flecha {
+    color: var(--text-secondary);
+    font-size: 20px;
+    transition: transform 0.3s, color 0.3s;
+}
+
+.nav-principal a:hover .flecha {
+    color: var(--accent);
+    transform: translateX(6px);
+}
 /* ============================================
    FOOTER
    ============================================ */
@@ -174,9 +202,17 @@ footer {
     text-align: center;
     color: var(--text-secondary);
     font-size: 13px;
+    line-height: 1.8;
 }
 
+footer p {
+    margin: 0;
+}
 
+footer strong {
+    color: var(--text-primary);
+    font-weight: 600;
+}
 /* ============================================
    BOTONES
    ============================================ */
@@ -292,6 +328,59 @@ h2 {
     margin-top: 32px;
     margin-bottom: 16px;
     color: var(--text-primary);
+}
+
+
+
+/* ============================================
+   BOTONES DE FORMULARIO (Guardar + Cancelar)
+   ============================================ */
+form .acciones-form {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    margin-top: 24px;
+    flex-wrap: wrap;
+}
+
+form .acciones-form button {
+    margin-top: 0;
+}
+
+form .btn-cancelar {
+    padding: 10px 28px;
+    background: transparent;
+    color: var(--text-secondary);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    font-size: 15px;
+    font-weight: 500;
+    text-decoration: none;
+    transition: all 0.25s;
+    cursor: pointer;
+    display: inline-block;
+}
+
+form .btn-cancelar:hover {
+    background: var(--bg-hover);
+    color: var(--text-primary);
+    border-color: var(--border-hover);
+}
+
+/* ============================================
+   LINK VOLVER
+   ============================================ */
+a.volver {
+    display: inline-block;
+    color: var(--text-secondary);
+    text-decoration: none;
+    font-size: 14px;
+    margin-bottom: 16px;
+    transition: color 0.25s;
+}
+
+a.volver:hover {
+    color: var(--accent);
 }
 
 /* ============================================

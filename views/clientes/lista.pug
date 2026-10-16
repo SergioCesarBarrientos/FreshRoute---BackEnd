@@ -13,8 +13,8 @@ block content
                 li
                     div.info
                         strong= cliente.nombre
-                        span= cliente.email
-                        span= cliente.telefono
+                        span 📧 #{cliente.email}
+                        span 📞 #{cliente.telefono}
 
                     div.acciones
                         form(action="/clientes/editar/" + cliente._id method="GET" class="form-inline")
