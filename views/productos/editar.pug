@@ -1,21 +1,23 @@
 extends ../layout
 
 block content
+    a.volver(href="/productos") ← Volver a la lista
+
     h1 Editar Producto
-    a(href="/productos") Volver a la lista
 
-    form(action=`/productos/editar/${producto.id}` method="POST")
-        label(for="nombre") Nombre:
-        input(type="text" name="nombre" id="nombre" value=producto.nombre required)
-        br
+    form(action="/productos/editar/" + producto._id method="POST")
+        div
+            label(for="nombre") Nombre:
+            input(type="text" name="nombre" id="nombre" value=producto.nombre required)
 
-        label(for="precio") Precio:
-        input(type="number" name="precio" id="precio" value=producto.precio required)
-        br
+        div
+            label(for="precio") Precio:
+            input(type="number" name="precio" id="precio" value=producto.precio min="0" required)
 
-        label(for="stock") Stock:
-        input(type="number" name="stock" id="stock" value=producto.stock required)
-        br
-        br
+        div
+            label(for="stock") Stock:
+            input(type="number" name="stock" id="stock" value=producto.stock min="0" required)
 
-        button(type="submit") Guardar Cambios
+        div.acciones-form
+            button(type="submit") Guardar cambios
+            a(href="/productos" class="btn-cancelar") Cancelar

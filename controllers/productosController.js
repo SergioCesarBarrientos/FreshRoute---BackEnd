@@ -1,6 +1,6 @@
-
 const Producto = require("../models/Producto");
 const mongoose = require("mongoose");
+const AppError = require("../utils/AppError");
 
 // Validar los datos recibidos
 function validarProducto(datos) {
@@ -30,28 +30,27 @@ function validarProducto(datos) {
     return null;
 }
 
+// ========================================
+// FUNCIONES PARA LA API
+// ========================================
+
 // Listar todos los productos
-async function obtenerProductos(req, res) {
+async function obtenerProductos(req, res, next) {
     try {
         const productos = await Producto.find();
         res.status(200).json(productos);
     } catch (error) {
-        res.status(500).json({
-            mensaje: "Error al obtener los productos",
-            error: error.message
-        });
+        next(error);
     }
 }
 
 // Crear un producto
-async function crearProducto(req, res) {
+async function crearProducto(req, res, next) {
     try {
         const errorValidacion = validarProducto(req.body);
 
         if (errorValidacion) {
-            return res.status(400).json({
-                mensaje: errorValidacion
-            });
+            throw new AppError(errorValidacion, 400);
         }
 
         const nuevoProducto = new Producto({
@@ -67,58 +66,44 @@ async function crearProducto(req, res) {
             producto: productoGuardado
         });
     } catch (error) {
-        res.status(500).json({
-            mensaje: "Error al registrar el producto",
-            error: error.message
-        });
+        next(error);
     }
 }
 
 // Obtener un producto por su ID de MongoDB
-async function obtenerProductoPorId(req, res) {
+async function obtenerProductoPorId(req, res, next) {
     try {
         const { id } = req.params;
 
         if (!mongoose.Types.ObjectId.isValid(id)) {
-            return res.status(400).json({
-                mensaje: "El ID del producto no es válido"
-            });
+            throw new AppError("El ID del producto no es válido", 400);
         }
 
         const producto = await Producto.findById(id);
 
         if (!producto) {
-            return res.status(404).json({
-                mensaje: "Producto no encontrado"
-            });
+            throw new AppError("Producto no encontrado", 404);
         }
 
         res.status(200).json(producto);
     } catch (error) {
-        res.status(500).json({
-            mensaje: "Error al obtener el producto",
-            error: error.message
-        });
+        next(error);
     }
 }
 
 // Actualizar un producto
-async function actualizarProducto(req, res) {
+async function actualizarProducto(req, res, next) {
     try {
         const { id } = req.params;
 
         if (!mongoose.Types.ObjectId.isValid(id)) {
-            return res.status(400).json({
-                mensaje: "El ID del producto no es válido"
-            });
+            throw new AppError("El ID del producto no es válido", 400);
         }
 
         const errorValidacion = validarProducto(req.body);
 
         if (errorValidacion) {
-            return res.status(400).json({
-                mensaje: errorValidacion
-            });
+            throw new AppError(errorValidacion, 400);
         }
 
         const productoActualizado = await Producto.findByIdAndUpdate(
@@ -135,9 +120,7 @@ async function actualizarProducto(req, res) {
         );
 
         if (!productoActualizado) {
-            return res.status(404).json({
-                mensaje: "Producto no encontrado"
-            });
+            throw new AppError("Producto no encontrado", 404);
         }
 
         res.status(200).json({
@@ -145,30 +128,23 @@ async function actualizarProducto(req, res) {
             producto: productoActualizado
         });
     } catch (error) {
-        res.status(500).json({
-            mensaje: "Error al actualizar el producto",
-            error: error.message
-        });
+        next(error);
     }
 }
 
 // Eliminar un producto
-async function eliminarProducto(req, res) {
+async function eliminarProducto(req, res, next) {
     try {
         const { id } = req.params;
 
         if (!mongoose.Types.ObjectId.isValid(id)) {
-            return res.status(400).json({
-                mensaje: "El ID del producto no es válido"
-            });
+            throw new AppError("El ID del producto no es válido", 400);
         }
 
         const productoEliminado = await Producto.findByIdAndDelete(id);
 
         if (!productoEliminado) {
-            return res.status(404).json({
-                mensaje: "Producto no encontrado"
-            });
+            throw new AppError("Producto no encontrado", 404);
         }
 
         res.status(200).json({
@@ -176,14 +152,14 @@ async function eliminarProducto(req, res) {
             producto: productoEliminado
         });
     } catch (error) {
-        res.status(500).json({
-            mensaje: "Error al eliminar el producto",
-            error: error.message
-        });
+        next(error);
     }
 }
 
-// Funciones utilizadas por las vistas Pug
+// ========================================
+// FUNCIONES PARA LAS VISTAS PUG
+// ========================================
+
 async function obtenerProductosParaVista() {
     return await Producto.find().sort({ nombre: 1 });
 }
@@ -200,7 +176,7 @@ async function crearProductoParaVista(datos) {
     const errorValidacion = validarProducto(datos);
 
     if (errorValidacion) {
-        throw new Error(errorValidacion);
+        throw new AppError(errorValidacion, 400);
     }
 
     const nuevoProducto = new Producto({
@@ -220,7 +196,7 @@ async function actualizarProductoParaVista(id, datos) {
     const errorValidacion = validarProducto(datos);
 
     if (errorValidacion) {
-        throw new Error(errorValidacion);
+        throw new AppError(errorValidacion, 400);
     }
 
     return await Producto.findByIdAndUpdate(
