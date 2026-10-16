@@ -1,0 +1,26 @@
+extends ../layout
+
+block content
+    h1 Lista de Productos
+
+    nav.nav
+        a(href="/") Volver al inicio
+        a(href="/productos/nuevo") Agregar producto
+
+    if productos && productos.length > 0
+        ul
+            each producto in productos
+                li
+                    div.info
+                        strong= producto.nombre
+                        span 💰 Precio: $#{producto.precio}
+                        span 📦 Stock: #{producto.stock}
+
+                    div.acciones
+                        form(action="/productos/editar/" + producto._id method="GET" class="form-inline")
+                            button(type="submit" class="btn-editar") Editar
+
+                        form(action="/productos/eliminar/" + producto._id method="POST" class="form-inline")
+                            button(type="submit" class="btn-eliminar" onclick="return confirm('¿Eliminar este producto?')") Eliminar
+    else
+        p No hay productos registrados.

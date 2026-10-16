@@ -1,0 +1,45 @@
+extends ../layout
+
+block content
+    a.volver(href="/productos") ← Volver a la lista
+
+    h1 Nuevo Producto
+
+    p Completá los siguientes datos para registrar un producto.
+
+    form(action="/productos/guardar" method="POST")
+        div
+            label(for="nombre") Nombre del producto:
+            input(
+                type="text"
+                name="nombre"
+                id="nombre"
+                placeholder="Ej. Manzana Roja x kg"
+                required
+            )
+
+        div
+            label(for="precio") Precio:
+            input(
+                type="number"
+                name="precio"
+                id="precio"
+                placeholder="Ej. 2500"
+                min="0"
+                required
+            )
+
+        div
+            label(for="stock") Stock:
+            input(
+                type="number"
+                name="stock"
+                id="stock"
+                placeholder="Ej. 100"
+                min="0"
+                required
+            )
+
+        div.acciones-form
+            button(type="submit") Guardar Producto
+            a(href="/productos" class="btn-cancelar") Cancelar

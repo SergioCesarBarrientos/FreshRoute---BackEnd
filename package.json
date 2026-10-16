@@ -4,7 +4,7 @@
   "description": "API REST - FreshRoute",
   "main": "app.js",
   "scripts": {
-   "start": "node app.js",
+    "start": "node app.js",
     "dev": "nodemon app.js"
   },
   "keywords": [],
@@ -12,7 +12,9 @@
   "license": "ISC",
   "type": "commonjs",
   "dependencies": {
+    "dotenv": "^18.0.8",
     "express": "^5.2.1",
+    "mongoose": "^9.11.2",
     "pug": "^3.0.4"
   },
   "devDependencies": {

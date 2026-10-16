@@ -1,84 +1,275 @@
-const express = require("express"); // importo express para poder crear el servidor y manejar rutas
-const path = require("path"); // importo path para trabajar con rutas de archivos y carpetas
+// cargo las variables del archivo .env. debe ejecutarse antes de utilizar process.env.MONGO_URI o PORT.
+/*
+==================================================
+FRESHROUTE - APLICACIÓN PRINCIPAL
+==================================================
+*/
 
+// Cargar variables de entorno
+require("dotenv").config();
 
-// importo las rutas de clientes y productos
+// Importar dependencias
+const express = require("express");
+const path = require("path");
+
+// Importar rutas de la API
 const clientesRoutes = require("./routes/clientesRoutes");
 const productosRoutes = require("./routes/productosRoutes");
 
-const app = express(); // creamos la aplicación de Express
- 
-const PORT = 3000; //puerto donde se ejecutará el servidor
+// Importar controladores para las vistas
+const clientesController = require("./controllers/clientesController");
+const productosController = require("./controllers/productosController");
 
-app.use(express.json());    // permite que express pueda recibir datos enviados en formato JSON
-// Los datos enviados por POST o PUT estarán disponibles en req.body
+// Importar conexión y middleware
+const connectDB = require("./config/connectDB");
+const logger = require("./middlewares/logger");
 
+// Crear aplicación
+const app = express();
+const PORT = process.env.PORT || 3000;
 
-//permite recibir datos enviados desde formularios HTML/Pug también estarán disponibles en req.body
-app.use(express.urlencoded({
-  extended: true
-}));
+/*
+==================================================
+MIDDLEWARES
+==================================================
+*/
 
+// Procesar JSON
+app.use(express.json());
 
-// indicamos a Express que vamos a utilizar pug como motor de vistas
-app.set(
-  "view engine",
-  "pug"
-);
+// Procesar formularios HTML
+app.use(express.urlencoded({ extended: true }));
 
-// indicamos a express dónde están guardados los archivos .pug en este caso dentro de la carpeta "views"
-app.set(
-  "views",
-  path.join(__dirname, "views")
-);
+// Archivos estáticos: CSS, JavaScript e imágenes
+app.use(express.static(path.join(__dirname, "public")));
 
+// Registrar solicitudes
+app.use(logger);
 
-// =============================
-// RUTAS DE LA API
-// =============================
+// Configurar Pug
+app.set("view engine", "pug");
+app.set("views", path.join(__dirname, "views"));
 
-app.use(
-  "/api/clientes",
-  clientesRoutes
-);
+/*
+==================================================
+RUTAS DE LA API
+==================================================
+*/
 
-app.use(
-  "/api/productos",
-  productosRoutes
-);
+app.use("/api/clientes", clientesRoutes);
+app.use("/api/productos", productosRoutes);
 
+/*
+==================================================
+PÁGINA PRINCIPAL
+==================================================
+*/
 
-// =============================
-// VISTAS
-// =============================
-
-// Cuando alguien entra a http://localhost:3000/ express busca views/index.pug y le pasa el título "FreshRoute"
 app.get("/", (req, res) => {
   res.render("index", {
     titulo: "FreshRoute"
   });
 });
 
-// Cuando alguien entra a: http://localhost:3000/clientes express busca views/clientes.pug
-app.get("/clientes", (req, res) => {
-  res.render("clientes", {
-    titulo: "Clientes"
+/*
+==================================================
+VISTAS DE CLIENTES
+==================================================
+*/
+
+// Listar clientes
+app.get("/clientes", async (req, res, next) => {
+  try {
+    const clientes =
+      await clientesController.obtenerClientesParaVista();
+
+    res.render("clientes/lista", {
+      titulo: "Clientes",
+      clientes
+    });
+  } catch (error) {
+    next(error);
+  }
+});
+
+// Formulario para crear cliente
+app.get("/clientes/nuevo", (req, res) => {
+  res.render("clientes/nuevo", {
+    titulo: "Nuevo Cliente"
   });
 });
 
-// Cuando alguien entra a: http://localhost:3000/productos express busca views/productos.pug
-app.get("/productos", (req, res) => {
-  res.render("productos", {
-    titulo: "Productos"
+// Formulario para editar cliente
+app.get("/clientes/editar/:id", async (req, res, next) => {
+  try {
+    const cliente =
+      await clientesController.obtenerClienteParaVista(req.params.id);
+
+    if (!cliente) {
+      return res.status(404).send("Cliente no encontrado");
+    }
+
+    res.render("clientes/editar", {
+      titulo: "Editar Cliente",
+      cliente
+    });
+  } catch (error) {
+    next(error);
+  }
+});
+
+// Guardar cliente
+app.post("/clientes/guardar", async (req, res, next) => {
+  try {
+    console.log("Datos recibidos del formulario:", req.body);
+
+    const cliente =
+      await clientesController.crearClienteParaVista(req.body);
+
+    console.log("Cliente guardado correctamente:", cliente._id);
+
+    res.redirect("/clientes");
+  } catch (error) {
+    console.error("Error al guardar cliente:", error);
+    next(error);
+  }
+});
+
+// Actualizar cliente
+app.post("/clientes/editar/:id", async (req, res, next) => {
+  try {
+    const cliente =
+      await clientesController.actualizarClienteParaVista(
+        req.params.id,
+        req.body
+      );
+
+    if (!cliente) {
+      return res.status(404).send("Cliente no encontrado");
+    }
+
+    res.redirect("/clientes");
+  } catch (error) {
+    next(error);
+  }
+});
+
+// Eliminar cliente
+app.post("/clientes/eliminar/:id", async (req, res, next) => {
+  try {
+    const cliente =
+      await clientesController.eliminarClienteParaVista(req.params.id);
+
+    if (!cliente) {
+      return res.status(404).send("Cliente no encontrado");
+    }
+
+    res.redirect("/clientes");
+  } catch (error) {
+    next(error);
+  }
+});
+
+/*
+==================================================
+VISTAS DE PRODUCTOS
+==================================================
+*/
+
+// Listar productos
+app.get("/productos", async (req, res, next) => {
+  try {
+    const productos =
+      await productosController.obtenerProductosParaVista();
+
+    res.render("productos/lista", {
+      titulo: "Productos",
+      productos
+    });
+  } catch (error) {
+    next(error);
+  }
+});
+
+// Formulario para crear producto
+app.get("/productos/nuevo", (req, res) => {
+  res.render("productos/nuevo", {
+    titulo: "Nuevo Producto"
   });
 });
 
+// Formulario para editar producto
+app.get("/productos/editar/:id", async (req, res, next) => {
+  try {
+    const producto =
+      await productosController.obtenerProductoParaVista(req.params.id);
 
-// =============================
-// RUTA NO ENCONTRADA
-// =============================
+    if (!producto) {
+      return res.status(404).send("Producto no encontrado");
+    }
 
-// si ninguna de las rutas anteriores coincide con la petición se devuelve un error 404
+    res.render("productos/editar", {
+      titulo: "Editar Producto",
+      producto
+    });
+  } catch (error) {
+    next(error);
+  }
+});
+
+// Guardar producto
+app.post("/productos/guardar", async (req, res, next) => {
+  try {
+    await productosController.crearProductoParaVista(req.body);
+
+    res.redirect("/productos");
+  } catch (error) {
+    console.error("Error al guardar producto:", error);
+    next(error);
+  }
+});
+
+// Actualizar producto
+app.post("/productos/editar/:id", async (req, res, next) => {
+  try {
+    const producto =
+      await productosController.actualizarProductoParaVista(
+        req.params.id,
+        req.body
+      );
+
+    if (!producto) {
+      return res.status(404).send("Producto no encontrado");
+    }
+
+    res.redirect("/productos");
+  } catch (error) {
+    next(error);
+  }
+});
+
+// Eliminar producto
+app.post("/productos/eliminar/:id", async (req, res, next) => {
+  try {
+    const producto =
+      await productosController.eliminarProductoParaVista(req.params.id);
+
+    if (!producto) {
+      return res.status(404).send("Producto no encontrado");
+    }
+
+    res.redirect("/productos");
+  } catch (error) {
+    next(error);
+  }
+});
+
+/*
+==================================================
+RUTA NO ENCONTRADA
+==================================================
+*/
+
 app.use((req, res) => {
   res.status(404).json({
     error: "Ruta no encontrada"
@@ -86,29 +277,37 @@ app.use((req, res) => {
 });
 
 
-// =============================
-// MANEJO DE ERRORES
-// =============================
+/*
+==================================================
+MANEJO DE ERRORES
+==================================================
+*/
 
-// Si ocurre un error en alguna parte de la aplicación este middleware lo captura
-app.use((error, req, res, next) => {
-
-  // Mostramos el error en la consola
-  console.error(error);
-
-  // Respondemos al cliente con código 500
-  res.status(500).json({
-    error: "Error interno del servidor"
-  });
-});
+const errorHandler = require("./middlewares/errorHandler");
+app.use(errorHandler);
 
 
-// =============================
-// INICIAR SERVIDOR
-// =============================
+/*
+==================================================
+INICIAR SERVIDOR
+==================================================
+*/
 
-app.listen(PORT, () => {
-  console.log(
-    `Servidor ejecutándose en http://localhost:${PORT}`
-  );
-});
+const iniciarServidor = async () => {
+  try {
+    await connectDB();
+
+    app.listen(PORT, () => {
+      console.log(`Servidor ejecutándose en http://localhost:${PORT}`);
+    });
+  } catch (error) {
+    console.error(
+      "No se pudo iniciar la aplicación:",
+      error.message
+    );
+
+    process.exit(1);
+  }
+};
+
+iniciarServidor();

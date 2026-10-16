@@ -1,0 +1,23 @@
+extends ../layout
+
+block content
+    a.volver(href="/clientes") ← Volver a la lista
+
+    h1 Editar Cliente
+
+    form(action="/clientes/editar/" + cliente._id method="POST")
+        div
+            label(for="nombre") Nombre:
+            input(type="text" name="nombre" id="nombre" value=cliente.nombre required)
+
+        div
+            label(for="email") Email:
+            input(type="email" name="email" id="email" value=cliente.email required)
+
+        div
+            label(for="telefono") Teléfono:
+            input(type="tel" name="telefono" id="telefono" value=cliente.telefono required)
+
+        div.acciones-form
+            button(type="submit") Guardar cambios
+            a(href="/clientes" class="btn-cancelar") Cancelar

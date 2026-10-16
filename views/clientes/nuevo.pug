@@ -1,0 +1,43 @@
+extends ../layout
+
+block content
+    a.volver(href="/clientes") ← Volver a la lista
+
+    h1 Nuevo Cliente
+
+    p Completá los siguientes datos para registrar un cliente.
+
+    form(action="/clientes/guardar" method="POST")
+        div
+            label(for="nombre") Nombre completo:
+            input(
+                type="text"
+                name="nombre"
+                id="nombre"
+                placeholder="Ingresá el nombre del cliente"
+                required
+            )
+
+        div
+            label(for="email") Correo electrónico:
+            input(
+                type="email"
+                name="email"
+                id="email"
+                placeholder="ejemplo@correo.com"
+                required
+            )
+
+        div
+            label(for="telefono") Teléfono:
+            input(
+                type="tel"
+                name="telefono"
+                id="telefono"
+                placeholder="Ej. 3811234567"
+                required
+            )
+
+        div.acciones-form
+            button(type="submit") Guardar Cliente
+            a(href="/clientes" class="btn-cancelar") Cancelar
