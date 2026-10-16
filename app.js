@@ -1,4 +1,4 @@
-// cargo las variables del archivo .env. debe ejecutarse antes de utilizar process.env.MONGO_URL o PORT.
+// cargo las variables del archivo .env. debe ejecutarse antes de utilizar process.env.MONGO_URI o PORT.
 /*
 ==================================================
 FRESHROUTE - APLICACIÓN PRINCIPAL
@@ -276,24 +276,16 @@ app.use((req, res) => {
   });
 });
 
+
 /*
 ==================================================
 MANEJO DE ERRORES
 ==================================================
 */
 
-app.use((error, req, res, next) => {
-  console.error("Error en la aplicación:", error);
+const errorHandler = require("./middlewares/errorHandler");
+app.use(errorHandler);
 
-  if (res.headersSent) {
-    return next(error);
-  }
-
-  res.status(500).json({
-    error: "Error interno del servidor",
-    mensaje: error.message
-  });
-});
 
 /*
 ==================================================
