@@ -269,4 +269,4 @@ Durante el desarrollo del proyecto se utilizaron herramientas de Inteligencia Ar
 
 - **Repositorio GitHub:** https://github.com/SergioCesarBarrientos/FreshRoute---BackEnd
 - **Google Drive:** https://drive.google.com/drive/folders/1Boq0lor7hL8UX8I1mGAfGmOw5_cZ_Dov?usp=drive_link
-- **Video explicativo:** _[Pendiente]_
+- **Video explicativo:** [Ver video](https://drive.google.com/file/d/16I1qHDy02iNcNwicMFBFgPCjPvIYirWy/view?usp=drive_link)
