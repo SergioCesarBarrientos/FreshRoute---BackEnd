@@ -15,6 +15,7 @@ const path = require("path");
 // Importar rutas de la API
 const clientesRoutes = require("./routes/clientesRoutes");
 const productosRoutes = require("./routes/productosRoutes");
+const usuariosRoutes = require("./routes/usuariosRoutes");
 
 // Importar controladores para las vistas
 const clientesController = require("./controllers/clientesController");
@@ -58,6 +59,7 @@ RUTAS DE LA API
 
 app.use("/api/clientes", clientesRoutes);
 app.use("/api/productos", productosRoutes);
+app.use("/api/usuarios", usuariosRoutes);
 
 /*
 ==================================================
@@ -286,6 +288,16 @@ MANEJO DE ERRORES
 const errorHandler = require("./middlewares/errorHandler");
 app.use(errorHandler);
 
+
+/*
+==================================================
+VERIFICAR VARIABLE DE ENTORNO
+==================================================
+*/
+
+if (!process.env.SECRET) {
+  console.warn("⚠️ Advertencia: La variable SECRET no está definida en el .env. Los tokens fallarán.");
+}
 
 /*
 ==================================================
