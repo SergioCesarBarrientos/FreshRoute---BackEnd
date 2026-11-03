@@ -1,9 +1,13 @@
 const Usuario = require('../models/Usuario');
+const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const AppError = require('../utils/AppError');
 
-// POST: Registrar un nuevo usuario
+// ========================================
+// FUNCIONES PARA LA API (JSON)
+// ========================================
+
 const registrarUsuario = async (req, res, next) => {
   try {
     const { nombre, email, password, rol } = req.body;
@@ -12,7 +16,6 @@ const registrarUsuario = async (req, res, next) => {
       throw new AppError('Faltan datos obligatorios (nombre, email, password)', 400);
     }
 
-    // Hashear la contraseña (seguridad)
     const saltRounds = 10;
     const passwordHash = await bcrypt.hash(password, saltRounds);
 
@@ -34,7 +37,6 @@ const registrarUsuario = async (req, res, next) => {
   }
 };
 
-// POST: Login de usuario
 const login = async (req, res, next) => {
   try {
     const { email, password } = req.body;
@@ -43,29 +45,25 @@ const login = async (req, res, next) => {
       throw new AppError('Faltan datos obligatorios (email, password)', 400);
     }
 
-    // Buscar el usuario por email
     const usuario = await Usuario.findOne({ email });
 
     if (!usuario) {
       throw new AppError('Credenciales inválidas', 401);
     }
 
-    // Verificar la contraseña con bcrypt
     const passwordCorrecta = await bcrypt.compare(password, usuario.password);
 
     if (!passwordCorrecta) {
       throw new AppError('Credenciales inválidas', 401);
     }
 
-    // Crear el token JWT
     const userForToken = {
       id: usuario._id,
+      nombre: usuario.nombre,
       email: usuario.email,
       rol: usuario.rol
     };
 
-    // SEGURIDAD: El token expira a los 15 minutos ('15m').
-    // Si el usuario no hace nada en ese tiempo, debe volver a loguearse.
     const token = jwt.sign(userForToken, process.env.SECRET, {
       expiresIn: '15m' 
     });
@@ -85,7 +83,82 @@ const login = async (req, res, next) => {
   }
 };
 
+// ========================================
+// FUNCIONES PARA LAS VISTAS (CRUD)
+// ========================================
+
+const obtenerUsuariosParaVista = async () => {
+  return await Usuario.find().sort({ nombre: 1 });
+};
+
+const obtenerUsuarioParaVista = async (id) => {
+  if (!mongoose.isValidObjectId(id)) return null;
+  return await Usuario.findById(id);
+};
+
+const crearUsuarioParaVista = async (datos) => {
+  const { nombre, email, password, rol } = datos;
+  
+  const saltRounds = 10;
+  const passwordHash = await bcrypt.hash(password, saltRounds);
+
+  const nuevoUsuario = new Usuario({
+    nombre,
+    email,
+    password: passwordHash,
+    rol: rol || 'administrativo'
+  });
+
+  return await nuevoUsuario.save();
+};
+
+const actualizarUsuarioParaVista = async (id, datos) => {
+  if (!mongoose.isValidObjectId(id)) return null;
+
+  const { nombre, email, rol, password } = datos;
+
+  // Armamos el objeto con los datos básicos
+  const datosAActualizar = { nombre, email, rol };
+
+  // Si el usuario escribió una nueva contraseña, la hasheamos
+  if (password && password.trim() !== "") {
+    const saltRounds = 10;
+    datosAActualizar.password = await bcrypt.hash(password, saltRounds);
+  }
+
+  return await Usuario.findByIdAndUpdate(
+    id,
+    datosAActualizar,
+    { new: true, runValidators: true }
+  );
+};
+
+const eliminarUsuarioParaVista = async (id) => {
+  if (!mongoose.isValidObjectId(id)) return null;
+  return await Usuario.findByIdAndDelete(id);
+};
+
+// ========================================
+// MIDDLEWARE DE AUTORIZACIÓN (Solo Admin)
+// ========================================
+const verificarAdminVista = (req, res, next) => {
+  if (res.locals.usuarioLogueado && res.locals.usuarioLogueado.rol === 'admin') {
+    return next();
+  }
+  return res.status(403).send("Acceso denegado. Solo los administradores pueden gestionar usuarios.");
+};
+
+// ========================================
+// EXPORTAR TODO
+// ========================================
+
 module.exports = {
   registrarUsuario,
-  login
+  login,
+  obtenerUsuariosParaVista,
+  obtenerUsuarioParaVista,
+  crearUsuarioParaVista,
+  actualizarUsuarioParaVista,
+  eliminarUsuarioParaVista,
+  verificarAdminVista
 };

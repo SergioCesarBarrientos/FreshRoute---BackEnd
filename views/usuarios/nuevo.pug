@@ -1,0 +1,50 @@
+extends ../layout
+
+block content
+    a.volver(href="/usuarios/lista") ← Volver a la lista
+
+    h1 Nuevo Usuario
+
+    p Completá los siguientes datos para registrar un usuario.
+
+    form(action="/usuarios/guardar" method="POST")
+        div
+            label(for="nombre") Nombre completo:
+            input(
+                type="text"
+                name="nombre"
+                id="nombre"
+                placeholder="Ej. Juan Pérez"
+                required
+            )
+
+        div
+            label(for="email") Correo electrónico:
+            input(
+                type="email"
+                name="email"
+                id="email"
+                placeholder="ejemplo@correo.com"
+                required
+            )
+
+        div
+            label(for="password") Contraseña:
+            input(
+                type="password"
+                name="password"
+                id="password"
+                placeholder="Mínimo 6 caracteres"
+                required
+            )
+
+        div
+            label(for="rol") Rol:
+            select(name="rol" id="rol" required)
+                option(value="administrativo") Administrativo
+                option(value="repartidor") Repartidor
+                option(value="admin") Administrador
+
+        div.acciones-form
+            button(type="submit") Guardar Usuario
+            a(href="/usuarios" class="btn-cancelar") Cancelar

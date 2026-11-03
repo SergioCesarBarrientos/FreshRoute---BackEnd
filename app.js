@@ -73,21 +73,24 @@ RUTAS DE LAS VISTAS (HTML / PUG)
 ==================================================
 */
 
-// Rutas públicas de usuarios (login y logout)
+// 1. Rutas públicas de usuarios (login y logout)
 app.use("/", usuariosVistas);
 
-// Middleware que protege el resto de las vistas
+// 2. Rutas del CRUD de usuarios (tienen su propia protección interna)
+app.use("/usuarios", usuariosVistas);
+
+// 3. Middleware que protege el resto de las vistas
 app.use(verificarSesionVista);
 
-// Página principal (ya protegida)
+// 4. Página principal (ya protegida)
 app.get("/", (req, res) => {
   res.render("index", { titulo: "FreshRoute" });
 });
 
-// Vistas de clientes (protegidas)
+// 5. Vistas de clientes (protegidas)
 app.use("/clientes", clientesVistas);
 
-// Vistas de productos (protegidas)
+// 6. Vistas de productos (protegidas)
 app.use("/productos", productosVistas);
 
 /*

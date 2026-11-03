@@ -12,3 +12,7 @@ block content
         a(href="/productos")
             span 📦 Productos
             span.flecha →
+        if usuarioLogueado && usuarioLogueado.rol === 'admin'
+            a(href="/usuarios/lista")
+                span 👤 Usuarios
+                span.flecha →

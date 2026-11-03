@@ -2,16 +2,17 @@
 // SEED - Precarga de datos de prueba
 // ========================================
 // Uso: node seed.js
-// Borra los datos actuales e inserta datos de prueba de FreshRoute.
 
 require("dotenv").config();
 
 const mongoose = require("mongoose");
+const bcrypt = require("bcrypt");
 const connectDB = require("./config/connectDB");
 const Cliente = require("./models/Cliente");
 const Producto = require("./models/Producto");
+const Usuario = require("./models/Usuario");
 
-// Datos de prueba - Clientes (distribuidoras / comercios)
+// Datos de prueba - Clientes
 const clientesSeed = [
   { nombre: "Supermercado Del Sol", email: "contacto@delsol.com", telefono: "011-4567-8901" },
   { nombre: "Distribuidora Norte", email: "ventas@distnorte.com", telefono: "011-4567-8902" },
@@ -23,7 +24,7 @@ const clientesSeed = [
   { nombre: "Autoservicio San Martín", email: "contacto@sanmartin.com", telefono: "011-4567-8908" }
 ];
 
-// Datos de prueba - Productos (frutas / verduras / insumos)
+// Datos de prueba - Productos
 const productosSeed = [
   { nombre: "Manzana Roja x kg", precio: 2500, stock: 120 },
   { nombre: "Banana Ecuador x kg", precio: 1800, stock: 200 },
@@ -37,28 +38,43 @@ const productosSeed = [
 
 const ejecutarSeed = async () => {
   try {
-    // 1) Conectar a la base de datos
     await connectDB();
 
-    // 2) Borrar datos actuales
+    // 1) Borrar datos actuales
     await Cliente.deleteMany({});
     await Producto.deleteMany({});
-    console.log("🧹 Datos anteriores eliminados");
+    await Usuario.deleteMany({}); // Limpiar usuarios también
+    console.log("🧹 Datos anteriores eliminados (Clientes, Productos, Usuarios)");
 
-    // 3) Insertar datos nuevos
+    // 2) Insertar Clientes y Productos
     const clientesInsertados = await Cliente.insertMany(clientesSeed);
-    console.log(`${clientesInsertados.length} clientes insertados`);
+    console.log(`✅ ${clientesInsertados.length} clientes insertados`);
 
     const productosInsertados = await Producto.insertMany(productosSeed);
-    console.log(`${productosInsertados.length} productos insertados`);
+    console.log(`✅ ${productosInsertados.length} productos insertados`);
 
-    console.log("Seed completada correctamente");
+    // 3) Crear Usuarios con contraseñas hasheadas
+    const saltRounds = 10;
+    const passwordHash = await bcrypt.hash("123456", saltRounds);
+
+    const usuariosSeed = [
+      { nombre: "Miguel Admin", email: "miguel@freshroute.com", password: passwordHash, rol: "admin" },
+      { nombre: "Caro", email: "caro@freshroute.com", password: passwordHash, rol: "admin" },
+      { nombre: "Sergio", email: "sergio@freshroute.com", password: passwordHash, rol: "admin" },
+      { nombre: "Mariana", email: "mariana@freshroute.com", password: passwordHash, rol: "admin" },
+      { nombre: "Juan Perez", email: "juan@freshroute.com", password: passwordHash, rol: "administrativo" },
+      { nombre: "Repartidor 1", email: "repartidor@freshroute.com", password: passwordHash, rol: "repartidor" }
+    ];
+
+    const usuariosInsertados = await Usuario.insertMany(usuariosSeed);
+    console.log(`✅ ${usuariosInsertados.length} usuarios insertados (admins, administrativo y repartidor)`);
+
+    console.log("🌱 Seed completada correctamente");
   } catch (error) {
-    console.error("Error en la seed:", error.message);
+    console.error("❌ Error en la seed:", error.message);
   } finally {
-    // 4) Cerrar la conexión
     await mongoose.connection.close();
-    console.log("Conexión cerrada");
+    console.log("🔌 Conexión cerrada");
     process.exit(0);
   }
 };
