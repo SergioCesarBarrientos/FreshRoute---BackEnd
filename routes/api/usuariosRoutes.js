@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 
 // Importar el controlador
-const { registrarUsuario, login } = require('../controllers/usuariosController');
+const { registrarUsuario, login } = require('../../controllers/usuariosController');
 
 // POST: Registrar usuario
 router.post('/registro', registrarUsuario);

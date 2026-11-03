@@ -1,29 +1,25 @@
-// cargo las variables del archivo .env. debe ejecutarse antes de utilizar process.env.MONGO_URI o PORT.
-/*
-==================================================
-FRESHROUTE - APLICACIÓN PRINCIPAL
-==================================================
-*/
-
 // Cargar variables de entorno
 require("dotenv").config();
 
 // Importar dependencias
 const express = require("express");
 const path = require("path");
+const jwt = require('jsonwebtoken');
 
 // Importar rutas de la API
-const clientesRoutes = require("./routes/clientesRoutes");
-const productosRoutes = require("./routes/productosRoutes");
-const usuariosRoutes = require("./routes/usuariosRoutes");
+const clientesRoutes = require("./routes/api/clientesRoutes");
+const productosRoutes = require("./routes/api/productosRoutes");
+const usuariosRoutes = require("./routes/api/usuariosRoutes");
 
-// Importar controladores para las vistas
-const clientesController = require("./controllers/clientesController");
-const productosController = require("./controllers/productosController");
+// Importar rutas de las Vistas
+const clientesVistas = require("./routes/vistas/clientesVistas");
+const productosVistas = require("./routes/vistas/productosVistas");
+const usuariosVistas = require("./routes/vistas/usuariosVistas");
 
 // Importar conexión y middleware
 const connectDB = require("./config/connectDB");
 const logger = require("./middlewares/logger");
+const verificarSesionVista = require("./middlewares/verificarSesionVista");
 
 // Crear aplicación
 const app = express();
@@ -35,25 +31,35 @@ MIDDLEWARES
 ==================================================
 */
 
-// Procesar JSON
 app.use(express.json());
-
-// Procesar formularios HTML
 app.use(express.urlencoded({ extended: true }));
-
-// Archivos estáticos: CSS, JavaScript e imágenes
 app.use(express.static(path.join(__dirname, "public")));
-
-// Registrar solicitudes
 app.use(logger);
 
-// Configurar Pug
+// Middleware para leer el usuario de la cookie y pasarlo a las vistas
+app.use((req, res, next) => {
+  res.locals.usuarioLogueado = null;
+  if (req.headers.cookie) {
+    const tokenCookie = req.headers.cookie.split('; ').find(row => row.startsWith('token='));
+    if (tokenCookie) {
+      try {
+        const token = tokenCookie.split('=')[1];
+        const decoded = jwt.verify(token, process.env.SECRET);
+        res.locals.usuarioLogueado = decoded;
+      } catch (err) {
+        // Token vencido o inválido
+      }
+    }
+  }
+  next();
+});
+
 app.set("view engine", "pug");
 app.set("views", path.join(__dirname, "views"));
 
 /*
 ==================================================
-RUTAS DE LA API
+RUTAS DE LA API (JSON)
 ==================================================
 */
 
@@ -63,208 +69,26 @@ app.use("/api/usuarios", usuariosRoutes);
 
 /*
 ==================================================
-PÁGINA PRINCIPAL
+RUTAS DE LAS VISTAS (HTML / PUG)
 ==================================================
 */
 
+// Rutas públicas de usuarios (login y logout)
+app.use("/", usuariosVistas);
+
+// Middleware que protege el resto de las vistas
+app.use(verificarSesionVista);
+
+// Página principal (ya protegida)
 app.get("/", (req, res) => {
-  res.render("index", {
-    titulo: "FreshRoute"
-  });
+  res.render("index", { titulo: "FreshRoute" });
 });
 
-/*
-==================================================
-VISTAS DE CLIENTES
-==================================================
-*/
+// Vistas de clientes (protegidas)
+app.use("/clientes", clientesVistas);
 
-// Listar clientes
-app.get("/clientes", async (req, res, next) => {
-  try {
-    const clientes =
-      await clientesController.obtenerClientesParaVista();
-
-    res.render("clientes/lista", {
-      titulo: "Clientes",
-      clientes
-    });
-  } catch (error) {
-    next(error);
-  }
-});
-
-// Formulario para crear cliente
-app.get("/clientes/nuevo", (req, res) => {
-  res.render("clientes/nuevo", {
-    titulo: "Nuevo Cliente"
-  });
-});
-
-// Formulario para editar cliente
-app.get("/clientes/editar/:id", async (req, res, next) => {
-  try {
-    const cliente =
-      await clientesController.obtenerClienteParaVista(req.params.id);
-
-    if (!cliente) {
-      return res.status(404).send("Cliente no encontrado");
-    }
-
-    res.render("clientes/editar", {
-      titulo: "Editar Cliente",
-      cliente
-    });
-  } catch (error) {
-    next(error);
-  }
-});
-
-// Guardar cliente
-app.post("/clientes/guardar", async (req, res, next) => {
-  try {
-    console.log("Datos recibidos del formulario:", req.body);
-
-    const cliente =
-      await clientesController.crearClienteParaVista(req.body);
-
-    console.log("Cliente guardado correctamente:", cliente._id);
-
-    res.redirect("/clientes");
-  } catch (error) {
-    console.error("Error al guardar cliente:", error);
-    next(error);
-  }
-});
-
-// Actualizar cliente
-app.post("/clientes/editar/:id", async (req, res, next) => {
-  try {
-    const cliente =
-      await clientesController.actualizarClienteParaVista(
-        req.params.id,
-        req.body
-      );
-
-    if (!cliente) {
-      return res.status(404).send("Cliente no encontrado");
-    }
-
-    res.redirect("/clientes");
-  } catch (error) {
-    next(error);
-  }
-});
-
-// Eliminar cliente
-app.post("/clientes/eliminar/:id", async (req, res, next) => {
-  try {
-    const cliente =
-      await clientesController.eliminarClienteParaVista(req.params.id);
-
-    if (!cliente) {
-      return res.status(404).send("Cliente no encontrado");
-    }
-
-    res.redirect("/clientes");
-  } catch (error) {
-    next(error);
-  }
-});
-
-/*
-==================================================
-VISTAS DE PRODUCTOS
-==================================================
-*/
-
-// Listar productos
-app.get("/productos", async (req, res, next) => {
-  try {
-    const productos =
-      await productosController.obtenerProductosParaVista();
-
-    res.render("productos/lista", {
-      titulo: "Productos",
-      productos
-    });
-  } catch (error) {
-    next(error);
-  }
-});
-
-// Formulario para crear producto
-app.get("/productos/nuevo", (req, res) => {
-  res.render("productos/nuevo", {
-    titulo: "Nuevo Producto"
-  });
-});
-
-// Formulario para editar producto
-app.get("/productos/editar/:id", async (req, res, next) => {
-  try {
-    const producto =
-      await productosController.obtenerProductoParaVista(req.params.id);
-
-    if (!producto) {
-      return res.status(404).send("Producto no encontrado");
-    }
-
-    res.render("productos/editar", {
-      titulo: "Editar Producto",
-      producto
-    });
-  } catch (error) {
-    next(error);
-  }
-});
-
-// Guardar producto
-app.post("/productos/guardar", async (req, res, next) => {
-  try {
-    await productosController.crearProductoParaVista(req.body);
-
-    res.redirect("/productos");
-  } catch (error) {
-    console.error("Error al guardar producto:", error);
-    next(error);
-  }
-});
-
-// Actualizar producto
-app.post("/productos/editar/:id", async (req, res, next) => {
-  try {
-    const producto =
-      await productosController.actualizarProductoParaVista(
-        req.params.id,
-        req.body
-      );
-
-    if (!producto) {
-      return res.status(404).send("Producto no encontrado");
-    }
-
-    res.redirect("/productos");
-  } catch (error) {
-    next(error);
-  }
-});
-
-// Eliminar producto
-app.post("/productos/eliminar/:id", async (req, res, next) => {
-  try {
-    const producto =
-      await productosController.eliminarProductoParaVista(req.params.id);
-
-    if (!producto) {
-      return res.status(404).send("Producto no encontrado");
-    }
-
-    res.redirect("/productos");
-  } catch (error) {
-    next(error);
-  }
-});
+// Vistas de productos (protegidas)
+app.use("/productos", productosVistas);
 
 /*
 ==================================================
@@ -273,11 +97,8 @@ RUTA NO ENCONTRADA
 */
 
 app.use((req, res) => {
-  res.status(404).json({
-    error: "Ruta no encontrada"
-  });
+  res.status(404).json({ error: "Ruta no encontrada" });
 });
-
 
 /*
 ==================================================
@@ -288,7 +109,6 @@ MANEJO DE ERRORES
 const errorHandler = require("./middlewares/errorHandler");
 app.use(errorHandler);
 
-
 /*
 ==================================================
 VERIFICAR VARIABLE DE ENTORNO
@@ -296,7 +116,9 @@ VERIFICAR VARIABLE DE ENTORNO
 */
 
 if (!process.env.SECRET) {
-  console.warn("⚠️ Advertencia: La variable SECRET no está definida en el .env. Los tokens fallarán.");
+  console.warn(
+    "⚠️ Advertencia: La variable SECRET no está definida en el .env. Los tokens fallarán.",
+  );
 }
 
 /*
@@ -308,16 +130,11 @@ INICIAR SERVIDOR
 const iniciarServidor = async () => {
   try {
     await connectDB();
-
     app.listen(PORT, () => {
       console.log(`Servidor ejecutándose en http://localhost:${PORT}`);
     });
   } catch (error) {
-    console.error(
-      "No se pudo iniciar la aplicación:",
-      error.message
-    );
-
+    console.error("No se pudo iniciar la aplicación:", error.message);
     process.exit(1);
   }
 };

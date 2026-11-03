@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { verificarToken, esAdmin } = require('../middlewares/auth');
+const { verificarToken, esAdmin } = require('../../middlewares/auth');
 
 // Importar las funciones del controller de clientes
 const {
@@ -9,7 +9,7 @@ const {
   crearCliente,
   actualizarCliente,
   eliminarCliente
-} = require('../controllers/clientesController');
+} = require('../../controllers/clientesController');
 
 // GET: Obtener todos los clientes (Público)
 router.get('/', obtenerClientes);

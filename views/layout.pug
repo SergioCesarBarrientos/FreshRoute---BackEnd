@@ -6,6 +6,16 @@ html(lang="en")
         title FreshRoute - #{titulo || 'App'}
         link(rel="stylesheet" href="/css/styles.css")
     body
+        nav.navbar
+            div.navbar-brand
+                a(href="/") FreshRoute
+            div.navbar-menu
+                if usuarioLogueado
+                    span Hola, #{usuarioLogueado.email} (#{usuarioLogueado.rol})
+                    a(href="/logout") Cerrar Sesión
+                else
+                    a(href="/login") Iniciar Sesión
+
         block content
 
         footer
