@@ -11,12 +11,20 @@ block content
             input(type="text" name="nombre" id="nombre" value=cliente.nombre required)
 
         div
+            label(for="cuit") CUIT:
+            input(type="text" name="cuit" id="cuit" value=cliente.cuit required)
+
+        div
             label(for="email") Email:
             input(type="email" name="email" id="email" value=cliente.email required)
 
         div
             label(for="telefono") Teléfono:
             input(type="tel" name="telefono" id="telefono" value=cliente.telefono required)
+
+        div
+            label(for="direccion") Dirección:
+            input(type="text" name="direccion" id="direccion" value=cliente.direccion required)
 
         div.acciones-form
             button(type="submit") Guardar cambios

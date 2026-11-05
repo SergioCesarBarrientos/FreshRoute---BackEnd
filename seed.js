@@ -13,16 +13,16 @@ const Producto = require("./models/Producto");
 const Usuario = require("./models/Usuario");
 const Empleado = require("./models/Empleado");
 
-// Datos de prueba - Clientes
+// Datos de prueba - Clientes (con CUIT y Dirección)
 const clientesSeed = [
-  { nombre: "Supermercado Del Sol", email: "contacto@delsol.com", telefono: "011-4567-8901" },
-  { nombre: "Distribuidora Norte", email: "ventas@distnorte.com", telefono: "011-4567-8902" },
-  { nombre: "Almacén Los Andes", email: "pedidos@losandes.com", telefono: "011-4567-8903" },
-  { nombre: "Restaurante La Huerta", email: "compras@lahuerta.com", telefono: "011-4567-8904" },
-  { nombre: "Mercado Central", email: "info@mercadocentral.com", telefono: "011-4567-8905" },
-  { nombre: "Verdulería El Campo", email: "hola@elcampo.com", telefono: "011-4567-8906" },
-  { nombre: "Rotisería Doña Rosa", email: "pedidos@donarosa.com", telefono: "011-4567-8907" },
-  { nombre: "Autoservicio San Martín", email: "contacto@sanmartin.com", telefono: "011-4567-8908" }
+  { nombre: "Supermercado Del Sol", cuit: "30-12345678-1", email: "contacto@delsol.com", telefono: "011-4567-8901", direccion: "Av. Corrientes 1234" },
+  { nombre: "Distribuidora Norte", cuit: "30-12345678-2", email: "ventas@distnorte.com", telefono: "011-4567-8902", direccion: "Av. Cabildo 5678" },
+  { nombre: "Almacén Los Andes", cuit: "30-12345678-3", email: "pedidos@losandes.com", telefono: "011-4567-8903", direccion: "Calle San Martín 123" },
+  { nombre: "Restaurante La Huerta", cuit: "30-12345678-4", email: "compras@lahuerta.com", telefono: "011-4567-8904", direccion: "Av. Belgrano 987" },
+  { nombre: "Mercado Central", cuit: "30-12345678-5", email: "info@mercadocentral.com", telefono: "011-4567-8905", direccion: "Calle Lavalle 456" },
+  { nombre: "Verdulería El Campo", cuit: "30-12345678-6", email: "hola@elcampo.com", telefono: "011-4567-8906", direccion: "Av. Rivadavia 654" },
+  { nombre: "Rotisería Doña Rosa", cuit: "30-12345678-7", email: "pedidos@donarosa.com", telefono: "011-4567-8907", direccion: "Calle Mitre 321" },
+  { nombre: "Autoservicio San Martín", cuit: "30-12345678-8", email: "contacto@sanmartin.com", telefono: "011-4567-8908", direccion: "Av. Santa Fe 789" }
 ];
 
 // Datos de prueba - Productos
@@ -66,14 +66,14 @@ const ejecutarSeed = async () => {
 
     // 3) Crear SuperAdmin y Gerente (Usuarios sin ficha de empleado)
     const saltRounds = 10;
-    const passwordHash = await bcrypt.hash("123456", saltRounds);
+    const passwordHash = await bcrypt.hash("123", saltRounds);
 
     const adminsSeed = [
       { username: "miguel", email: "miguel@freshroute.com", password: passwordHash, rol: "superadmin" },
       { username: "gerente", email: "gerente@freshroute.com", password: passwordHash, rol: "gerente" }
     ];
     await Usuario.insertMany(adminsSeed);
-    console.log("✅ SuperAdmin y Gerente insertados (pass: 123456)");
+    console.log("✅ SuperAdmin y Gerente insertados (pass: 123)");
 
     // 4) Crear Empleados (con su Usuario automático y email guardado)
     for (const emp of empleadosSeed) {
@@ -87,7 +87,7 @@ const ejecutarSeed = async () => {
       }
 
       const email = `${username}@freshroute.com`;
-      const passHash = await bcrypt.hash(emp.dni, 10); // Contraseña = DNI
+      const passHash = await bcrypt.hash("123", 10); // Contraseña corta: 123
 
       const nuevoUsuario = new Usuario({ 
         username, 
@@ -100,12 +100,12 @@ const ejecutarSeed = async () => {
 
       const nuevoEmpleado = new Empleado({
         ...emp,
-        email, // <-- Guardamos el email en la ficha
+        email,
         idUsuario: usuarioGuardado._id
       });
       await nuevoEmpleado.save();
       
-      console.log(`👤 Empleado creado: ${emp.nombre} ${emp.apellido} | User: ${username} | Pass: ${emp.dni} | Email: ${email}`);
+      console.log(`👤 Empleado creado: ${emp.nombre} ${emp.apellido} | User: ${username} | Pass: 123 | Email: ${email}`);
     }
 
     console.log("🌱 Seed completada correctamente");

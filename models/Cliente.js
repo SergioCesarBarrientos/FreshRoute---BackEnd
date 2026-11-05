@@ -1,11 +1,15 @@
-// Modelo Cliente: define los campos del cliente y sus validaciones para guardarlo en MongoDB.
-
 const mongoose = require('mongoose');
 
 const clienteSchema = new mongoose.Schema({
   nombre: {
     type: String,
     required: [true, 'El nombre es obligatorio'],
+    trim: true,
+  },
+  cuit: {
+    type: String,
+    required: [true, 'El CUIT es obligatorio'],
+    unique: true,
     trim: true,
   },
   email: {
@@ -17,6 +21,11 @@ const clienteSchema = new mongoose.Schema({
   telefono: {
     type: String,
     required: [true, 'El teléfono es obligatorio'],
+    trim: true,
+  },
+  direccion: {
+    type: String,
+    required: [true, 'La dirección es obligatoria'],
     trim: true,
   },
 });

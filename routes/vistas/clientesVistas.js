@@ -20,11 +20,12 @@ const puedeEditarCliente = (req, res, next) => {
   return res.status(403).send("Acceso denegado. No tenés permiso para editar o eliminar clientes.");
 };
 
-// Listar clientes (Cualquiera logueado puede ver)
+// Listar clientes (con búsqueda opcional)
 router.get("/", async (req, res, next) => {
   try {
-    const clientes = await clientesController.obtenerClientesParaVista();
-    res.render("clientes/lista", { titulo: "Clientes", clientes });
+    const busqueda = req.query.buscar || '';
+    const clientes = await clientesController.obtenerClientesParaVista(busqueda);
+    res.render("clientes/lista", { titulo: "Clientes", clientes, busqueda });
   } catch (error) {
     next(error);
   }

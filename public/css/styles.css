@@ -507,3 +507,63 @@ form select:focus {
     margin-top: 16px;
     max-width: 100%;
 }
+
+/* ============================================
+   CUADRÍCULA DE EMPLEADOS (GRID)
+   ============================================ */
+.grid-empleados {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 20px;
+    list-style: none;
+    padding: 0;
+    margin-top: 24px;
+}
+
+.grid-empleados li {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 20px;
+    margin-bottom: 0;
+    transition: all 0.3s;
+}
+
+.grid-empleados li:hover {
+    border-color: var(--border-hover);
+    transform: translateY(-4px);
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.4);
+}
+
+.grid-empleados .info {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin-bottom: 16px;
+}
+
+.grid-empleados .info strong {
+    font-size: 18px;
+    color: var(--text-primary);
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 8px;
+    margin-bottom: 8px;
+}
+
+.grid-empleados .info span {
+    font-size: 13px;
+    color: var(--text-secondary);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.grid-empleados .acciones {
+    display: flex;
+    gap: 10px;
+    justify-content: flex-end;
+    margin-top: auto;
+}

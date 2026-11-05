@@ -9,14 +9,23 @@ block content
         if usuarioLogueado && (usuarioLogueado.rol === 'superadmin' || usuarioLogueado.rol === 'gerente' || usuarioLogueado.rol === 'administrativo')
             a(href="/clientes/nuevo") Agregar cliente
 
+    //- Buscador
+    form(action="/clientes" method="GET" class="buscador")
+        input(type="text" name="buscar" placeholder="Buscar por nombre..." value=busqueda)
+        button(type="submit") Buscar
+        if busqueda
+            a(href="/clientes" class="btn-cancelar" style="margin-left: 10px;") Limpiar
+
     if clientes && clientes.length > 0
-        ul
+        ul.grid-empleados
             each cliente in clientes
                 li
                     div.info
                         strong= cliente.nombre
+                        span 🆔 CUIT: #{cliente.cuit}
                         span 📧 #{cliente.email}
                         span 📞 #{cliente.telefono}
+                        span 🏠 #{cliente.direccion}
 
                     div.acciones
                         //- Solo SuperAdmin y Gerente pueden editar o eliminar
@@ -27,4 +36,4 @@ block content
                             form(action="/clientes/eliminar/" + cliente._id method="POST" class="form-inline")
                                 button(type="submit" class="btn-eliminar" onclick="return confirm('¿Eliminar este cliente?')") Eliminar
     else
-        p No hay clientes registrados.
+        p No se encontraron clientes.

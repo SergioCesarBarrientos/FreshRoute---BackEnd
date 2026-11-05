@@ -17,7 +17,7 @@ block content
             option(value="repartidor" selected=(filtroRol === 'repartidor')) Repartidor
 
     if empleados && empleados.length > 0
-        ul
+        ul.grid-empleados
             each empleado in empleados
                 li
                     div.info
