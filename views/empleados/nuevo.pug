@@ -1,0 +1,79 @@
+extends ../layout
+
+block content
+    a.volver(href="/empleados") ← Volver a la lista
+
+    h1 Nuevo Empleado
+
+    p Completá los datos del empleado. El sistema generará su usuario automáticamente.
+
+    form(action="/empleados/guardar" method="POST")
+        div
+            label(for="nombre") Nombre:
+            input(type="text" name="nombre" id="nombre" required)
+
+        div
+            label(for="apellido") Apellido:
+            input(type="text" name="apellido" id="apellido" required)
+
+        div
+            label(for="dni") DNI (será su contraseña inicial):
+            input(type="text" name="dni" id="dni" required)
+
+        div
+            label(for="telefono") Teléfono:
+            input(type="text" name="telefono" id="telefono" required)
+
+        div
+            label(for="direccion") Dirección:
+            input(type="text" name="direccion" id="direccion" required)
+
+        div
+            label(for="rol") Rol:
+            select(name="rol" id="rol" required onchange="mostrarCampos()")
+                option(value="administrativo") Administrativo
+                option(value="repartidor") Repartidor
+                option(value="gerente") Gerente
+
+        //- Campos para Administrativo
+        div(id="campo-legajo" style="display: none;")
+            label(for="legajo") Legajo:
+            input(type="text" name="legajo" id="legajo")
+
+        //- Campos para Repartidor
+        div(id="campo-vehiculo" style="display: none;")
+            label(for="vehiculo") Vehículo:
+            input(type="text" name="vehiculo" id="vehiculo")
+
+        div(id="campo-patente" style="display: none;")
+            label(for="patente") Patente:
+            input(type="text" name="patente" id="patente")
+
+        div.acciones-form
+            button(type="submit") Guardar Empleado
+            a(href="/empleados" class="btn-cancelar") Cancelar
+
+    //- Script para mostrar los campos según el rol
+    script.
+        function mostrarCampos() {
+            const rol = document.getElementById('rol').value;
+            const campoLegajo = document.getElementById('campo-legajo');
+            const campoVehiculo = document.getElementById('campo-vehiculo');
+            const campoPatente = document.getElementById('campo-patente');
+
+            // Ocultar todos
+            campoLegajo.style.display = 'none';
+            campoVehiculo.style.display = 'none';
+            campoPatente.style.display = 'none';
+
+            // Mostrar según el rol
+            if (rol === 'administrativo') {
+                campoLegajo.style.display = 'block';
+            } else if (rol === 'repartidor') {
+                campoVehiculo.style.display = 'block';
+                campoPatente.style.display = 'block';
+            }
+        }
+        
+        // Ejecutar al cargar la página por si vuelve con un rol seleccionado
+        document.addEventListener('DOMContentLoaded', mostrarCampos);
