@@ -28,12 +28,15 @@ const verificarToken = (req, res, next) => {
   }
 };
 
-// Middleware para verificar si es administrador
+// Middleware para verificar si es gerente o superadmin
 const esAdmin = (req, res, next) => {
-  if (req.usuario && req.usuario.rol === 'admin') {
+  const rolesPermitidos = ['superadmin', 'gerente'];
+  
+  if (req.usuario && rolesPermitidos.includes(req.usuario.rol)) {
     return next();
   }
-  next(new AppError('Acceso denegado. Se requiere rol de administrador.', 403));
+  
+  next(new AppError('Acceso denegado. Se requiere rol de administrador o gerente.', 403));
 };
 
 module.exports = {

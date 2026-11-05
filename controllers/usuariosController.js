@@ -1,51 +1,26 @@
 const Usuario = require('../models/Usuario');
+const Empleado = require('../models/Empleado');
 const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const AppError = require('../utils/AppError');
 
 // ========================================
-// FUNCIONES PARA LA API (JSON)
+// LOGIN
 // ========================================
-
-const registrarUsuario = async (req, res, next) => {
-  try {
-    const { nombre, email, password, rol } = req.body;
-
-    if (!nombre || !email || !password) {
-      throw new AppError('Faltan datos obligatorios (nombre, email, password)', 400);
-    }
-
-    const saltRounds = 10;
-    const passwordHash = await bcrypt.hash(password, saltRounds);
-
-    const nuevoUsuario = new Usuario({
-      nombre,
-      email,
-      password: passwordHash,
-      rol: rol || 'administrativo'
-    });
-
-    const usuarioGuardado = await nuevoUsuario.save();
-
-    res.status(201).json({
-      mensaje: 'Usuario registrado correctamente',
-      usuario: usuarioGuardado
-    });
-  } catch (error) {
-    next(error);
-  }
-};
 
 const login = async (req, res, next) => {
   try {
-    const { email, password } = req.body;
+    const { email, username, password } = req.body;
+    const loginIdentifier = email || username;
 
-    if (!email || !password) {
-      throw new AppError('Faltan datos obligatorios (email, password)', 400);
+    if (!loginIdentifier || !password) {
+      throw new AppError('Faltan datos obligatorios (email/username, password)', 400);
     }
 
-    const usuario = await Usuario.findOne({ email });
+    const usuario = await Usuario.findOne({
+      $or: [{ email: loginIdentifier }, { username: loginIdentifier }]
+    });
 
     if (!usuario) {
       throw new AppError('Credenciales inválidas', 401);
@@ -57,15 +32,20 @@ const login = async (req, res, next) => {
       throw new AppError('Credenciales inválidas', 401);
     }
 
+    // Verificar si el usuario está activo
+    if (usuario.activo === false) {
+      throw new AppError('Tu cuenta está desactivada. Contactá al administrador.', 403);
+    }
+
     const userForToken = {
       id: usuario._id,
-      nombre: usuario.nombre,
+      username: usuario.username,
       email: usuario.email,
       rol: usuario.rol
     };
 
     const token = jwt.sign(userForToken, process.env.SECRET, {
-      expiresIn: '15m' 
+      expiresIn: '15m'
     });
 
     res.status(200).json({
@@ -73,7 +53,7 @@ const login = async (req, res, next) => {
       token,
       usuario: {
         id: usuario._id,
-        nombre: usuario.nombre,
+        username: usuario.username,
         email: usuario.email,
         rol: usuario.rol
       }
@@ -88,7 +68,7 @@ const login = async (req, res, next) => {
 // ========================================
 
 const obtenerUsuariosParaVista = async () => {
-  return await Usuario.find().sort({ nombre: 1 });
+  return await Usuario.find().sort({ username: 1 });
 };
 
 const obtenerUsuarioParaVista = async (id) => {
@@ -96,31 +76,13 @@ const obtenerUsuarioParaVista = async (id) => {
   return await Usuario.findById(id);
 };
 
-const crearUsuarioParaVista = async (datos) => {
-  const { nombre, email, password, rol } = datos;
-  
-  const saltRounds = 10;
-  const passwordHash = await bcrypt.hash(password, saltRounds);
-
-  const nuevoUsuario = new Usuario({
-    nombre,
-    email,
-    password: passwordHash,
-    rol: rol || 'administrativo'
-  });
-
-  return await nuevoUsuario.save();
-};
-
 const actualizarUsuarioParaVista = async (id, datos) => {
   if (!mongoose.isValidObjectId(id)) return null;
 
-  const { nombre, email, rol, password } = datos;
+  const { username, email, rol, password } = datos;
 
-  // Armamos el objeto con los datos básicos
-  const datosAActualizar = { nombre, email, rol };
+  const datosAActualizar = { username, email, rol };
 
-  // Si el usuario escribió una nueva contraseña, la hasheamos
   if (password && password.trim() !== "") {
     const saltRounds = 10;
     datosAActualizar.password = await bcrypt.hash(password, saltRounds);
@@ -139,13 +101,43 @@ const eliminarUsuarioParaVista = async (id) => {
 };
 
 // ========================================
-// MIDDLEWARE DE AUTORIZACIÓN (Solo Admin)
+// FUNCIONES DE ACCESO (BAJA Y RESTABLECER)
+// ========================================
+
+const cambiarEstadoUsuario = async (id) => {
+  if (!mongoose.isValidObjectId(id)) return null;
+  const usuario = await Usuario.findById(id);
+  if (!usuario) return null;
+
+  usuario.activo = !usuario.activo;
+  return await usuario.save();
+};
+
+const restablecerPassword = async (idUsuario) => {
+  if (!mongoose.isValidObjectId(idUsuario)) return null;
+
+  const empleado = await Empleado.findOne({ idUsuario });
+  if (!empleado) return null;
+
+  const saltRounds = 10;
+  const passwordHash = await bcrypt.hash(empleado.dni, saltRounds);
+
+  return await Usuario.findByIdAndUpdate(
+    idUsuario,
+    { password: passwordHash },
+    { new: true }
+  );
+};
+
+// ========================================
+// MIDDLEWARE DE AUTORIZACIÓN
 // ========================================
 const verificarAdminVista = (req, res, next) => {
-  if (res.locals.usuarioLogueado && res.locals.usuarioLogueado.rol === 'admin') {
+  const rolesPermitidos = ['superadmin', 'gerente'];
+  if (res.locals.usuarioLogueado && rolesPermitidos.includes(res.locals.usuarioLogueado.rol)) {
     return next();
   }
-  return res.status(403).send("Acceso denegado. Solo los administradores pueden gestionar usuarios.");
+  return res.status(403).send("Acceso denegado. Solo los gerentes o superadmins pueden gestionar usuarios.");
 };
 
 // ========================================
@@ -153,12 +145,12 @@ const verificarAdminVista = (req, res, next) => {
 // ========================================
 
 module.exports = {
-  registrarUsuario,
   login,
   obtenerUsuariosParaVista,
   obtenerUsuarioParaVista,
-  crearUsuarioParaVista,
   actualizarUsuarioParaVista,
   eliminarUsuarioParaVista,
+  cambiarEstadoUsuario,
+  restablecerPassword,
   verificarAdminVista
 };

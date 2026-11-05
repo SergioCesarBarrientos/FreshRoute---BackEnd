@@ -1,13 +1,11 @@
 const express = require('express');
 const router = express.Router();
 
-// Importar el controlador
-const { registrarUsuario, login } = require('../../controllers/usuariosController');
+// Importar el controlador y el middleware de seguridad
+const { login } = require('../../controllers/usuariosController');
+const { verificarToken, esAdmin } = require('../../middlewares/auth');
 
-// POST: Registrar usuario
-router.post('/registro', registrarUsuario);
-
-// POST: Login
+// POST: Login (Público)
 router.post('/login', login);
 
 module.exports = router;

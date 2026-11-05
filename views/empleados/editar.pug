@@ -1,0 +1,78 @@
+extends ../layout
+
+block content
+    a.volver(href="/empleados") ← Volver a la lista
+
+    h1 Editar Empleado
+
+    form(action="/empleados/editar/" + empleado._id method="POST")
+        div
+            label(for="nombre") Nombre:
+            input(type="text" name="nombre" id="nombre" value=empleado.nombre required)
+
+        div
+            label(for="apellido") Apellido:
+            input(type="text" name="apellido" id="apellido" value=empleado.apellido required)
+
+        div
+            label(for="email") Email (No editable):
+            input(type="email" name="email" id="email" value=empleado.email readonly)
+
+        div
+            label(for="dni") DNI:
+            input(type="text" name="dni" id="dni" value=empleado.dni required)
+
+        div
+            label(for="telefono") Teléfono:
+            input(type="text" name="telefono" id="telefono" value=empleado.telefono required)
+
+        div
+            label(for="direccion") Dirección:
+            input(type="text" name="direccion" id="direccion" value=empleado.direccion required)
+
+        div
+            label(for="rol") Rol:
+            select(name="rol" id="rol" required onchange="mostrarCampos()")
+                option(value="administrativo" selected=(empleado.rol === 'administrativo')) Administrativo
+                option(value="repartidor" selected=(empleado.rol === 'repartidor')) Repartidor
+                option(value="gerente" selected=(empleado.rol === 'gerente')) Gerente
+
+        //- Campos para Administrativo
+        div(id="campo-legajo")
+            label(for="legajo") Legajo:
+            input(type="text" name="legajo" id="legajo" value=empleado.legajo || '')
+
+        //- Campos para Repartidor
+        div(id="campo-vehiculo")
+            label(for="vehiculo") Vehículo:
+            input(type="text" name="vehiculo" id="vehiculo" value=empleado.vehiculo || '')
+
+        div(id="campo-patente")
+            label(for="patente") Patente:
+            input(type="text" name="patente" id="patente" value=empleado.patente || '')
+
+        div.acciones-form
+            button(type="submit") Guardar cambios
+            a(href="/empleados" class="btn-cancelar") Cancelar
+
+    //- Script para mostrar los campos según el rol
+    script.
+        function mostrarCampos() {
+            const rol = document.getElementById('rol').value;
+            const campoLegajo = document.getElementById('campo-legajo');
+            const campoVehiculo = document.getElementById('campo-vehiculo');
+            const campoPatente = document.getElementById('campo-patente');
+
+            campoLegajo.style.display = 'none';
+            campoVehiculo.style.display = 'none';
+            campoPatente.style.display = 'none';
+
+            if (rol === 'administrativo') {
+                campoLegajo.style.display = 'block';
+            } else if (rol === 'repartidor') {
+                campoVehiculo.style.display = 'block';
+                campoPatente.style.display = 'block';
+            }
+        }
+        
+        document.addEventListener('DOMContentLoaded', mostrarCampos);

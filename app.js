@@ -10,11 +10,13 @@ const jwt = require('jsonwebtoken');
 const clientesRoutes = require("./routes/api/clientesRoutes");
 const productosRoutes = require("./routes/api/productosRoutes");
 const usuariosRoutes = require("./routes/api/usuariosRoutes");
+const empleadosRoutes = require("./routes/api/empleadosRoutes");
 
 // Importar rutas de las Vistas
 const clientesVistas = require("./routes/vistas/clientesVistas");
 const productosVistas = require("./routes/vistas/productosVistas");
 const usuariosVistas = require("./routes/vistas/usuariosVistas");
+const empleadosVistas = require("./routes/vistas/empleadosVistas");
 
 // Importar conexión y middleware
 const connectDB = require("./config/connectDB");
@@ -66,6 +68,7 @@ RUTAS DE LA API (JSON)
 app.use("/api/clientes", clientesRoutes);
 app.use("/api/productos", productosRoutes);
 app.use("/api/usuarios", usuariosRoutes);
+app.use("/api/empleados", empleadosRoutes);
 
 /*
 ==================================================
@@ -93,6 +96,8 @@ app.use("/clientes", clientesVistas);
 // 6. Vistas de productos (protegidas)
 app.use("/productos", productosVistas);
 
+//7. 
+app.use("/empleados", empleadosVistas);
 /*
 ==================================================
 RUTA NO ENCONTRADA

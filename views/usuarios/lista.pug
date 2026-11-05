@@ -1,26 +1,31 @@
 extends ../layout
 
 block content
-    h1 Lista de Usuarios
+    h1 Gestión de Accesos
 
     .nav
         a(href="/") Volver al inicio
-        a(href="/usuarios/nuevo") Agregar usuario
 
     if usuarios && usuarios.length > 0
         ul
             each usuario in usuarios
                 li
                     div.info
-                        strong= usuario.nombre
+                        strong #{usuario.username}
                         span 📧 #{usuario.email}
                         span 🛡️ Rol: #{usuario.rol}
+                        span #{usuario.activo ? '🟢 Activo' : '🔴 Inactivo'}
 
                     div.acciones
-                        form(action="/usuarios/editar/" + usuario._id method="GET" class="form-inline")
-                            button(type="submit" class="btn-editar") Editar
+                        //- Botón para restablecer la contraseña
+                        form(action="/usuarios/restablecer/" + usuario._id method="POST" class="form-inline")
+                            button(type="submit" class="btn-editar" onclick="return confirm('¿Restablecer la contraseña al DNI del empleado?')") Restablecer Clave
 
-                        form(action="/usuarios/eliminar/" + usuario._id method="POST" class="form-inline")
-                            button(type="submit" class="btn-eliminar" onclick="return confirm('¿Eliminar este usuario?')") Eliminar
+                        //- Botón para dar de baja o activar
+                        form(action="/usuarios/cambiar-estado/" + usuario._id method="POST" class="form-inline")
+                            if usuario.activo
+                                button(type="submit" class="btn-eliminar" onclick="return confirm('¿Dar de baja a este usuario?')") Dar de Baja
+                            else
+                                button(type="submit" class="btn-editar") Activar
     else
         p No hay usuarios registrados.

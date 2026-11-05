@@ -5,7 +5,8 @@ block content
 
     nav.nav
         a(href="/") Volver al inicio
-        a(href="/productos/nuevo") Agregar producto
+        if usuarioLogueado && usuarioLogueado.rol === 'admin'
+            a(href="/productos/nuevo") Agregar producto
 
     if productos && productos.length > 0
         ul
@@ -17,10 +18,11 @@ block content
                         span 📦 Stock: #{producto.stock}
 
                     div.acciones
-                        form(action="/productos/editar/" + producto._id method="GET" class="form-inline")
-                            button(type="submit" class="btn-editar") Editar
+                        if usuarioLogueado && usuarioLogueado.rol === 'admin'
+                            form(action="/productos/editar/" + producto._id method="GET" class="form-inline")
+                                button(type="submit" class="btn-editar") Editar
 
-                        form(action="/productos/eliminar/" + producto._id method="POST" class="form-inline")
-                            button(type="submit" class="btn-eliminar" onclick="return confirm('¿Eliminar este producto?')") Eliminar
+                            form(action="/productos/eliminar/" + producto._id method="POST" class="form-inline")
+                                button(type="submit" class="btn-eliminar" onclick="return confirm('¿Eliminar este producto?')") Eliminar
     else
         p No hay productos registrados.

@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const productosController = require("../../controllers/productosController");
+const {verificarAdminVista}= require("../../controllers/usuariosController")
 
 // Listar productos
 router.get("/", async (req, res, next) => {
@@ -13,7 +14,7 @@ router.get("/", async (req, res, next) => {
 });
 
 // Formulario para crear producto
-router.get("/nuevo", (req, res) => {
+router.get("/nuevo", verificarAdminVista, (req, res) => {
   res.render("productos/nuevo", { titulo: "Nuevo Producto" });
 });
 

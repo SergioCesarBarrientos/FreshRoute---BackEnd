@@ -1,0 +1,32 @@
+extends ../layout
+
+block content
+    h1 Lista de Empleados
+
+    .nav
+        a(href="/") Volver al inicio
+        a(href="/empleados/nuevo") Agregar empleado
+
+    if empleados && empleados.length > 0
+        ul
+            each empleado in empleados
+                li
+                    div.info
+                        strong #{empleado.nombre} #{empleado.apellido}
+                        span 📧 #{empleado.email}
+                        span 🆔 DNI: #{empleado.dni}
+                        span 📞 Tel: #{empleado.telefono}
+                        span 🛡️ Rol: #{empleado.rol}
+                        if empleado.vehiculo
+                            span 🚗 Vehículo: #{empleado.vehiculo} (#{empleado.patente})
+                        if empleado.idUsuario
+                            span 👤 Usuario: #{empleado.idUsuario.username}
+
+                    div.acciones
+                        form(action="/empleados/editar/" + empleado._id method="GET" class="form-inline")
+                            button(type="submit" class="btn-editar") Editar
+
+                        form(action="/empleados/eliminar/" + empleado._id method="POST" class="form-inline")
+                            button(type="submit" class="btn-eliminar" onclick="return confirm('¿Eliminar este empleado?')") Eliminar
+    else
+        p No hay empleados registrados.

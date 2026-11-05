@@ -1,10 +1,12 @@
 const mongoose = require('mongoose');
 
 const usuarioSchema = new mongoose.Schema({
-  nombre: {
+  username: {
     type: String,
-    required: [true, 'El nombre es obligatorio'],
-    trim: true
+    required: [true, 'El nombre de usuario es obligatorio'],
+    unique: true,
+    trim: true,
+    lowercase: true
   },
   email: {
     type: String,
@@ -19,14 +21,17 @@ const usuarioSchema = new mongoose.Schema({
   },
   rol: {
     type: String,
-    enum: ['admin', 'administrativo', 'repartidor'],
+    enum: ['superadmin', 'gerente', 'administrativo', 'repartidor'],
     default: 'administrativo'
+  },
+  activo: {
+    type: Boolean,
+    default: true
   }
 }, {
   timestamps: true
 });
 
-// Ocultar la contraseña cuando se devuelve el JSON
 usuarioSchema.set('toJSON', {
   transform: (document, returnedObject) => {
     delete returnedObject.password;

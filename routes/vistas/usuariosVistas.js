@@ -40,9 +40,10 @@ router.get("/logout", (req, res) => {
 });
 
 // ========================================
-// CRUD VISUAL DE USUARIOS
+// GESTIÓN DE USUARIOS (SOLO ADMIN/GERENTE)
 // ========================================
 
+// Listar usuarios
 router.get("/lista", usuariosController.verificarAdminVista, async (req, res, next) => {
   try {
     const usuarios = await usuariosController.obtenerUsuariosParaVista();
@@ -52,46 +53,20 @@ router.get("/lista", usuariosController.verificarAdminVista, async (req, res, ne
   }
 });
 
-router.get("/nuevo", usuariosController.verificarAdminVista, (req, res) => {
-  res.render("usuarios/nuevo", { titulo: "Nuevo Usuario" });
-});
-
-router.post("/guardar", usuariosController.verificarAdminVista, async (req, res, next) => {
+// Dar de baja / Activar usuario
+router.post("/cambiar-estado/:id", usuariosController.verificarAdminVista, async (req, res, next) => {
   try {
-    await usuariosController.crearUsuarioParaVista(req.body);
+    await usuariosController.cambiarEstadoUsuario(req.params.id);
     res.redirect("/usuarios/lista");
   } catch (error) {
     next(error);
   }
 });
 
-router.get("/editar/:id", usuariosController.verificarAdminVista, async (req, res, next) => {
+// Restablecer contraseña (volver al DNI)
+router.post("/restablecer/:id", usuariosController.verificarAdminVista, async (req, res, next) => {
   try {
-    const usuario = await usuariosController.obtenerUsuarioParaVista(req.params.id);
-    if (!usuario) {
-      return res.status(404).send("Usuario no encontrado");
-    }
-    res.render("usuarios/editar", { titulo: "Editar Usuario", usuario });
-  } catch (error) {
-    next(error);
-  }
-});
-
-router.post("/editar/:id", usuariosController.verificarAdminVista, async (req, res, next) => {
-  try {
-    const usuario = await usuariosController.actualizarUsuarioParaVista(req.params.id, req.body);
-    if (!usuario) {
-      return res.status(404).send("Usuario no encontrado");
-    }
-    res.redirect("/usuarios/lista");
-  } catch (error) {
-    next(error);
-  }
-});
-
-router.post("/eliminar/:id", usuariosController.verificarAdminVista, async (req, res, next) => {
-  try {
-    await usuariosController.eliminarUsuarioParaVista(req.params.id);
+    await usuariosController.restablecerPassword(req.params.id);
     res.redirect("/usuarios/lista");
   } catch (error) {
     next(error);

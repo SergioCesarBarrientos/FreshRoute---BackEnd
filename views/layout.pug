@@ -11,7 +11,7 @@ html(lang="en")
                 a(href="/") FreshRoute
             div.navbar-menu
                 if usuarioLogueado
-                    span Hola, #{usuarioLogueado.nombre || usuarioLogueado.email} (#{usuarioLogueado.rol})
+                    span Hola, #{usuarioLogueado.username} (#{usuarioLogueado.rol})
                     a(href="/logout") Cerrar Sesión
                 else
                     a(href="/login") Iniciar Sesión

@@ -11,6 +11,7 @@ const connectDB = require("./config/connectDB");
 const Cliente = require("./models/Cliente");
 const Producto = require("./models/Producto");
 const Usuario = require("./models/Usuario");
+const Empleado = require("./models/Empleado");
 
 // Datos de prueba - Clientes
 const clientesSeed = [
@@ -36,6 +37,15 @@ const productosSeed = [
   { nombre: "Caja de Cartón x 10", precio: 3500, stock: 40 }
 ];
 
+// Datos de prueba - Empleados
+const empleadosSeed = [
+  { nombre: "Caro", apellido: "Silva", dni: "11111111", telefono: "1111", direccion: "Calle 1", rol: "administrativo", legajo: "A001", estado: "Disponible" },
+  { nombre: "Sergio", apellido: "Barrientos", dni: "22222222", telefono: "2222", direccion: "Calle 2", rol: "administrativo", legajo: "A002", estado: "Disponible" },
+  { nombre: "Mariana", apellido: "Sosa", dni: "33333333", telefono: "3333", direccion: "Calle 3", rol: "administrativo", legajo: "A003", estado: "Disponible" },
+  { nombre: "Juan", apellido: "Perez", dni: "44444444", telefono: "4444", direccion: "Calle 4", rol: "repartidor", vehiculo: "Moto", patente: "AB123CD", estado: "Disponible" },
+  { nombre: "Repartidor", apellido: "Dos", dni: "55555555", telefono: "5555", direccion: "Calle 5", rol: "repartidor", vehiculo: "Camioneta", patente: "EF456GH", estado: "Disponible" }
+];
+
 const ejecutarSeed = async () => {
   try {
     await connectDB();
@@ -43,8 +53,9 @@ const ejecutarSeed = async () => {
     // 1) Borrar datos actuales
     await Cliente.deleteMany({});
     await Producto.deleteMany({});
-    await Usuario.deleteMany({}); // Limpiar usuarios también
-    console.log("🧹 Datos anteriores eliminados (Clientes, Productos, Usuarios)");
+    await Usuario.deleteMany({});
+    await Empleado.deleteMany({});
+    console.log("🧹 Datos anteriores eliminados");
 
     // 2) Insertar Clientes y Productos
     const clientesInsertados = await Cliente.insertMany(clientesSeed);
@@ -53,21 +64,49 @@ const ejecutarSeed = async () => {
     const productosInsertados = await Producto.insertMany(productosSeed);
     console.log(`✅ ${productosInsertados.length} productos insertados`);
 
-    // 3) Crear Usuarios con contraseñas hasheadas
+    // 3) Crear SuperAdmin y Gerente (Usuarios sin ficha de empleado)
     const saltRounds = 10;
     const passwordHash = await bcrypt.hash("123456", saltRounds);
 
-    const usuariosSeed = [
-      { nombre: "Miguel Admin", email: "miguel@freshroute.com", password: passwordHash, rol: "admin" },
-      { nombre: "Caro", email: "caro@freshroute.com", password: passwordHash, rol: "admin" },
-      { nombre: "Sergio", email: "sergio@freshroute.com", password: passwordHash, rol: "admin" },
-      { nombre: "Mariana", email: "mariana@freshroute.com", password: passwordHash, rol: "admin" },
-      { nombre: "Juan Perez", email: "juan@freshroute.com", password: passwordHash, rol: "administrativo" },
-      { nombre: "Repartidor 1", email: "repartidor@freshroute.com", password: passwordHash, rol: "repartidor" }
+    const adminsSeed = [
+      { username: "miguel", email: "miguel@freshroute.com", password: passwordHash, rol: "superadmin" },
+      { username: "gerente", email: "gerente@freshroute.com", password: passwordHash, rol: "gerente" }
     ];
+    await Usuario.insertMany(adminsSeed);
+    console.log("✅ SuperAdmin y Gerente insertados (pass: 123456)");
 
-    const usuariosInsertados = await Usuario.insertMany(usuariosSeed);
-    console.log(`✅ ${usuariosInsertados.length} usuarios insertados (admins, administrativo y repartidor)`);
+    // 4) Crear Empleados (con su Usuario automático y email guardado)
+    for (const emp of empleadosSeed) {
+      // Generar username único
+      let baseUsername = (emp.nombre.charAt(0) + emp.apellido).toLowerCase().replace(/\s+/g, '');
+      let username = baseUsername;
+      let contador = 1;
+      while (await Usuario.findOne({ username })) {
+        username = baseUsername + contador;
+        contador++;
+      }
+
+      const email = `${username}@freshroute.com`;
+      const passHash = await bcrypt.hash(emp.dni, 10); // Contraseña = DNI
+
+      const nuevoUsuario = new Usuario({ 
+        username, 
+        email, 
+        password: passHash, 
+        rol: emp.rol,
+        activo: true 
+      });
+      const usuarioGuardado = await nuevoUsuario.save();
+
+      const nuevoEmpleado = new Empleado({
+        ...emp,
+        email, // <-- Guardamos el email en la ficha
+        idUsuario: usuarioGuardado._id
+      });
+      await nuevoEmpleado.save();
+      
+      console.log(`👤 Empleado creado: ${emp.nombre} ${emp.apellido} | User: ${username} | Pass: ${emp.dni} | Email: ${email}`);
+    }
 
     console.log("🌱 Seed completada correctamente");
   } catch (error) {
