@@ -32,7 +32,6 @@ const login = async (req, res, next) => {
       throw new AppError('Credenciales inválidas', 401);
     }
 
-    // Verificar si el usuario está activo
     if (usuario.activo === false) {
       throw new AppError('Tu cuenta está desactivada. Contactá al administrador.', 403);
     }
@@ -57,6 +56,50 @@ const login = async (req, res, next) => {
         email: usuario.email,
         rol: usuario.rol
       }
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+// ========================================
+// CAMBIO DE CONTRASEÑA DESDE LA API
+// ========================================
+
+const cambiarPasswordAPI = async (req, res, next) => {
+  try {
+    const { passwordActual, passwordNueva } = req.body;
+    const resultado = await cambiarPasswordPerfil(req.usuario.id, passwordActual, passwordNueva);
+
+    if (resultado === false) {
+      throw new AppError('La contraseña actual es incorrecta', 400);
+    }
+    if (resultado === null) {
+      throw new AppError('Usuario no encontrado', 404);
+    }
+
+    res.status(200).json({ mensaje: 'Contraseña actualizada correctamente' });
+  } catch (error) {
+    next(error);
+  }
+};
+
+// ========================================
+// ACTUALIZAR DATOS PERSONALES DESDE LA API
+// ========================================
+
+const actualizarDatosAPI = async (req, res, next) => {
+  try {
+    const { telefono, direccion } = req.body;
+    const empleadoActualizado = await actualizarDatosPerfil(req.usuario.id, { telefono, direccion });
+
+    if (!empleadoActualizado) {
+      throw new AppError('Empleado no encontrado', 404);
+    }
+
+    res.status(200).json({ 
+      mensaje: 'Datos actualizados correctamente',
+      empleado: empleadoActualizado
     });
   } catch (error) {
     next(error);
@@ -130,6 +173,43 @@ const restablecerPassword = async (idUsuario) => {
 };
 
 // ========================================
+// CAMBIO DE CONTRASEÑA DESDE EL PERFIL (VISTAS)
+// ========================================
+
+const cambiarPasswordPerfil = async (idUsuario, passwordActual, passwordNueva) => {
+  if (!mongoose.isValidObjectId(idUsuario)) return null;
+
+  const usuario = await Usuario.findById(idUsuario);
+  if (!usuario) return null;
+
+  const passwordCorrecta = await bcrypt.compare(passwordActual, usuario.password);
+  if (!passwordCorrecta) return false;
+
+  const saltRounds = 10;
+  const passwordHash = await bcrypt.hash(passwordNueva, saltRounds);
+  
+  await Usuario.findByIdAndUpdate(idUsuario, { password: passwordHash });
+  return true;
+};
+
+// ========================================
+// ACTUALIZAR DATOS PERSONALES DESDE EL PERFIL (VISTAS)
+// ========================================
+
+const actualizarDatosPerfil = async (idUsuario, datos) => {
+  if (!mongoose.isValidObjectId(idUsuario)) return null;
+
+  const empleado = await Empleado.findOne({ idUsuario });
+  if (!empleado) return null;
+
+  // Solo permitimos actualizar teléfono y dirección
+  if (datos.telefono) empleado.telefono = datos.telefono;
+  if (datos.direccion) empleado.direccion = datos.direccion;
+
+  return await empleado.save();
+};
+
+// ========================================
 // MIDDLEWARE DE AUTORIZACIÓN
 // ========================================
 const verificarAdminVista = (req, res, next) => {
@@ -146,11 +226,15 @@ const verificarAdminVista = (req, res, next) => {
 
 module.exports = {
   login,
+  cambiarPasswordAPI,
+  actualizarDatosAPI,
   obtenerUsuariosParaVista,
   obtenerUsuarioParaVista,
   actualizarUsuarioParaVista,
   eliminarUsuarioParaVista,
   cambiarEstadoUsuario,
   restablecerPassword,
+  cambiarPasswordPerfil,
+  actualizarDatosPerfil,
   verificarAdminVista
 };

@@ -1,0 +1,55 @@
+extends ../layout
+
+block content
+    a.volver(href="/") ← Volver al inicio
+
+    h1 Mi Perfil
+
+    .perfil-container
+        //- Sección de Datos del Usuario
+        .perfil-datos
+            h2 Mis Datos de Acceso
+            p
+                strong Usuario: 
+                | #{usuarioLogueado.username}
+            p
+                strong Email: 
+                | #{usuarioLogueado.email}
+            p
+                strong Rol: 
+                | #{usuarioLogueado.rol}
+
+        //- Sección de Datos Personales (Empleado)
+        if empleado
+            .perfil-datos-personales
+                h2 Mis Datos Personales
+                p
+                    strong Nombre: 
+                    | #{empleado.nombre} #{empleado.apellido}
+                p
+                    strong DNI: 
+                    | #{empleado.dni}
+                p
+                    strong Teléfono: 
+                    | #{empleado.telefono}
+                p
+                    strong Dirección: 
+                    | #{empleado.direccion}
+                if empleado.vehiculo
+                    p
+                        strong Vehículo: 
+                        | #{empleado.vehiculo} (#{empleado.patente})
+                
+                .acciones-form
+                    form(action="/perfil/editar-datos" method="GET" class="form-inline")
+                        button(type="submit" class="btn-editar") Editar Mis Datos
+
+        //- Sección de Seguridad (Contraseña)
+        .perfil-password
+            h2 Seguridad
+            p
+                strong Contraseña: 
+                | ••••••••
+            .acciones-form
+                form(action="/perfil/cambiar-password" method="GET" class="form-inline")
+                    button(type="submit" class="btn-editar") Cambiar Contraseña

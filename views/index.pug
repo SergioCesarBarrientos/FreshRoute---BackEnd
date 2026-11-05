@@ -6,16 +6,38 @@ block content
     p Sistema de gestión de distribución de pedidos.
 
     .nav-principal
-        a(href="/clientes")
-            span 👥 Clientes
-            span.flecha →
-        a(href="/productos")
-            span 📦 Productos
-            span.flecha →
+        //- SuperAdmin y Gerente ven todo
         if usuarioLogueado && (usuarioLogueado.rol === 'superadmin' || usuarioLogueado.rol === 'gerente')
-            a(href="/usuarios/lista")
-                span 👤 Usuarios
+            a(href="/clientes")
+                span 👥 Clientes
+                span.flecha →
+            a(href="/productos")
+                span 📦 Productos
                 span.flecha →
             a(href="/empleados")
                 span 🧑‍💼 Empleados
+                span.flecha →
+            a(href="/usuarios/lista")
+                span 👤 Usuarios
+                span.flecha →
+            a(href="/pedidos")
+                span 📋 Pedidos
+                span.flecha →
+
+        //- Administrativo ve Clientes, Productos y Pedidos
+        else if usuarioLogueado && usuarioLogueado.rol === 'administrativo'
+            a(href="/clientes")
+                span 👥 Clientes
+                span.flecha →
+            a(href="/productos")
+                span 📦 Productos
+                span.flecha →
+            a(href="/pedidos")
+                span 📋 Pedidos
+                span.flecha →
+
+        //- Repartidor solo ve sus entregas
+        else if usuarioLogueado && usuarioLogueado.rol === 'repartidor'
+            a(href="/mis-entregas")
+                span 🚚 Mis Entregas
                 span.flecha →

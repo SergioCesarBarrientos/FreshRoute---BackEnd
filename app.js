@@ -11,12 +11,14 @@ const clientesRoutes = require("./routes/api/clientesRoutes");
 const productosRoutes = require("./routes/api/productosRoutes");
 const usuariosRoutes = require("./routes/api/usuariosRoutes");
 const empleadosRoutes = require("./routes/api/empleadosRoutes");
+const perfilesRoutes = require("./routes/api/perfilesRoutes");
 
 // Importar rutas de las Vistas
 const clientesVistas = require("./routes/vistas/clientesVistas");
 const productosVistas = require("./routes/vistas/productosVistas");
 const usuariosVistas = require("./routes/vistas/usuariosVistas");
 const empleadosVistas = require("./routes/vistas/empleadosVistas");
+const perfilesVistas = require("./routes/vistas/perfilesVistas");
 
 // Importar conexión y middleware
 const connectDB = require("./config/connectDB");
@@ -69,6 +71,7 @@ app.use("/api/clientes", clientesRoutes);
 app.use("/api/productos", productosRoutes);
 app.use("/api/usuarios", usuariosRoutes);
 app.use("/api/empleados", empleadosRoutes);
+app.use("/api/perfil", perfilesRoutes);
 
 /*
 ==================================================
@@ -96,8 +99,12 @@ app.use("/clientes", clientesVistas);
 // 6. Vistas de productos (protegidas)
 app.use("/productos", productosVistas);
 
-//7. 
+// 7. Vistas de empleados (protegidas)
 app.use("/empleados", empleadosVistas);
+
+// 8. Vistas de perfil (protegidas)
+app.use("/perfil", perfilesVistas);
+
 /*
 ==================================================
 RUTA NO ENCONTRADA

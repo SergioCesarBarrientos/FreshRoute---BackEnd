@@ -464,3 +464,46 @@ form select:focus {
     outline: none;
     box-shadow: 0 0 0 3px rgba(0, 212, 255, 0.1);
 }
+
+/* ============================================
+   PERFIL
+   ============================================ */
+.perfil-container {
+    display: flex;
+    flex-direction: column;
+    gap: 32px; /* Separa los bloques */
+}
+
+.perfil-datos,
+.perfil-datos-personales,
+.perfil-password {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 24px;
+}
+
+.perfil-datos h2,
+.perfil-datos-personales h2,
+.perfil-password h2 {
+    margin-top: 0;
+    margin-bottom: 16px;
+    font-size: 18px;
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 8px;
+}
+
+.perfil-datos p,
+.perfil-datos-personales p {
+    margin-bottom: 8px;
+    font-size: 14px;
+}
+
+.perfil-datos-personales form,
+.perfil-password form {
+    background: transparent;
+    border: none;
+    padding: 0;
+    margin-top: 16px;
+    max-width: 100%;
+}
