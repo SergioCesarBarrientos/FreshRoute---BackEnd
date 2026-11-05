@@ -7,6 +7,15 @@ block content
         a(href="/") Volver al inicio
         a(href="/empleados/nuevo") Agregar empleado
 
+    //- Filtro por rol
+    form(action="/empleados" method="GET" class="filtro-empleados")
+        label(for="rol") Filtrar por rol:
+        select(name="rol" id="rol" onchange="this.form.submit()")
+            option(value="todos" selected=(filtroRol === 'todos')) Todos
+            option(value="gerente" selected=(filtroRol === 'gerente')) Gerente
+            option(value="administrativo" selected=(filtroRol === 'administrativo')) Administrativo
+            option(value="repartidor" selected=(filtroRol === 'repartidor')) Repartidor
+
     if empleados && empleados.length > 0
         ul
             each empleado in empleados
@@ -21,6 +30,16 @@ block content
                             span 🚗 Vehículo: #{empleado.vehiculo} (#{empleado.patente})
                         if empleado.idUsuario
                             span 👤 Usuario: #{empleado.idUsuario.username}
+                        //- Mostrar el estado con el color correcto
+                        if empleado.rol === 'repartidor' && empleado.estado
+                            if empleado.estado === 'Disponible'
+                                span 🟢 Estado: #{empleado.estado}
+                            else if empleado.estado === 'Ocupado'
+                                span 🟡 Estado: #{empleado.estado}
+                            else if empleado.estado === 'Inactivo'
+                                span 🔴 Estado: #{empleado.estado}
+                            else
+                                span ⚪ Estado: #{empleado.estado}
 
                     div.acciones
                         form(action="/empleados/editar/" + empleado._id method="GET" class="form-inline")
@@ -29,4 +48,4 @@ block content
                         form(action="/empleados/eliminar/" + empleado._id method="POST" class="form-inline")
                             button(type="submit" class="btn-eliminar" onclick="return confirm('¿Eliminar este empleado?')") Eliminar
     else
-        p No hay empleados registrados.
+        p No hay empleados registrados para este filtro.

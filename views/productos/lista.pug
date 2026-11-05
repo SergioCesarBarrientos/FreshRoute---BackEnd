@@ -5,7 +5,8 @@ block content
 
     nav.nav
         a(href="/") Volver al inicio
-        if usuarioLogueado && usuarioLogueado.rol === 'admin'
+        //- Solo SuperAdmin y Gerente ven el botón de agregar
+        if usuarioLogueado && (usuarioLogueado.rol === 'superadmin' || usuarioLogueado.rol === 'gerente')
             a(href="/productos/nuevo") Agregar producto
 
     if productos && productos.length > 0
@@ -18,7 +19,8 @@ block content
                         span 📦 Stock: #{producto.stock}
 
                     div.acciones
-                        if usuarioLogueado && usuarioLogueado.rol === 'admin'
+                        //- Solo SuperAdmin y Gerente pueden editar o eliminar
+                        if usuarioLogueado && (usuarioLogueado.rol === 'superadmin' || usuarioLogueado.rol === 'gerente')
                             form(action="/productos/editar/" + producto._id method="GET" class="form-inline")
                                 button(type="submit" class="btn-editar") Editar
 

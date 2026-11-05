@@ -202,11 +202,28 @@ const actualizarDatosPerfil = async (idUsuario, datos) => {
   const empleado = await Empleado.findOne({ idUsuario });
   if (!empleado) return null;
 
-  // Solo permitimos actualizar teléfono y dirección
   if (datos.telefono) empleado.telefono = datos.telefono;
   if (datos.direccion) empleado.direccion = datos.direccion;
 
   return await empleado.save();
+};
+
+// ========================================
+// CAMBIAR ESTADO DEL REPARTIDOR (PERFIL)
+// ========================================
+
+const cambiarEstadoRepartidor = async (idUsuario, nuevoEstado) => {
+  if (!mongoose.isValidObjectId(idUsuario)) return null;
+
+  const empleado = await Empleado.findOne({ idUsuario });
+  if (!empleado) return null;
+
+  if (['Disponible', 'Inactivo'].includes(nuevoEstado)) {
+    empleado.estado = nuevoEstado;
+    return await empleado.save();
+  }
+  
+  return null;
 };
 
 // ========================================
@@ -236,5 +253,6 @@ module.exports = {
   restablecerPassword,
   cambiarPasswordPerfil,
   actualizarDatosPerfil,
+  cambiarEstadoRepartidor, // <-- Nueva función agregada
   verificarAdminVista
 };

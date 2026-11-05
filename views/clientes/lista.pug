@@ -5,7 +5,9 @@ block content
 
     nav.nav
         a(href="/") Volver al inicio
-        a(href="/clientes/nuevo") Agregar cliente
+        //- SuperAdmin, Gerente y Administrativo pueden crear
+        if usuarioLogueado && (usuarioLogueado.rol === 'superadmin' || usuarioLogueado.rol === 'gerente' || usuarioLogueado.rol === 'administrativo')
+            a(href="/clientes/nuevo") Agregar cliente
 
     if clientes && clientes.length > 0
         ul
@@ -17,10 +19,12 @@ block content
                         span 📞 #{cliente.telefono}
 
                     div.acciones
-                        form(action="/clientes/editar/" + cliente._id method="GET" class="form-inline")
-                            button(type="submit" class="btn-editar") Editar
+                        //- Solo SuperAdmin y Gerente pueden editar o eliminar
+                        if usuarioLogueado && (usuarioLogueado.rol === 'superadmin' || usuarioLogueado.rol === 'gerente')
+                            form(action="/clientes/editar/" + cliente._id method="GET" class="form-inline")
+                                button(type="submit" class="btn-editar") Editar
 
-                        form(action="/clientes/eliminar/" + cliente._id method="POST" class="form-inline")
-                            button(type="submit" class="btn-eliminar" onclick="return confirm('¿Eliminar este cliente?')") Eliminar
+                            form(action="/clientes/eliminar/" + cliente._id method="POST" class="form-inline")
+                                button(type="submit" class="btn-eliminar" onclick="return confirm('¿Eliminar este cliente?')") Eliminar
     else
         p No hay clientes registrados.

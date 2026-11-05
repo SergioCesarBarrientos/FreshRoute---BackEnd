@@ -1,24 +1,26 @@
 const express = require("express");
 const router = express.Router();
 const empleadosController = require("../../controllers/empleadosController");
+const { verificarAdminVista } = require("../../controllers/usuariosController");
 
-// Listar empleados
-router.get("/", empleadosController.obtenerEmpleadosParaVista ? async (req, res, next) => {
+// Listar empleados (con filtro opcional por rol)
+router.get("/", verificarAdminVista, async (req, res, next) => {
   try {
-    const empleados = await empleadosController.obtenerEmpleadosParaVista();
-    res.render("empleados/lista", { titulo: "Empleados", empleados });
+    const filtroRol = req.query.rol || 'todos';
+    const empleados = await empleadosController.obtenerEmpleadosParaVista(filtroRol);
+    res.render("empleados/lista", { titulo: "Empleados", empleados, filtroRol });
   } catch (error) {
     next(error);
   }
-} : (req, res) => res.send("Error en controlador"));
+});
 
 // Formulario nuevo
-router.get("/nuevo", (req, res) => {
+router.get("/nuevo", verificarAdminVista, (req, res) => {
   res.render("empleados/nuevo", { titulo: "Nuevo Empleado" });
 });
 
 // Guardar
-router.post("/guardar", async (req, res, next) => {
+router.post("/guardar", verificarAdminVista, async (req, res, next) => {
   try {
     await empleadosController.crearEmpleadoParaVista(req.body);
     res.redirect("/empleados");
@@ -28,7 +30,7 @@ router.post("/guardar", async (req, res, next) => {
 });
 
 // Formulario editar
-router.get("/editar/:id", async (req, res, next) => {
+router.get("/editar/:id", verificarAdminVista, async (req, res, next) => {
   try {
     const empleado = await empleadosController.obtenerEmpleadoParaVista(req.params.id);
     if (!empleado) {
@@ -41,7 +43,7 @@ router.get("/editar/:id", async (req, res, next) => {
 });
 
 // Actualizar
-router.post("/editar/:id", async (req, res, next) => {
+router.post("/editar/:id", verificarAdminVista, async (req, res, next) => {
   try {
     const empleado = await empleadosController.actualizarEmpleadoParaVista(req.params.id, req.body);
     if (!empleado) {
@@ -54,7 +56,7 @@ router.post("/editar/:id", async (req, res, next) => {
 });
 
 // Eliminar
-router.post("/eliminar/:id", async (req, res, next) => {
+router.post("/eliminar/:id", verificarAdminVista, async (req, res, next) => {
   try {
     await empleadosController.eliminarEmpleadoParaVista(req.params.id);
     res.redirect("/empleados");

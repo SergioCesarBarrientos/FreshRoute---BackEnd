@@ -40,6 +40,17 @@ block content
                         strong Vehículo: 
                         | #{empleado.vehiculo} (#{empleado.patente})
                 
+                //- Botón de estado solo para repartidores
+                if empleado.rol === 'repartidor'
+                    p
+                        strong Estado actual: 
+                        | #{empleado.estado}
+                    form(action="/perfil/cambiar-estado" method="POST" class="form-inline")
+                        if empleado.estado === 'Disponible'
+                            button(type="submit" name="nuevoEstado" value="Inactivo" class="btn-eliminar") Ponerme Inactivo
+                        else
+                            button(type="submit" name="nuevoEstado" value="Disponible" class="btn-editar") Ponerme Disponible
+
                 .acciones-form
                     form(action="/perfil/editar-datos" method="GET" class="form-inline")
                         button(type="submit" class="btn-editar") Editar Mis Datos

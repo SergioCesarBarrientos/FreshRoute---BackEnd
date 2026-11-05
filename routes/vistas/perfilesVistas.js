@@ -7,11 +7,7 @@ const Empleado = require("../../models/Empleado");
 router.get("/", async (req, res, next) => {
   try {
     const empleado = await Empleado.findOne({ idUsuario: res.locals.usuarioLogueado.id });
-    
-    res.render("perfil/ver-perfil", { 
-      titulo: "Mi Perfil",
-      empleado: empleado
-    });
+    res.render("perfil/ver-perfil", { titulo: "Mi Perfil", empleado: empleado });
   } catch (error) {
     next(error);
   }
@@ -21,11 +17,7 @@ router.get("/", async (req, res, next) => {
 router.get("/editar-datos", async (req, res, next) => {
   try {
     const empleado = await Empleado.findOne({ idUsuario: res.locals.usuarioLogueado.id });
-    
-    res.render("perfil/editar-datos", { 
-      titulo: "Editar Mis Datos",
-      empleado: empleado
-    });
+    res.render("perfil/editar-datos", { titulo: "Editar Mis Datos", empleado: empleado });
   } catch (error) {
     next(error);
   }
@@ -40,11 +32,8 @@ router.get("/cambiar-password", (req, res) => {
 router.post("/cambiar-password", async (req, res, next) => {
   try {
     const { passwordActual, passwordNueva } = req.body;
-    
     const resultado = await usuariosController.cambiarPasswordPerfil(
-      res.locals.usuarioLogueado.id,
-      passwordActual,
-      passwordNueva
+      res.locals.usuarioLogueado.id, passwordActual, passwordNueva
     );
 
     if (resultado === false) {
@@ -69,6 +58,17 @@ router.post("/actualizar-datos", async (req, res, next) => {
   try {
     const { telefono, direccion } = req.body;
     await usuariosController.actualizarDatosPerfil(res.locals.usuarioLogueado.id, { telefono, direccion });
+    res.redirect("/perfil");
+  } catch (error) {
+    next(error);
+  }
+});
+
+// POST: Cambiar estado del repartidor (Disponible / Inactivo)
+router.post("/cambiar-estado", async (req, res, next) => {
+  try {
+    const { nuevoEstado } = req.body;
+    await usuariosController.cambiarEstadoRepartidor(res.locals.usuarioLogueado.id, nuevoEstado);
     res.redirect("/perfil");
   } catch (error) {
     next(error);

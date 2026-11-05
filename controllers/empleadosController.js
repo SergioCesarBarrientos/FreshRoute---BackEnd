@@ -10,7 +10,13 @@ const AppError = require('../utils/AppError');
 
 const obtenerEmpleados = async (req, res, next) => {
   try {
-    const empleados = await Empleado.find().populate('idUsuario', 'username email rol');
+    // Filtro opcional por rol (ej: /api/empleados?rol=repartidor)
+    const { rol } = req.query;
+    let query = {};
+    if (rol && rol !== 'todos') {
+      query.rol = rol;
+    }
+    const empleados = await Empleado.find(query).populate('idUsuario', 'username email rol');
     res.status(200).json(empleados);
   } catch (error) {
     next(error);
@@ -92,7 +98,6 @@ const actualizarEmpleado = async (req, res, next) => {
       throw new AppError("Empleado no encontrado", 404);
     }
 
-    // Sincronizar el rol en el Usuario si cambió
     if (req.body.rol) {
       await Usuario.findByIdAndUpdate(
         empleadoActualizado.idUsuario,
@@ -128,8 +133,12 @@ const eliminarEmpleado = async (req, res, next) => {
 // FUNCIONES PARA LAS VISTAS (CRUD)
 // ========================================
 
-const obtenerEmpleadosParaVista = async () => {
-  return await Empleado.find().populate('idUsuario', 'username email rol').sort({ apellido: 1 });
+const obtenerEmpleadosParaVista = async (filtroRol) => {
+  let query = {};
+  if (filtroRol && filtroRol !== 'todos') {
+    query.rol = filtroRol;
+  }
+  return await Empleado.find(query).populate('idUsuario', 'username email rol').sort({ apellido: 1 });
 };
 
 const obtenerEmpleadoParaVista = async (id) => {
@@ -182,7 +191,6 @@ const actualizarEmpleadoParaVista = async (id, datos) => {
 
   if (!empleadoActualizado) return null;
 
-  // Sincronizar el rol en el Usuario si cambió
   if (datos.rol) {
     await Usuario.findByIdAndUpdate(
       empleadoActualizado.idUsuario,
