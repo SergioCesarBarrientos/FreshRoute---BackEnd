@@ -14,15 +14,14 @@ block content
         h2 Cliente
 
         div
-            label(for="buscar-cliente") Buscar cliente por nombre:
-            input(type="text" id="buscar-cliente" placeholder="Escribí parte del nombre...")
-
-        div
-            label(for="cliente") Cliente:
-            select(name="cliente" id="cliente" required)
-                option(value="") Seleccioná un cliente
+            label(for="buscar-cliente") Cliente:
+            input(type="text" id="buscar-cliente" list="lista-clientes" placeholder="Escribí el nombre del cliente y elegí una sugerencia..." autocomplete="off")
+            datalist#lista-clientes
                 each c in clientes
-                    option(value=c._id data-nombre=c.nombre data-cuit=c.cuit data-telefono=c.telefono data-direccion=c.direccion)= c.nombre + ' — ' + c.cuit
+                    option(value=c.nombre + ' — ' + c.cuit data-id=c._id data-nombre=c.nombre data-cuit=c.cuit data-telefono=c.telefono data-direccion=c.direccion)
+            //- Acá se guarda el ID del cliente elegido, que es lo que se envía al servidor
+            input(type="hidden" name="cliente" id="cliente")
+            p#aviso-cliente.mensaje-error(hidden) Elegí un cliente de la lista de sugerencias.
 
         //- Datos del cliente elegido (se completan con JavaScript)
         .datos-cliente#datos-cliente(hidden)
@@ -86,39 +85,40 @@ block content
             var form = document.getElementById('form-pedido');
 
             // ---------- Búsqueda y datos del cliente ----------
-            var inputBuscar = document.getElementById('buscar-cliente');
-            var selectCliente = document.getElementById('cliente');
-            var placeholder = selectCliente.options[0];
-            var opcionesCliente = Array.prototype.slice.call(selectCliente.options, 1);
+            var inputCliente = document.getElementById('buscar-cliente');
+            var hiddenCliente = document.getElementById('cliente');
+            var sugerencias = document.getElementById('lista-clientes').options;
+            var avisoCliente = document.getElementById('aviso-cliente');
             var datosCliente = document.getElementById('datos-cliente');
 
-            function mostrarDatosCliente() {
-                var opcion = selectCliente.options[selectCliente.selectedIndex];
-                if (!opcion || !opcion.value) {
+            // Devuelve la sugerencia cuyo texto coincide exactamente con lo escrito (o null)
+            function buscarSugerencia(texto) {
+                for (var i = 0; i < sugerencias.length; i++) {
+                    if (sugerencias[i].value === texto) return sugerencias[i];
+                }
+                return null;
+            }
+
+            // Cada vez que se escribe o se elige una sugerencia, se actualiza el cliente elegido
+            function actualizarCliente() {
+                var texto = inputCliente.value.trim();
+                var opcion = buscarSugerencia(texto);
+                if (!opcion) {
+                    hiddenCliente.value = '';
                     datosCliente.hidden = true;
+                    avisoCliente.hidden = texto === '';
                     return;
                 }
+                hiddenCliente.value = opcion.dataset.id;
                 document.getElementById('dc-nombre').textContent = opcion.dataset.nombre;
                 document.getElementById('dc-cuit').textContent = opcion.dataset.cuit;
                 document.getElementById('dc-telefono').textContent = opcion.dataset.telefono;
                 document.getElementById('dc-direccion').textContent = opcion.dataset.direccion;
                 datosCliente.hidden = false;
+                avisoCliente.hidden = true;
             }
-
-            // Filtra la lista de clientes mientras se escribe
-            inputBuscar.addEventListener('input', function () {
-                var texto = inputBuscar.value.trim().toLowerCase();
-                var elegido = selectCliente.value;
-                selectCliente.innerHTML = '';
-                selectCliente.appendChild(placeholder);
-                opcionesCliente
-                    .filter(function (o) { return o.dataset.nombre.toLowerCase().indexOf(texto) !== -1; })
-                    .forEach(function (o) { selectCliente.appendChild(o); });
-                selectCliente.value = elegido;
-                if (selectCliente.selectedIndex === -1) selectCliente.selectedIndex = 0;
-                mostrarDatosCliente();
-            });
-            selectCliente.addEventListener('change', mostrarDatosCliente);
+            inputCliente.addEventListener('input', actualizarCliente);
+            inputCliente.addEventListener('change', actualizarCliente);
 
             // ---------- Detalle del pedido ----------
             var selectProducto = document.getElementById('producto');
@@ -212,9 +212,9 @@ block content
             // Antes de enviar, se comprueba que haya cliente, repartidor y al menos un producto
             form.addEventListener('submit', function (evento) {
                 var selectRepartidor = document.getElementById('repartidor');
-                if (!selectCliente.value) {
+                if (!hiddenCliente.value) {
                     evento.preventDefault();
-                    alert('Seleccioná un cliente.');
+                    alert('Elegí un cliente de la lista de sugerencias.');
                 } else if (!selectRepartidor || !selectRepartidor.value) {
                     evento.preventDefault();
                     alert('Seleccioná un repartidor.');
