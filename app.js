@@ -12,6 +12,7 @@ const productosRoutes = require("./routes/api/productosRoutes");
 const usuariosRoutes = require("./routes/api/usuariosRoutes");
 const empleadosRoutes = require("./routes/api/empleadosRoutes");
 const perfilesRoutes = require("./routes/api/perfilesRoutes");
+const pedidosRoutes = require("./routes/api/pedidosRoutes");
 
 // Importar rutas de las Vistas
 const clientesVistas = require("./routes/vistas/clientesVistas");
@@ -19,6 +20,7 @@ const productosVistas = require("./routes/vistas/productosVistas");
 const usuariosVistas = require("./routes/vistas/usuariosVistas");
 const empleadosVistas = require("./routes/vistas/empleadosVistas");
 const perfilesVistas = require("./routes/vistas/perfilesVistas");
+const pedidosVistas = require("./routes/vistas/pedidosVistas");
 
 // Importar conexión y middleware
 const connectDB = require("./config/connectDB");
@@ -72,6 +74,7 @@ app.use("/api/productos", productosRoutes);
 app.use("/api/usuarios", usuariosRoutes);
 app.use("/api/empleados", empleadosRoutes);
 app.use("/api/perfil", perfilesRoutes);
+app.use("/api/pedidos", pedidosRoutes);
 
 /*
 ==================================================
@@ -104,6 +107,9 @@ app.use("/empleados", empleadosVistas);
 
 // 8. Vistas de perfil (protegidas)
 app.use("/perfil", perfilesVistas);
+
+//9. Vistas de pedidos (protegidas)
+app.use("/pedidos", pedidosVistas);
 
 /*
 ==================================================
