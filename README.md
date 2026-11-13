@@ -1,272 +1,217 @@
-# 🚚 FreshRoute - Backend
+# 🚚 FreshRoute – Sistema de gestión logística de alimentos refrigerados
 
-API REST para la gestión de distribución de pedidos de la empresa **FreshRoute** (TechArg).
+**FreshRoute** es un sistema web desarrollado para gestionar las operaciones de una empresa dedicada a la venta y distribución de alimentos refrigerados. El proyecto busca centralizar y digitalizar la administración de clientes, productos, empleados y pedidos, facilitando la organización del trabajo administrativo y de las entregas.
 
-Proyecto desarrollado para la materia **Desarrollo de Sistemas Web (Back End)** — IFTS N°29 — 2° Cuatrimestre 2026.
+El sistema cuenta con distintos niveles de acceso según el rol del usuario, ofreciendo herramientas específicas para la administración y para los repartidores.
 
----
+## 🎯 Objetivo del proyecto
 
-## 📋 Descripción
+Desarrollar una aplicación web que permita administrar las principales operaciones de FreshRoute, mejorar la organización de los pedidos y facilitar el seguimiento de las entregas mediante una plataforma centralizada.
 
-FreshRoute es una aplicación backend que permite administrar los módulos de **Clientes** y **Productos** mediante operaciones CRUD (Create, Read, Update, Delete).
+## ⚙️ Funcionalidades principales
 
-La aplicación está construida con **Node.js** y **Express**, utiliza **MongoDB Atlas** como base de datos (a través de **Mongoose**) y renderiza vistas dinámicas con **Pug**.
+- **Gestión de clientes:** registrar, consultar, buscar, modificar y eliminar clientes.
+- **Gestión de productos:** administrar el catálogo de productos, sus precios y el stock disponible.
+- **Gestión de empleados:** registrar empleados, administrar sus datos y asignarles roles dentro del sistema.
+- **Gestión de usuarios:** iniciar sesión, administrar cuentas, activar o desactivar usuarios y restablecer contraseñas.
+- **Gestión de pedidos:** crear pedidos vinculados a clientes, productos y repartidores; consultar su información y actualizar sus estados.
+- **Panel de repartidores:** consultar los pedidos asignados y actualizar el estado de las entregas.
+- **Gestión del perfil:** modificar datos personales, cambiar la contraseña y administrar la disponibilidad del repartidor.
 
-### Vista general de la aplicación
+## 👥 Roles y permisos
 
-**Página principal**
+El sistema contempla cuatro roles de usuario, organizados en tres paneles principales:
 
-![Página principal](docs/img/01-index.png)
-
-**Lista de clientes**
-
-![Lista de clientes](docs/img/02-lista-clientes.png)
-
-**Lista de productos**
-
-![Lista de productos](docs/img/03-lista-productos.png)
-
-**Formulario de creación de cliente**
-
-![Formulario nuevo cliente](docs/img/04-form-nuevo-cliente.png)
-
----
-
-## 👥 Integrantes y roles
-
-| Integrante | Usuario GitHub | Rol / Responsabilidades |
+| Panel | Roles | Descripción |
 |---|---|---|
-| Sergio Cesar Barrientos | @SergioCesarBarrientos | Esqueleto del proyecto, desarrollo del cliente, instalación de dependencias |
-| Carolina Silva Cotto | @csilvacotto-2202 | Implementación de POC, constructores de Clientes y Productos, persistencia |
-| Mariana Sosa | @MaruSosa | Métodos HTTP, funcionalidades de Clientes y Productos, adaptación de endpoints |
-| Miguel Angel Marcaida Marquez | @Miguel-Marcaida | Manejo de errores, seed de datos, README, vistas Pug, pruebas |
+| Administrativo principal | Superadmin | Acceso principal a la administración del sistema. |
+| Administrativo | Gerente y Administrativo | Gestión de las operaciones administrativas, según los permisos asignados a cada rol. |
+| Repartidores | Repartidor | Consulta de pedidos asignados y actualización del estado de las entregas. |
 
----
+Los permisos determinan qué operaciones puede realizar cada usuario dentro de la aplicación.
+
+## 📦 Reglas de negocio
+
+FreshRoute incorpora controles para mantener la consistencia de las operaciones:
+
+- Cada pedido debe estar asociado a un cliente, al menos un producto y un repartidor.
+- Se verifica que exista stock suficiente antes de registrar un pedido.
+- El precio de cada producto se guarda en el pedido al momento de su creación.
+- Un repartidor puede tener como máximo **dos pedidos activos** simultáneamente.
+- No se pueden asignar nuevos pedidos a repartidores inactivos.
+- El estado de disponibilidad del repartidor se actualiza según la cantidad de pedidos activos.
+- Los pedidos siguen transiciones de estado permitidas por el sistema.
+- Los repartidores solamente pueden modificar determinados estados de los pedidos que tienen asignados.
 
 ## 🛠️ Tecnologías utilizadas
 
-- **Node.js** — entorno de ejecución
-- **Express** — framework web
-- **MongoDB Atlas** — base de datos NoSQL en la nube
-- **Mongoose** — ODM para MongoDB
-- **Pug** — motor de plantillas
-- **Nodemon** — reinicio automático en desarrollo
-- **dotenv** — variables de entorno
+**Backend**
+- [Node.js](https://nodejs.org/): entorno de ejecución de JavaScript.
+- [Express](https://expressjs.com/): framework para desarrollar el servidor y gestionar las rutas.
+- [Mongoose](https://mongoosejs.com/): modelado y conexión con MongoDB.
 
----
+**Base de datos**
+- [MongoDB](https://www.mongodb.com/): almacenamiento de la información del sistema.
+
+**Frontend**
+- [Pug](https://pugjs.org/): motor de plantillas para generar las vistas de la aplicación.
+- HTML, CSS y JavaScript.
+
+**Seguridad y herramientas**
+- [JSON Web Token (JWT)](https://jwt.io/): autenticación mediante tokens.
+- [Bcrypt](https://www.npmjs.com/package/bcrypt): cifrado de contraseñas.
+- [Dotenv](https://www.npmjs.com/package/dotenv): administración de variables de entorno.
+- [Nodemon](https://nodemon.io/): reinicio automático del servidor durante el desarrollo.
 
 ## 📁 Estructura del proyecto
 
+La aplicación se organiza en módulos para separar las responsabilidades y facilitar el mantenimiento del código.
+
 ```text
-FreshRoute---BackEnd/
+FreshRoute/
+│
 ├── app.js
-├── seed.js
 ├── package.json
 ├── .env
 ├── .gitignore
-├── docs/
-│   └── img/
+│
 ├── config/
-│   └── connectDB.js
-├── controllers/
-│   ├── clientesController.js
-│   └── productosController.js
+│   └── db.js
+│
 ├── middlewares/
+│   ├── auth.js
+│   ├── errorHandler.js
 │   ├── logger.js
-│   └── errorHandler.js
+│   ├── permitirRoles.js
+│   └── verificarSesionVista.js
+│
 ├── models/
 │   ├── Cliente.js
-│   └── Producto.js
+│   ├── Empleado.js
+│   ├── Pedido.js
+│   ├── Producto.js
+│   └── Usuario.js
+│
+├── controllers/
+│   ├── clientesController.js
+│   ├── empleadosController.js
+│   ├── pedidosController.js
+│   ├── productosController.js
+│   ├── repartidoresController.js
+│   └── usuariosController.js
+│
 ├── routes/
-│   ├── clientesRoutes.js
-│   └── productosRoutes.js
+│   ├── api/
+│   └── vistas/
+│
 ├── utils/
 │   └── AppError.js
-├── public/
-│   └── css/
-│       └── styles.css
-└── views/
-    ├── layout.pug
-    ├── index.pug
-    ├── clientes/
-    └── productos/
-
+│
+├── views/
+│   ├── layout.pug
+│   └── ...
+│
+└── public/
+    ├── css/
+    ├── js/
+    └── img/
 ```
- ---
 
-## ⚙️ Instalación y uso
+*La estructura representa la organización general del proyecto. Dentro de las carpetas de rutas y vistas se encuentran los archivos correspondientes a cada módulo.*
 
-**1) Clonar el repositorio**
+## 🚀 Instalación y ejecución
 
-git clone https://github.com/SergioCesarBarrientos/FreshRoute---BackEnd.git
-cd FreshRoute---BackEnd
+### 1. Clonar el repositorio
 
-**2) Instalar dependencias**
+```bash
+git clone URL_DEL_REPOSITORIO
+```
 
+### 2. Ingresar a la carpeta del proyecto
+
+```bash
+cd FreshRoute
+```
+
+### 3. Instalar las dependencias
+
+```bash
 npm install
+```
 
-**3) Configurar variables de entorno**
+### 4. Configurar las variables de entorno
 
-Crear un archivo `.env` en la raíz con:
+Crear un archivo `.env` en la raíz del proyecto con la siguiente estructura:
 
-MONGO_URI=mongodb+srv://<usuario>:<password>@<cluster>.mongodb.net/freshroute
+```env
 PORT=3000
+MONGO_URI=tu_uri_de_conexion_a_mongodb
+SECRET=tu_clave_secreta_jwt
+```
 
-**4) Precargar datos de prueba (opcional)**
+- `PORT`: puerto en el que se ejecutará el servidor.
+- `MONGO_URI`: dirección de conexión a la base de datos MongoDB.
+- `SECRET`: clave utilizada para firmar y verificar los tokens JWT.
 
-node seed.js
+**Importante:** el archivo `.env` contiene información sensible y no debe subirse al repositorio. Cada integrante debe configurar sus propias variables de entorno.
 
-Esto borra los datos actuales e inserta 8 clientes y 8 productos de ejemplo.
+### 5. Iniciar el servidor
 
-**5) Iniciar el servidor**
+Para ejecutar el proyecto en modo desarrollo:
 
+```bash
 npm run dev
+```
 
-La aplicación queda disponible en http://localhost:3000   
+Para iniciar el servidor normalmente:
 
----
+```bash
+npm start
+```
 
-## 🔗 Endpoints de la API
+Una vez iniciado, acceder desde el navegador a:
 
-### Clientes
+```text
+http://localhost:3000
+```
 
-- **GET** `/api/clientes` — Obtener todos los clientes
-- **GET** `/api/clientes/:id` — Obtener un cliente por ID
-- **POST** `/api/clientes` — Crear un cliente
-- **PUT** `/api/clientes/:id` — Actualizar un cliente
-- **DELETE** `/api/clientes/:id` — Eliminar un cliente
+## 🔑 Usuarios de prueba
 
-### Productos
+Para facilitar las pruebas y la demostración del sistema, se dispone de las siguientes cuentas:
 
-- **GET** `/api/productos` — Obtener todos los productos
-- **GET** `/api/productos/:id` — Obtener un producto por ID
-- **POST** `/api/productos` — Crear un producto
-- **PUT** `/api/productos/:id` — Actualizar un producto
-- **DELETE** `/api/productos/:id` — Eliminar un producto
+| Panel | Usuario |
+|---|---|
+| Administrativo principal | `miguel` |
+| Administrativo | `csilva` |
+| Administrativo | `sbarrientos` |
+| Administrativo | `msosa` |
+| Repartidores | `jperez` |
+| Repartidores | `rdos` |
 
-### Vistas (Pug)
+**Contraseña de las cuentas de prueba:** `123`
 
-- `/` — Página principal
-- `/clientes` — Lista de clientes
-- `/clientes/nuevo` — Formulario de creación
-- `/clientes/editar/:id` — Formulario de edición
-- `/productos` — Lista de productos
-- `/productos/nuevo` — Formulario de creación
-- `/productos/editar/:id` — Formulario de edición
+*Estas credenciales son únicamente para demostración y pruebas del proyecto. No deben utilizarse en un entorno de producción.*
 
----
+## 🔐 Autenticación y manejo de errores
 
-### Pruebas de la API
+El sistema utiliza JWT para gestionar la autenticación de los usuarios. Las contraseñas se almacenan mediante hashing con Bcrypt.
 
-**POST — Crear cliente (201 Created)**
+Además, cuenta con middlewares para verificar sesiones y permisos según los roles, así como un manejador centralizado de errores que permite controlar distintos tipos de excepciones durante la ejecución de la aplicación.
 
-![POST cliente OK](docs/img/10-post-cliente-ok.png)
+## 🎓 Información académica
 
-**GET — Listar clientes (200 OK)**
+**Institución:** IFTS N.º 29  
+**Materia:** Desarrollo de Sistemas Web (Back End)  
+**Período:** Segundo cuatrimestre de 2026  
+**Equipo:** TechLab – Grupo 3
 
-![GET clientes OK](docs/img/11-get-clientes-ok.png)
+## 👨‍💻 Integrantes
 
----
+- [Miguel Marcaida]
+- [Carolina Silva Cotto]
+- [Sergio Cesar Barrientos]
+- [Mariana Sosa]
 
-## 🛠️ Manejo de errores
+## 📌 Estado del proyecto
 
-El proyecto implementa un **middleware central de manejo de errores** (middlewares/errorHandler.js) que captura los errores lanzados desde los controladores mediante next(error) y devuelve respuestas consistentes en formato JSON.
-
-### Clase AppError
-
-Los errores personalizados se lanzan con la clase AppError (utils/AppError.js):
-
-throw new AppError("Cliente no encontrado", 404);
-
-### Códigos de error manejados
-
-- **400** — ID inválido (ObjectId mal formado)
-- **400** — Validación de Mongoose (campos obligatorios, formato)
-- **400** — JSON malformado en el body de la petición
-- **400** — Clave duplicada
-- **404** — Recurso no encontrado
-- **404** — Ruta inexistente
-- **500** — Error interno del servidor
-
-### Evidencia de manejo de errores
-
-**400 — ID inválido**
-
-![Error ID inválido](docs/img/05-error-id-invalido.png)
-
-**404 — Cliente no encontrado**
-
-![Error cliente no encontrado](docs/img/06-error-cliente-no-encontrado.png)
-
-**400 — Validación de Mongoose**
-
-![Error validación](docs/img/07-error-validacion.png)
-
-**404 — Ruta inexistente**
-
-![Error ruta no existe](docs/img/08-error-ruta-no-existe.png)
-
-**400 — JSON malformado**
-
-![Error JSON inválido](docs/img/09-error-json-invalido.png)
-
----
-
-## 🗄️ Base de datos
-
-El proyecto utiliza **MongoDB Atlas** con las colecciones `clientes` y `productos`.
-
-![Colecciones en MongoDB Atlas](docs/img/12-atlas-colecciones.png)
-
----
-
-## 🤖 Uso de Inteligencia Artificial
-
-Durante el desarrollo del proyecto se utilizaron herramientas de Inteligencia Artificial como apoyo en distintas etapas del trabajo.
-
-**Herramientas utilizadas por el equipo:**
-
-- **DeepSeek** — asistencia técnica, debugging, generación de código base y documentación
-- **ChatGPT** — asistencia durante el desarrollo
-- **Gemini** — asistencia durante el desarrollo
-
-**Áreas donde se aplicó IA:**
-
-- Comprensión de conceptos (Mongoose, async/await, middlewares)
-- Generación de boilerplate y estructura inicial de archivos
-- Debugging y resolución de errores
-- Redacción y mejora de documentación
-
-**Nota:** cada integrante utilizó las herramientas según sus necesidades durante el desarrollo. Todas las sugerencias generadas por IA fueron revisadas, adaptadas y validadas por el equipo antes de incorporarlas al proyecto. Las decisiones de arquitectura y lógica de negocio fueron tomadas por los integrantes.
-
----
-
-## 📚 Bibliografía
-
-### Material de cátedra
-
-- **Módulo 1** — Fundamentos de Backend
-- **Módulo 2** — Conociendo el entorno
-- **Módulo 3** — Modelado de estructuras
-- **Módulo 4** — Módulos en Node.js
-- **Módulo 5** — Marco de desarrollo
-- **Módulo 6** — Asincronismo Web
-- **Módulo 7** — API REST básica con Node y Express
-- **Módulo 8** — Estructura de documentos (NoSQL)
-- **Módulo 9** — Creación de una API REST completa
-
-### Documentación oficial
-
-- Node.js — https://nodejs.org/docs/
-- Express — https://expressjs.com/
-- MongoDB — https://www.mongodb.com/docs/
-- Mongoose — https://mongoosejs.com/docs/
-- Pug — https://pugjs.org/
-
----
-
-## 🔗 Enlaces del proyecto
-
-- **Repositorio GitHub:** https://github.com/SergioCesarBarrientos/FreshRoute---BackEnd
-- **Google Drive:** https://drive.google.com/drive/folders/1Boq0lor7hL8UX8I1mGAfGmOw5_cZ_Dov?usp=drive_link
-- **Video explicativo:** [Ver video](https://drive.google.com/file/d/16I1qHDy02iNcNwicMFBFgPCjPvIYirWy/view?usp=drive_link)
+Proyecto académico grupal en desarrollo, orientado a implementar un sistema web de gestión logística con autenticación, administración de datos y gestión de pedidos y entregas.
