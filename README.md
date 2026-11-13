@@ -194,7 +194,7 @@ El proyecto incluye pruebas automáticas utilizando **Jest** y **Supertest** par
 - **Supertest:** librería para simular peticiones HTTP a la API.
 
 Pruebas implementadas:
-- Autenticación: login con credenciales inválidas (401) y login exitoso (token JWT).
+- Autenticación: login con credenciales inválidas (401).
 - Clientes: obtención de la lista de clientes con token válido (200).
 
 Cómo ejecutar los tests:
@@ -226,6 +226,17 @@ El manejador centralizado de errores controla distintos tipos de excepciones: er
 
 - **Repositorio GitHub:** https://github.com/SergioCesarBarrientos/FreshRoute---BackEnd
 - **Despliegue en Vercel:** [Pendiente]
+
+## 🤖 Uso de Inteligencia Artificial
+
+Durante el desarrollo del proyecto se utilizó inteligencia artificial (ChatGPT) como asistente técnico para:
+
+- La revisión y corrección de errores en el código (middlewares, controladores y rutas).
+- La redacción y estructuración del presente README.
+- La configuración inicial de las pruebas automatizadas con Jest y Supertest.
+- La revisión de buenas prácticas de seguridad y estructura MVC.
+
+**Nota:** Todo el contenido generado por IA fue revisado, adaptado e integrado al proyecto por los integrantes del equipo, asegurando su correcto funcionamiento dentro de la arquitectura del sistema. La IA se utilizó como herramienta de apoyo y no como reemplazo del trabajo de desarrollo.
 
 ## 🎓 Información académica
 
