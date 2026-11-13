@@ -68,13 +68,13 @@ block content
                                 i.fas.fa-circle-dot
                                 |  Estado:
                                 if empleado.estado === 'Disponible'
-                                    span.estado estado-disponible= empleado.estado
+                                    span.estado.estado-disponible= empleado.estado
                                 else if empleado.estado === 'Ocupado'
-                                    span.estado estado-ocupado= empleado.estado
+                                    span.estado.estado-ocupado= empleado.estado
                                 else if empleado.estado === 'Inactivo'
-                                    span.estado estado-inactivo= empleado.estado
+                                    span.estado.estado-inactivo= empleado.estado
                                 else
-                                    span.estado estado-otro= empleado.estado
+                                    span.estado.estado-otro= empleado.estado
 
                     div.acciones
                         form(action="/empleados/editar/" + empleado._id method="GET" class="form-inline")
