@@ -11,10 +11,11 @@ const ROLES_GESTION = ['superadmin', 'gerente', 'administrativo'];
 
 // Estados a los que puede pasar un pedido desde cada estado.
 const TRANSICIONES = {
-  Asignado: ['En camino', 'Cancelado'],
-  'En camino': ['Entregado'],
+  Asignado: ['En camino', 'Entregado', 'Cancelado', 'No Entregado'],
+  'En camino': ['Entregado', 'Cancelado', 'No Entregado'],
   Entregado: [],
   Cancelado: [],
+  'No Entregado': [],
 };
 
 // Límite de pedidos activos por repartidor
@@ -262,6 +263,12 @@ const crearPedido = async (req, res, next) => {
 const actualizarEstadoPedido = async (req, res, next) => {
   try {
     const pedido = await cambiarEstadoParaVista(req.params.id, req.body.estado, req.usuario);
+    
+    // Si la petición viene del panel de repartidor, redirigimos a su vista
+    if (req.usuario.rol === 'repartidor') {
+      return res.redirect('/repartidores/entregas');
+    }
+
     res.status(200).json({ mensaje: 'Estado actualizado correctamente', pedido });
   } catch (error) {
     next(error);

@@ -4,24 +4,32 @@ const AppError = require('../utils/AppError');
 // Middleware para verificar que el usuario esté logueado
 const verificarToken = (req, res, next) => {
   try {
-    const authHeader = req.headers.authorization;
+    // 1. Si el app.js ya leyó la cookie y cargó el usuario en res.locals, lo aprovechamos directamente
+    if (res.locals && res.locals.usuarioLogueado) {
+      req.usuario = res.locals.usuarioLogueado;
+      return next();
+    }
 
+    // 2. Si no, intentamos buscar el token en el header tradicional (para APIs o Postman)
+    const authHeader = req.headers.authorization;
     if (!authHeader || !authHeader.startsWith('Bearer ')) {
+      // Si es una petición web de vistas, redirigimos al login en lugar de tirar error JSON
+      if (req.originalUrl.includes('/repartidores/') || !req.originalUrl.startsWith('/api/')) {
+        return res.redirect('/login');
+      }
       throw new AppError('Token no proporcionado o formato inválido', 401);
     }
 
-    // Extraer el token (quitando la palabra "Bearer ")
     const token = authHeader.split(' ')[1];
-
-    // Verificar el token
     const decoded = jwt.verify(token, process.env.SECRET);
-
-    // Guardar los datos del usuario en la request
     req.usuario = decoded;
     
     next();
   } catch (error) {
     if (error.name === 'JsonWebTokenError' || error.name === 'TokenExpiredError') {
+      if (req.originalUrl.includes('/repartidores/') || !req.originalUrl.startsWith('/api/')) {
+        return res.redirect('/login');
+      }
       return next(new AppError('Token inválido o expirado', 401));
     }
     next(error);

@@ -3,7 +3,7 @@ require("dotenv").config();
 
 // Importar dependencias
 const express = require("express");
-const path = require("path");
+const path = require("path"); // <-- Déjalo así, limpio
 const jwt = require('jsonwebtoken');
 
 // Importar rutas de la API
@@ -21,6 +21,7 @@ const usuariosVistas = require("./routes/vistas/usuariosVistas");
 const empleadosVistas = require("./routes/vistas/empleadosVistas");
 const perfilesVistas = require("./routes/vistas/perfilesVistas");
 const pedidosVistas = require("./routes/vistas/pedidosVistas");
+const repartidoresVistas = require("./routes/vistas/repartidoresVistas");
 
 // Importar conexión y middleware
 const connectDB = require("./config/connectDB");
@@ -108,8 +109,11 @@ app.use("/empleados", empleadosVistas);
 // 8. Vistas de perfil (protegidas)
 app.use("/perfil", perfilesVistas);
 
-//9. Vistas de pedidos (protegidas)
+// 9. Vistas de pedidos (protegidas)
 app.use("/pedidos", pedidosVistas);
+
+// 10. Vistas de repartidores (protegidas)
+app.use("/repartidores", repartidoresVistas); // <-- ¡Agregado aquí!
 
 /*
 ==================================================

@@ -23,6 +23,6 @@ router.get('/:id', verificarToken, obtenerPedidoPorId);
 router.post('/', verificarToken, gestion, crearPedido);
 
 // PUT: cambiar el estado (el controller valida qué puede hacer cada rol)
-router.put('/:id/estado', verificarToken, actualizarEstadoPedido);
+router.post('/:id/estado', verificarToken, actualizarEstadoPedido);
 
 module.exports = router;
