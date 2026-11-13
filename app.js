@@ -3,7 +3,7 @@ require("dotenv").config();
 
 // Importar dependencias
 const express = require("express");
-const path = require("path"); // <-- Déjalo así, limpio
+const path = require("path");
 const jwt = require('jsonwebtoken');
 
 // Importar rutas de la API
@@ -86,34 +86,34 @@ RUTAS DE LAS VISTAS (HTML / PUG)
 // 1. Rutas públicas de usuarios (login y logout)
 app.use("/", usuariosVistas);
 
-// 2. Rutas del CRUD de usuarios (tienen su propia protección interna)
+// 2. Rutas del CRUD de usuarios
 app.use("/usuarios", usuariosVistas);
 
 // 3. Middleware que protege el resto de las vistas
 app.use(verificarSesionVista);
 
-// 4. Página principal (ya protegida)
+// 4. Página principal
 app.get("/", (req, res) => {
   res.render("index", { titulo: "FreshRoute" });
 });
 
-// 5. Vistas de clientes (protegidas)
+// 5. Vistas de clientes
 app.use("/clientes", clientesVistas);
 
-// 6. Vistas de productos (protegidas)
+// 6. Vistas de productos
 app.use("/productos", productosVistas);
 
-// 7. Vistas de empleados (protegidas)
+// 7. Vistas de empleados
 app.use("/empleados", empleadosVistas);
 
-// 8. Vistas de perfil (protegidas)
+// 8. Vistas de perfil
 app.use("/perfil", perfilesVistas);
 
-// 9. Vistas de pedidos (protegidas)
+// 9. Vistas de pedidos
 app.use("/pedidos", pedidosVistas);
 
-// 10. Vistas de repartidores (protegidas)
-app.use("/repartidores", repartidoresVistas); // <-- ¡Agregado aquí!
+// 10. Vistas de repartidores
+app.use("/repartidores", repartidoresVistas);
 
 /*
 ==================================================
@@ -164,4 +164,10 @@ const iniciarServidor = async () => {
   }
 };
 
-iniciarServidor();
+// Solo iniciamos el servidor si NO estamos en modo test
+if (process.env.NODE_ENV !== 'test') {
+  iniciarServidor();
+}
+
+// Exportamos la app para que Supertest la use en los tests
+module.exports = app;

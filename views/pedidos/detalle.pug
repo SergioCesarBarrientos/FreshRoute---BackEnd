@@ -1,7 +1,7 @@
 extends ../layout
 
 block content
-    a.volver(href="/pedidos") ← Volver a la lista
+    a.volver(href=usuarioLogueado.rol === 'repartidor' ? '/repartidores/entregas' : '/pedidos') ← Volver
 
     h1 Detalle del Pedido
 
