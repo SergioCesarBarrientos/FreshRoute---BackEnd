@@ -12,7 +12,7 @@ block content
     //- 2. Barra de estado del vehículo y ruta
     .vehiculo-bar(style="display: flex; justify-content: space-between; background: #1a202c; padding: 12px 20px; border-radius: 8px; margin: 15px 0; border: 1px solid #2d3748;")
       span 🚚 Cámara frigorífica: 
-        strong -19.8°
+        strong -5.8°
       span Ruta: 
         strong NORTE-A
 
@@ -44,7 +44,7 @@ block content
             .tarjeta-top(style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px;")
               div
                 h4(style="margin: 0 0 5px 0; font-size: 1.2rem;")= pedido.cliente ? pedido.cliente.nombre : 'Cliente'
-                small(style="color: #a0aec0;") ID: #{pedido._id}  |  #{pedido.cliente ? pedido.cliente.direccion : 'Sin dirección'}
+                small(style="color: #a0aec0;") ID: #{pedido._id}  |  #{pedido.cliente ? pedido.cliente.direccion : 'Sin dirección'}
               
               div
                 span(style="color: #a0aec0; font-size: 0.85rem;") ESTADO: 
@@ -58,25 +58,25 @@ block content
             //- Detalles de carga (Bultos / Temperatura)
             .tarjeta-detalles(style="display: flex; gap: 20px; margin: 15px 0; font-size: 0.95rem;")
               span 📦 #{pedido.items ? pedido.items.length : 1} Bultos
-              span ❄️ -18.2°C
+              span ❄️ 8.2°C
 
             //- Botones de acción según el estado del pedido
             .tarjeta-acciones(style="display: flex; gap: 10px; flex-wrap: wrap; margin-top: 15px;")
               if pedido.estado === 'Entregado'
-                form(action=`/pedidos/${pedido._id}/estado` method="POST" style="margin: 0;")
+                form(action=`/api/pedidos/${pedido._id}/estado` method="POST" style="margin: 0;")
                   input(type="hidden" name="estado" value="Asignado")
                   button(type="submit" style="background: #4a5568; color: white; border: none; padding: 8px 16px; border-radius: 5px; cursor: pointer;") REVERTIR
                 a(href=`/pedidos/${pedido._id}` style="background: transparent; color: #63b3ed; border: 1px solid #63b3ed; padding: 8px 16px; border-radius: 5px; text-decoration: none;") VER DETALLE
               else
-                form(action=`/pedidos/${pedido._id}/estado` method="POST" style="margin: 0;")
+                form(action=`/api/pedidos/${pedido._id}/estado` method="POST" style="margin: 0;")
                   input(type="hidden" name="estado" value="Entregado")
                   button(type="submit" style="background: #38a169; color: white; border: none; padding: 8px 20px; border-radius: 5px; cursor: pointer; font-weight: bold;") ENTREGADO
                 
-                form(action=`/pedidos/${pedido._id}/estado` method="POST" style="margin: 0;")
+                form(action=`/api/pedidos/${pedido._id}/estado` method="POST" style="margin: 0;")
                   input(type="hidden" name="estado" value="Cancelado")
                   button(type="submit" style="background: #e53e3e; color: white; border: none; padding: 8px 20px; border-radius: 5px; cursor: pointer; font-weight: bold;") CANCELAR
                 
-                form(action=`/pedidos/${pedido._id}/estado` method="POST" style="margin: 0;")
+                form(action=`/api/pedidos/${pedido._id}/estado` method="POST" style="margin: 0;")
                   input(type="hidden" name="estado" value="No Entregado")
                   button(type="submit" style="background: #dd6b20; color: white; border: none; padding: 8px 20px; border-radius: 5px; cursor: pointer; font-weight: bold;") NO ENTREGADO
                 
@@ -89,7 +89,7 @@ block content
       a(href="#" style="color: #cbd5e0; text-decoration: none; text-align: center;")
         div 📍
         small Mapa
-      a(href="/repartidor/entregas" style="color: #63b3ed; text-decoration: none; text-align: center; font-weight: bold;")
+      a(href="/repartidores/entregas" style="color: #63b3ed; text-decoration: none; text-align: center; font-weight: bold;")
         div 📋
         small Pedidos
       a(href="#" style="color: #cbd5e0; text-decoration: none; text-align: center;")
