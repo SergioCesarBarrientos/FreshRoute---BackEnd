@@ -5,7 +5,9 @@ block content
 
     nav.nav
         a(href="/") Volver al inicio
-        a(href="/pedidos/nuevo") Nuevo pedido
+        //- Solo SuperAdmin y Administrativo pueden crear pedidos
+        if usuarioLogueado && (usuarioLogueado.rol === 'superadmin' || usuarioLogueado.rol === 'administrativo')
+            a(href="/pedidos/nuevo") Nuevo pedido
 
     //- Filtro por estado
     form(action="/pedidos" method="GET" class="buscador")
@@ -24,7 +26,6 @@ block content
                     tr
                         th Fecha
                         th Cliente
-                        th Productos
                         th Total
                         th Estado
                         th Repartidor
@@ -35,17 +36,18 @@ block content
                             td= pedido.createdAt ? pedido.createdAt.toLocaleDateString('es-AR') : '—'
                             td
                                 strong= pedido.cliente ? pedido.cliente.nombre : '(cliente eliminado)'
-                            td
-                                each item in pedido.items
-                                    div #{item.cantidad} × #{item.producto ? item.producto.nombre : '(producto eliminado)'}
                             td $#{pedido.total.toLocaleString('es-AR')}
                             td
                                 span(class="estado estado-" + pedido.estado.toLowerCase().replace(' ', '-'))= pedido.estado
                             td= pedido.repartidor ? pedido.repartidor.nombre + ' ' + pedido.repartidor.apellido : '—'
                             td
-                                //- Solo se puede cancelar un pedido que todavía no salió a entregar
-                                if pedido.estado === 'Asignado'
-                                    div.acciones
+                                div.acciones
+                                    //- Botón para ver el detalle del pedido
+                                    form(action="/pedidos/detalle/" + pedido._id method="GET" class="form-inline")
+                                        button(type="submit" class="btn-editar") Detalle
+
+                                    //- Solo se puede cancelar un pedido que todavía no salió a entregar
+                                    if pedido.estado === 'Asignado'
                                         form(action="/pedidos/" + pedido._id + "/cancelar" method="POST" class="form-inline")
                                             button(type="submit" class="btn-eliminar" onclick="return confirm('¿Cancelar este pedido?')") Cancelar
     else

@@ -10,7 +10,6 @@ const { ESTADOS } = Pedido;
 const ROLES_GESTION = ['superadmin', 'gerente', 'administrativo'];
 
 // Estados a los que puede pasar un pedido desde cada estado.
-// Un pedido nace "Asignado" porque el repartidor se elige al crearlo.
 const TRANSICIONES = {
   Asignado: ['En camino', 'Cancelado'],
   'En camino': ['Entregado'],
@@ -18,21 +17,20 @@ const TRANSICIONES = {
   Cancelado: [],
 };
 
-// Verifica que un ID tenga el formato de un ObjectId de MongoDB (24 caracteres hexadecimales)
+// Límite de pedidos activos por repartidor
+const LIMITE_PEDIDOS = 2;
+
 const esIdValido = (id) => /^[0-9a-fA-F]{24}$/.test(String(id));
 
 // ========================================
-// LÓGICA DE NEGOCIO (la usan la API y las vistas)
+// LÓGICA DE NEGOCIO
 // ========================================
 
-// Valida los ítems recibidos, controla que los productos existan y tengan stock,
-// y calcula el total con el precio actual de cada producto.
 const armarItems = async (itemsEntrada) => {
   if (!Array.isArray(itemsEntrada) || itemsEntrada.length === 0) {
     throw new AppError('El pedido debe incluir al menos un producto', 400);
   }
 
-  // Si un producto viene repetido, se suman sus cantidades
   const cantidades = new Map();
   for (const item of itemsEntrada) {
     if (!esIdValido(item.producto)) {
@@ -67,7 +65,6 @@ const armarItems = async (itemsEntrada) => {
   return { items, total };
 };
 
-// Comprueba que el repartidor elegido exista, sea realmente repartidor y no esté inactivo.
 const validarRepartidor = async (repartidorId) => {
   if (!repartidorId) {
     throw new AppError('El pedido debe tener un repartidor', 400);
@@ -85,10 +82,34 @@ const validarRepartidor = async (repartidorId) => {
   if (repartidor.estado === 'Inactivo') {
     throw new AppError('El repartidor seleccionado está inactivo', 400);
   }
+
+  // Contamos cuántos pedidos activos tiene
+  const pedidosActivos = await Pedido.countDocuments({
+    repartidor: repartidor._id,
+    estado: { $in: ['Asignado', 'En camino'] }
+  });
+
+  if (pedidosActivos >= LIMITE_PEDIDOS) {
+    throw new AppError(`El repartidor ya tiene ${LIMITE_PEDIDOS} pedidos activos y no puede recibir más`, 400);
+  }
+
   return repartidor;
 };
 
-// Crea un pedido: comprueba que el cliente y el repartidor existan y arma los ítems antes de guardar.
+const actualizarEstadoRepartidor = async (repartidorId) => {
+  if (!repartidorId) return;
+  const repartidor = await Empleado.findById(repartidorId);
+  if (!repartidor) return;
+
+  const pedidosActivos = await Pedido.countDocuments({
+    repartidor: repartidor._id,
+    estado: { $in: ['Asignado', 'En camino'] }
+  });
+
+  repartidor.estado = pedidosActivos >= LIMITE_PEDIDOS ? 'Ocupado' : 'Disponible';
+  await repartidor.save();
+};
+
 const crearPedidoParaVista = async (datos, usuario) => {
   if (!esIdValido(datos.cliente)) {
     throw new AppError('El ID del cliente no es válido', 400);
@@ -108,16 +129,17 @@ const crearPedidoParaVista = async (datos, usuario) => {
     total,
     creadoPor: usuario ? usuario.id : undefined,
   });
-  return await pedido.save();
+
+  const pedidoGuardado = await pedido.save();
+  await actualizarEstadoRepartidor(repartidor._id);
+
+  return pedidoGuardado;
 };
 
-// Devuelve el empleado que corresponde a un usuario (lo necesita el repartidor para ver sus entregas)
 const obtenerEmpleadoDeUsuario = async (usuario) => {
   return await Empleado.findOne({ idUsuario: usuario.id });
 };
 
-// Lista los pedidos. Gerencia y administrativos ven todos; el repartidor solo los suyos
-// (esta función también la puede usar la pantalla "Mis entregas").
 const obtenerPedidosParaVista = async (usuario, filtros = {}) => {
   const consulta = {};
   if (filtros.estado && ESTADOS.includes(filtros.estado)) {
@@ -137,7 +159,6 @@ const obtenerPedidosParaVista = async (usuario, filtros = {}) => {
     .sort({ createdAt: -1 });
 };
 
-// Devuelve un pedido. El repartidor solo puede verlo si está asignado a él.
 const obtenerPedidoParaVista = async (id, usuario) => {
   if (!esIdValido(id)) {
     throw new AppError('El ID del pedido no es válido', 400);
@@ -160,8 +181,6 @@ const obtenerPedidoParaVista = async (id, usuario) => {
   return pedido;
 };
 
-// Cambia el estado de un pedido respetando las transiciones permitidas.
-// El repartidor solo puede avanzar sus propios pedidos a "En camino" o "Entregado".
 const cambiarEstadoParaVista = async (id, nuevoEstado, usuario) => {
   if (!esIdValido(id)) {
     throw new AppError('El ID del pedido no es válido', 400);
@@ -192,22 +211,27 @@ const cambiarEstadoParaVista = async (id, nuevoEstado, usuario) => {
   }
 
   pedido.estado = nuevoEstado;
-  return await pedido.save();
+  const pedidoActualizado = await pedido.save();
+
+  if (nuevoEstado === 'Entregado' || nuevoEstado === 'Cancelado') {
+    await actualizarEstadoRepartidor(pedido.repartidor);
+  }
+
+  return pedidoActualizado;
 };
 
-// Datos que necesita el formulario de nuevo pedido: clientes, productos con stock y repartidores activos
 const obtenerDatosNuevoPedidoParaVista = async () => {
   const clientes = await Cliente.find().sort({ nombre: 1 });
   const productos = await Producto.find({ stock: { $gt: 0 } }).sort({ nombre: 1 });
+  // Traemos a todos los repartidores que no estén inactivos (los Ocupados se verán deshabilitados en la vista)
   const repartidores = await Empleado.find({ rol: 'repartidor', estado: { $ne: 'Inactivo' } }).sort({ apellido: 1 });
   return { clientes, productos, repartidores };
 };
 
 // ========================================
-// FUNCIONES PARA LA API (JSON)
+// FUNCIONES PARA LA API
 // ========================================
 
-// GET: listar pedidos (opcional: ?estado=Pendiente)
 const obtenerPedidos = async (req, res, next) => {
   try {
     const pedidos = await obtenerPedidosParaVista(req.usuario, { estado: req.query.estado });
@@ -217,7 +241,6 @@ const obtenerPedidos = async (req, res, next) => {
   }
 };
 
-// GET: obtener un pedido por ID
 const obtenerPedidoPorId = async (req, res, next) => {
   try {
     const pedido = await obtenerPedidoParaVista(req.params.id, req.usuario);
@@ -227,7 +250,6 @@ const obtenerPedidoPorId = async (req, res, next) => {
   }
 };
 
-// POST: crear un pedido (el body lleva cliente, repartidor e items)
 const crearPedido = async (req, res, next) => {
   try {
     const pedido = await crearPedidoParaVista(req.body, req.usuario);
@@ -237,7 +259,6 @@ const crearPedido = async (req, res, next) => {
   }
 };
 
-// PUT: cambiar el estado de un pedido
 const actualizarEstadoPedido = async (req, res, next) => {
   try {
     const pedido = await cambiarEstadoParaVista(req.params.id, req.body.estado, req.usuario);
