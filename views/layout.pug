@@ -1,26 +1,50 @@
+
 doctype html
-html(lang="en")
+html(lang="es")
     head
         meta(charset="UTF-8")
         meta(name="viewport" content="width=device-width, initial-scale=1.0")
         title FreshRoute - #{titulo || 'App'}
+        link(rel="icon" type="image/png" href="/img/icon.png")
+        link(rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css")
         link(rel="stylesheet" href="/css/styles.css")
+
     body
+   
         nav.navbar
             div.navbar-brand
-                a(href="/") FreshRoute
+                a(href="/")
+                    i.fa-solid.fa-snowflake
+                    |  FreshRoute
+                    span.brand-descripcion  | Venta y Logística de alimentos refrigerados
+
             div.navbar-menu
                 if usuarioLogueado
-                    span Hola, #{usuarioLogueado.username} (#{usuarioLogueado.rol})
-                    a(href="/perfil" style="margin-left: 10px;") Mi Perfil
-                    a(href="/logout") Cerrar Sesión
+                    span
+                        i.fa-solid.fa-user
+                        |  Hola, #{usuarioLogueado.username} (#{usuarioLogueado.rol})
+
+                    a(href="/perfil")
+                        i.fa-solid.fa-id-card
+                        |  Mi Perfil
+
+                    a(href="/logout")
+                        i.fa-solid.fa-right-from-bracket
+                        |  Cerrar Sesión
                 else
-                    a(href="/login") Iniciar Sesión
+                    a(href="/login")
+                        i.fa-solid.fa-right-to-bracket
+                        |  Iniciar Sesión
 
         block content
 
         footer
             p
-                strong FreshRoute
-                |  ·  Grupo 3
-            p Desarrollo de Sistemas Web (Back End) · IFTS N°29 · 2026
+                strong
+                    i.fa-solid.fa-snowflake
+                    |  FreshRoute
+                |  ·  TechLab - Grupo 3
+
+            p
+                i.fa-solid.fa-graduation-cap
+                |  Desarrollo de Sistemas Web (Back End) · IFTS N°29 · 2026

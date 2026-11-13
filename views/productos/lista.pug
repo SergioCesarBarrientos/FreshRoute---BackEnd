@@ -1,30 +1,55 @@
+
 extends ../layout
 
 block content
-    h1 Lista de Productos
+    h1
+        i.fas.fa-boxes-stacked
+        |  Lista de Productos
 
     nav.nav
-        a(href="/") Volver al inicio
-        //- Solo SuperAdmin y Gerente ven el botón de agregar
+        a(href="/")
+            i.fas.fa-arrow-left
+            |  Volver al inicio
+
+        //- Solo SuperAdmin y Gerente pueden agregar
         if usuarioLogueado && (usuarioLogueado.rol === 'superadmin' || usuarioLogueado.rol === 'gerente')
-            a(href="/productos/nuevo") Agregar producto
+            a(href="/productos/nuevo" class="btn-agregar")
+                i.fas.fa-plus
+                |  Agregar producto
 
     if productos && productos.length > 0
-        ul
+        ul.grid-empleados.grid-productos
             each producto in productos
                 li
                     div.info
-                        strong= producto.nombre
-                        span 💰 Precio: $#{producto.precio}
-                        span 📦 Stock: #{producto.stock}
+                        strong.nombre-empleado
+                            i.fas.fa-box
+                            |  #{producto.nombre}
+
+                        span.dato-producto
+                            i.fas.fa-dollar-sign
+                            |  Precio:
+                            strong.precio-producto $#{producto.precio}
+
+                        span.dato-producto
+                            i.fas.fa-cubes
+                            |  Stock:
+                            strong.stock-producto #{producto.stock} unidades
 
                     div.acciones
                         //- Solo SuperAdmin y Gerente pueden editar o eliminar
                         if usuarioLogueado && (usuarioLogueado.rol === 'superadmin' || usuarioLogueado.rol === 'gerente')
                             form(action="/productos/editar/" + producto._id method="GET" class="form-inline")
-                                button(type="submit" class="btn-editar") Editar
+                                button(type="submit" class="btn-editar")
+                                    i.fas.fa-pen
+                                    |  Editar
 
                             form(action="/productos/eliminar/" + producto._id method="POST" class="form-inline")
-                                button(type="submit" class="btn-eliminar" onclick="return confirm('¿Eliminar este producto?')") Eliminar
+                                button(type="submit" class="btn-eliminar" onclick="return confirm('¿Eliminar este producto?')")
+                                    i.fas.fa-trash
+                                    |  Eliminar
     else
-        p No hay productos registrados.
+        div.mensaje-vacio
+            i.fas.fa-box-open
+            h2 No hay productos registrados
+            p Todavía no hay productos cargados en el inventario.

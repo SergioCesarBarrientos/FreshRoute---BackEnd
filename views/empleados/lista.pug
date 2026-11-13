@@ -1,51 +1,93 @@
+
 extends ../layout
 
 block content
-    h1 Lista de Empleados
+    h1
+        i.fas.fa-users
+        |  Lista de Empleados
 
     .nav
-        a(href="/") Volver al inicio
-        a(href="/empleados/nuevo") Agregar empleado
+        a(href="/")
+            i.fas.fa-arrow-left
+            |  Volver al inicio
+
+        a(href="/empleados/nuevo" class="btn-agregar")
+            i.fas.fa-plus
+            |  Agregar empleado
 
     //- Filtro por rol
     form(action="/empleados" method="GET" class="filtro-empleados")
-        label(for="rol") Filtrar por rol:
+        label(for="rol")
+            i.fas.fa-filter
+            |  Filtrar por rol:
+
         select(name="rol" id="rol" onchange="this.form.submit()")
-            option(value="todos" selected=(filtroRol === 'todos')) Todos
-            option(value="gerente" selected=(filtroRol === 'gerente')) Gerente
-            option(value="administrativo" selected=(filtroRol === 'administrativo')) Administrativo
-            option(value="repartidor" selected=(filtroRol === 'repartidor')) Repartidor
+            option(value="todos" selected=(filtroRol === 'todos')) Todos los empleados
+            option(value="gerente" selected=(filtroRol === 'gerente')) Gerentes
+            option(value="administrativo" selected=(filtroRol === 'administrativo')) Administrativos
+            option(value="repartidor" selected=(filtroRol === 'repartidor')) Repartidores
 
     if empleados && empleados.length > 0
         ul.grid-empleados
             each empleado in empleados
                 li
                     div.info
-                        strong #{empleado.nombre} #{empleado.apellido}
-                        span 📧 #{empleado.email}
-                        span 🆔 DNI: #{empleado.dni}
-                        span 📞 Tel: #{empleado.telefono}
-                        span 🛡️ Rol: #{empleado.rol}
+                        strong.nombre-empleado
+                            i.fas.fa-user-circle
+                            |  #{empleado.nombre} #{empleado.apellido}
+
+                        span
+                            i.fas.fa-envelope
+                            |  #{empleado.email}
+
+                        span
+                            i.fas.fa-id-card
+                            |  DNI: #{empleado.dni}
+
+                        span
+                            i.fas.fa-phone
+                            |  Tel: #{empleado.telefono}
+
+                        span
+                            i.fas.fa-user-tag
+                            |  Rol:
+                            span(class="etiqueta-rol rol-" + empleado.rol)= empleado.rol
+
                         if empleado.vehiculo
-                            span 🚗 Vehículo: #{empleado.vehiculo} (#{empleado.patente})
+                            span
+                                i.fas.fa-car
+                                |  Vehículo: #{empleado.vehiculo} (#{empleado.patente})
+
                         if empleado.idUsuario
-                            span 👤 Usuario: #{empleado.idUsuario.username}
-                        //- Mostrar el estado con el color correcto
+                            span
+                                i.fas.fa-at
+                                |  Usuario: #{empleado.idUsuario.username}
+
                         if empleado.rol === 'repartidor' && empleado.estado
-                            if empleado.estado === 'Disponible'
-                                span 🟢 Estado: #{empleado.estado}
-                            else if empleado.estado === 'Ocupado'
-                                span 🟡 Estado: #{empleado.estado}
-                            else if empleado.estado === 'Inactivo'
-                                span 🔴 Estado: #{empleado.estado}
-                            else
-                                span ⚪ Estado: #{empleado.estado}
+                            span
+                                i.fas.fa-circle-dot
+                                |  Estado:
+                                if empleado.estado === 'Disponible'
+                                    span.estado estado-disponible= empleado.estado
+                                else if empleado.estado === 'Ocupado'
+                                    span.estado estado-ocupado= empleado.estado
+                                else if empleado.estado === 'Inactivo'
+                                    span.estado estado-inactivo= empleado.estado
+                                else
+                                    span.estado estado-otro= empleado.estado
 
                     div.acciones
                         form(action="/empleados/editar/" + empleado._id method="GET" class="form-inline")
-                            button(type="submit" class="btn-editar") Editar
+                            button(type="submit" class="btn-editar")
+                                i.fas.fa-pen
+                                |  Editar
 
                         form(action="/empleados/eliminar/" + empleado._id method="POST" class="form-inline")
-                            button(type="submit" class="btn-eliminar" onclick="return confirm('¿Eliminar este empleado?')") Eliminar
+                            button(type="submit" class="btn-eliminar" onclick="return confirm('¿Eliminar este empleado?')")
+                                i.fas.fa-trash
+                                |  Eliminar
     else
-        p No hay empleados registrados para este filtro.
+        div.mensaje-vacio
+            i.fas.fa-users
+            h2 No hay empleados registrados
+            p No se encontraron empleados para este filtro.

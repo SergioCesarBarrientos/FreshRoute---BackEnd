@@ -1,39 +1,86 @@
+
 extends ../layout
 
 block content
-    h1 Lista de Clientes
+    h1
+        i.fa-solid.fa-users
+        |  Lista de Clientes
 
     nav.nav
-        a(href="/") Volver al inicio
+        a(href="/")
+            i.fa-solid.fa-arrow-left
+            |  Volver al inicio
+
         //- SuperAdmin, Gerente y Administrativo pueden crear
         if usuarioLogueado && (usuarioLogueado.rol === 'superadmin' || usuarioLogueado.rol === 'gerente' || usuarioLogueado.rol === 'administrativo')
-            a(href="/clientes/nuevo") Agregar cliente
+            a(href="/clientes/nuevo" class="btn-agregar")
+                i.fa-solid.fa-plus
+                |  Agregar cliente
 
     //- Buscador
     form(action="/clientes" method="GET" class="buscador")
-        input(type="text" name="buscar" placeholder="Buscar por nombre..." value=busqueda)
-        button(type="submit") Buscar
-        if busqueda
-            a(href="/clientes" class="btn-cancelar" style="margin-left: 10px;") Limpiar
+        div.buscador-input
+            i.fa-solid.fa-magnifying-glass
+            input(
+                type="text"
+                name="buscar"
+                placeholder="Buscar cliente por nombre..."
+                value=busqueda
+            )
 
+        button(type="submit")
+            i.fa-solid.fa-search
+            |  Buscar
+
+        if busqueda
+            a(href="/clientes" class="btn-limpiar")
+                i.fa-solid.fa-xmark
+                |  Limpiar
+
+    //- Listado de clientes
     if clientes && clientes.length > 0
         ul.grid-empleados
             each cliente in clientes
                 li
                     div.info
-                        strong= cliente.nombre
-                        span 🆔 CUIT: #{cliente.cuit}
-                        span 📧 #{cliente.email}
-                        span 📞 #{cliente.telefono}
-                        span 🏠 #{cliente.direccion}
+                        strong
+                            i.fa-solid.fa-building
+                            |  #{cliente.nombre}
+
+                        span
+                            i.fa-solid.fa-id-card
+                            |  CUIT: #{cliente.cuit}
+
+                        span
+                            i.fa-solid.fa-envelope
+                            |  #{cliente.email}
+
+                        span
+                            i.fa-solid.fa-phone
+                            |  #{cliente.telefono}
+
+                        span
+                            i.fa-solid.fa-location-dot
+                            |  #{cliente.direccion}
 
                     div.acciones
                         //- Solo SuperAdmin y Gerente pueden editar o eliminar
                         if usuarioLogueado && (usuarioLogueado.rol === 'superadmin' || usuarioLogueado.rol === 'gerente')
                             form(action="/clientes/editar/" + cliente._id method="GET" class="form-inline")
-                                button(type="submit" class="btn-editar") Editar
+                                button(type="submit" class="btn-editar")
+                                    i.fa-solid.fa-pen-to-square
+                                    |  Editar
 
                             form(action="/clientes/eliminar/" + cliente._id method="POST" class="form-inline")
-                                button(type="submit" class="btn-eliminar" onclick="return confirm('¿Eliminar este cliente?')") Eliminar
+                                button(
+                                    type="submit"
+                                    class="btn-eliminar"
+                                    onclick="return confirm('¿Eliminar este cliente?')"
+                                )
+                                    i.fa-solid.fa-trash
+                                    |  Eliminar
     else
-        p No se encontraron clientes.
+        div.mensaje-vacio
+            i.fa-solid.fa-users
+            h2 No se encontraron clientes
+            p Probá con otro nombre o agregá un nuevo cliente.
