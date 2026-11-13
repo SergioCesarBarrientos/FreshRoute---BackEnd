@@ -10,7 +10,6 @@ html(lang="es")
         link(rel="stylesheet" href="/css/styles.css")
 
     body
-   
         nav.navbar
             div.navbar-brand
                 a(href="/")
@@ -24,17 +23,13 @@ html(lang="es")
                         i.fa-solid.fa-user
                         |  Hola, #{usuarioLogueado.username} (#{usuarioLogueado.rol})
 
-                    a(href="/perfil")
-                        i.fa-solid.fa-id-card
-                        |  Mi Perfil
+                    a.btn-perfil(href="/perfil" aria-label="Mi perfil")
+                        i.fa-solid.fa-user
+                        
 
-                    a(href="/logout")
+                    a.btn-salir(href="/logout" aria-label="Cerrar sesión")
                         i.fa-solid.fa-right-from-bracket
-                        |  Cerrar Sesión
-                else
-                    a(href="/login")
-                        i.fa-solid.fa-right-to-bracket
-                        |  Iniciar Sesión
+                      
 
         block content
 
