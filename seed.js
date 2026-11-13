@@ -66,7 +66,7 @@ const ejecutarSeed = async () => {
     const productosInsertados = await Producto.insertMany(productosSeed);
     console.log(`✅ ${productosInsertados.length} productos insertados`);
 
-    // 3) Crear SuperAdmin y Gerente (Usuarios sin ficha de empleado)
+    // 3) Crear SuperAdmin y Gerente
     const saltRounds = 10;
     const passwordHash = await bcrypt.hash("123", saltRounds);
 
@@ -77,7 +77,7 @@ const ejecutarSeed = async () => {
     await Usuario.insertMany(adminsSeed);
     console.log("✅ SuperAdmin y Gerente insertados (pass: 123)");
 
-    // 4) Crear Empleados (con su Usuario automático y email guardado)
+    // 4) Crear Empleados
     const empleadosCreados = [];
     for (const emp of empleadosSeed) {
       let baseUsername = (emp.nombre.charAt(0) + emp.apellido).toLowerCase().replace(/\s+/g, '');
@@ -112,13 +112,12 @@ const ejecutarSeed = async () => {
     }
 
     // 5) Crear Pedidos de prueba
-    // Buscamos a los repartidores por su DNI para asignarles pedidos
     const repa1 = empleadosCreados.find(e => e.dni === "44444444"); // Juan Perez
     const repa2 = empleadosCreados.find(e => e.dni === "55555555"); // Repartidor Dos
 
     const pedidosSeed = [
       {
-        cliente: clientesInsertados[0]._id, // Supermercado Del Sol
+        cliente: clientesInsertados[0]._id,
         repartidor: repa1._id,
         items: [
           { producto: productosInsertados[0]._id, cantidad: 10, precioUnitario: productosInsertados[0].precio },
@@ -128,18 +127,38 @@ const ejecutarSeed = async () => {
         estado: 'Asignado'
       },
       {
-        cliente: clientesInsertados[3]._id, // Restaurante La Huerta
+        cliente: clientesInsertados[3]._id,
         repartidor: repa2._id,
         items: [
           { producto: productosInsertados[2]._id, cantidad: 5, precioUnitario: productosInsertados[2].precio }
         ],
         total: productosInsertados[2].precio * 5,
         estado: 'Asignado'
+      },
+      {
+        cliente: clientesInsertados[1]._id, // Segundo pedido para Juan Perez
+        repartidor: repa1._id,
+        items: [
+          { producto: productosInsertados[3]._id, cantidad: 15, precioUnitario: productosInsertados[3].precio }
+        ],
+        total: productosInsertados[3].precio * 15,
+        estado: 'Asignado'
       }
     ];
 
     await Pedido.insertMany(pedidosSeed);
     console.log(`✅ ${pedidosSeed.length} pedidos insertados`);
+
+    // 6) Actualizar el estado de los repartidores según sus pedidos activos
+    for (const repa of [repa1, repa2]) {
+      const pedidosActivos = await Pedido.countDocuments({
+        repartidor: repa._id,
+        estado: { $in: ['Asignado', 'En camino'] }
+      });
+      repa.estado = pedidosActivos >= 2 ? 'Ocupado' : 'Disponible';
+      await repa.save();
+      console.log(`🚚 Repartidor ${repa.nombre} ${repa.apellido}: ${pedidosActivos} pedidos activos → ${repa.estado}`);
+    }
 
     console.log("🌱 Seed completada correctamente");
   } catch (error) {
