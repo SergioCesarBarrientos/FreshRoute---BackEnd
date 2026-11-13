@@ -1,43 +1,67 @@
+
 extends layout
 
 block content
-    h1 🚚 FreshRoute
+    h1
+        i.fa-solid.fa-truck-fast
+        |  FreshRoute
 
     p Sistema de gestión de distribución de pedidos.
 
     .nav-principal
-        //- SuperAdmin y Gerente ven todo
         if usuarioLogueado && (usuarioLogueado.rol === 'superadmin' || usuarioLogueado.rol === 'gerente')
             a(href="/clientes")
-                span 👥 Clientes
-                span.flecha →
-            a(href="/productos")
-                span 📦 Productos
-                span.flecha →
-            a(href="/empleados")
-                span 🧑‍💼 Empleados
-                span.flecha →
-            a(href="/usuarios/lista")
-                span 👤 Usuarios
-                span.flecha →
-            a(href="/pedidos")
-                span 📋 Pedidos
+                span
+                    i.fa-solid.fa-users
+                    |  Clientes
                 span.flecha →
 
-        //- Administrativo ve Clientes, Productos y Pedidos
+            a(href="/productos")
+                span
+                    i.fa-solid.fa-box
+                    |  Productos
+                span.flecha →
+
+            a(href="/empleados")
+                span
+                    i.fa-solid.fa-user-tie
+                    |  Empleados
+                span.flecha →
+
+            a(href="/usuarios/lista")
+                span
+                    i.fa-solid.fa-user
+                    |  Usuarios
+                span.flecha →
+
+            a(href="/pedidos")
+                span
+                    i.fa-solid.fa-clipboard-list
+                    |  Pedidos
+                span.flecha →
+
         else if usuarioLogueado && usuarioLogueado.rol === 'administrativo'
             a(href="/clientes")
-                span 👥 Clientes
-                span.flecha →
-            a(href="/productos")
-                span 📦 Productos
-                span.flecha →
-            a(href="/pedidos")
-                span 📋 Pedidos
+                span
+                    i.fa-solid.fa-users
+                    |  Clientes
                 span.flecha →
 
-        //- Repartidor solo ve sus entregas
+            a(href="/productos")
+                span
+                    i.fa-solid.fa-box
+                    |  Productos
+                span.flecha →
+
+            a(href="/pedidos")
+                span
+                    i.fa-solid.fa-clipboard-list
+                    |  Pedidos
+                span.flecha →
+
         else if usuarioLogueado && usuarioLogueado.rol === 'repartidor'
             a(href="/mis-entregas")
-                span 🚚 Mis Entregas
+                span
+                    i.fa-solid.fa-truck
+                    |  Mis Entregas
                 span.flecha →

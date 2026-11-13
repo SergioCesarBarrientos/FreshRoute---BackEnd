@@ -1,31 +1,64 @@
+
 extends ../layout
 
 block content
-    h1 Gestión de Accesos
+    h1
+        i.fas.fa-user-shield
+        |  Gestión de Accesos
 
     .nav
-        a(href="/") Volver al inicio
+        a(href="/")
+            i.fas.fa-arrow-left
+            |  Volver al inicio
 
     if usuarios && usuarios.length > 0
-        ul
+        ul.grid-empleados.grid-usuarios
             each usuario in usuarios
                 li
                     div.info
-                        strong #{usuario.username}
-                        span 📧 #{usuario.email}
-                        span 🛡️ Rol: #{usuario.rol}
-                        span #{usuario.activo ? '🟢 Activo' : '🔴 Inactivo'}
+                        strong.nombre-empleado
+                            i.fas.fa-user-circle
+                            |  #{usuario.username}
+
+                        span
+                            i.fas.fa-envelope
+                            |  #{usuario.email}
+
+                        span
+                            i.fas.fa-user-tag
+                            |  Rol:
+                            span(class="etiqueta-rol rol-" + usuario.rol)= usuario.rol
+
+                        //- Estado del usuario
+                        if usuario.activo
+                            span.estado-usuario.activo
+                                i.fas.fa-circle
+                                |  Activo
+                        else
+                            span.estado-usuario.inactivo
+                                i.fas.fa-circle
+                                |  Inactivo
 
                     div.acciones
-                        //- Botón para restablecer la contraseña
+                        //- Restablecer contraseña
                         form(action="/usuarios/restablecer/" + usuario._id method="POST" class="form-inline")
-                            button(type="submit" class="btn-editar" onclick="return confirm('¿Restablecer la contraseña al DNI del empleado?')") Restablecer Clave
+                            button(type="submit" class="btn-editar" onclick="return confirm('¿Restablecer la contraseña al DNI del empleado?')")
+                                i.fas.fa-key
+                                |  Restablecer clave
 
-                        //- Botón para dar de baja o activar
+                        //- Dar de baja o activar usuario
                         form(action="/usuarios/cambiar-estado/" + usuario._id method="POST" class="form-inline")
                             if usuario.activo
-                                button(type="submit" class="btn-eliminar" onclick="return confirm('¿Dar de baja a este usuario?')") Dar de Baja
+                                button(type="submit" class="btn-eliminar" onclick="return confirm('¿Dar de baja a este usuario?')")
+                                    i.fas.fa-user-slash
+                                    |  Dar de baja
                             else
-                                button(type="submit" class="btn-editar") Activar
+                                button(type="submit" class="btn-activar")
+                                    i.fas.fa-user-check
+                                    |  Activar
+
     else
-        p No hay usuarios registrados.
+        div.mensaje-vacio
+            i.fas.fa-users-slash
+            h2 No hay usuarios registrados
+            p Todavía no hay usuarios cargados en el sistema.
