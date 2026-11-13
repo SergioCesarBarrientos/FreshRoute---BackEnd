@@ -12,6 +12,7 @@ const Cliente = require("./models/Cliente");
 const Producto = require("./models/Producto");
 const Usuario = require("./models/Usuario");
 const Empleado = require("./models/Empleado");
+const Pedido = require("./models/Pedido");
 
 // Datos de prueba - Clientes (con CUIT y Dirección)
 const clientesSeed = [
@@ -55,6 +56,7 @@ const ejecutarSeed = async () => {
     await Producto.deleteMany({});
     await Usuario.deleteMany({});
     await Empleado.deleteMany({});
+    await Pedido.deleteMany({});
     console.log("🧹 Datos anteriores eliminados");
 
     // 2) Insertar Clientes y Productos
@@ -76,8 +78,8 @@ const ejecutarSeed = async () => {
     console.log("✅ SuperAdmin y Gerente insertados (pass: 123)");
 
     // 4) Crear Empleados (con su Usuario automático y email guardado)
+    const empleadosCreados = [];
     for (const emp of empleadosSeed) {
-      // Generar username único
       let baseUsername = (emp.nombre.charAt(0) + emp.apellido).toLowerCase().replace(/\s+/g, '');
       let username = baseUsername;
       let contador = 1;
@@ -87,7 +89,7 @@ const ejecutarSeed = async () => {
       }
 
       const email = `${username}@freshroute.com`;
-      const passHash = await bcrypt.hash("123", 10); // Contraseña corta: 123
+      const passHash = await bcrypt.hash("123", 10);
 
       const nuevoUsuario = new Usuario({ 
         username, 
@@ -103,10 +105,41 @@ const ejecutarSeed = async () => {
         email,
         idUsuario: usuarioGuardado._id
       });
-      await nuevoEmpleado.save();
+      const empleadoGuardado = await nuevoEmpleado.save();
+      empleadosCreados.push(empleadoGuardado);
       
       console.log(`👤 Empleado creado: ${emp.nombre} ${emp.apellido} | User: ${username} | Pass: 123 | Email: ${email}`);
     }
+
+    // 5) Crear Pedidos de prueba
+    // Buscamos a los repartidores por su DNI para asignarles pedidos
+    const repa1 = empleadosCreados.find(e => e.dni === "44444444"); // Juan Perez
+    const repa2 = empleadosCreados.find(e => e.dni === "55555555"); // Repartidor Dos
+
+    const pedidosSeed = [
+      {
+        cliente: clientesInsertados[0]._id, // Supermercado Del Sol
+        repartidor: repa1._id,
+        items: [
+          { producto: productosInsertados[0]._id, cantidad: 10, precioUnitario: productosInsertados[0].precio },
+          { producto: productosInsertados[1]._id, cantidad: 20, precioUnitario: productosInsertados[1].precio }
+        ],
+        total: (productosInsertados[0].precio * 10) + (productosInsertados[1].precio * 20),
+        estado: 'Asignado'
+      },
+      {
+        cliente: clientesInsertados[3]._id, // Restaurante La Huerta
+        repartidor: repa2._id,
+        items: [
+          { producto: productosInsertados[2]._id, cantidad: 5, precioUnitario: productosInsertados[2].precio }
+        ],
+        total: productosInsertados[2].precio * 5,
+        estado: 'Asignado'
+      }
+    ];
+
+    await Pedido.insertMany(pedidosSeed);
+    console.log(`✅ ${pedidosSeed.length} pedidos insertados`);
 
     console.log("🌱 Seed completada correctamente");
   } catch (error) {

@@ -4,8 +4,17 @@ const pedidosController = require("../../controllers/pedidosController");
 const AppError = require("../../utils/AppError");
 const { permitirRolesVista } = require("../../middlewares/permitirRoles");
 
-// Solo Superadmin, Gerente y Administrativo gestionan pedidos
+// Cualquiera de estos roles puede ENTRAR al módulo de pedidos
 router.use(permitirRolesVista("superadmin", "gerente", "administrativo"));
+
+// Middleware específico para CREAR pedidos (solo SuperAdmin y Administrativo)
+const puedeCrearPedido = (req, res, next) => {
+  const rolesPermitidos = ['superadmin', 'administrativo'];
+  if (res.locals.usuarioLogueado && rolesPermitidos.includes(res.locals.usuarioLogueado.rol)) {
+    return next();
+  }
+  return res.status(403).send("Acceso denegado. Solo un SuperAdmin o Administrativo puede crear pedidos.");
+};
 
 // Convierte los campos repetidos del formulario (producto y cantidad) en una lista de ítems
 const aLista = (valor) => (valor === undefined ? [] : Array.isArray(valor) ? valor : [valor]);
@@ -26,8 +35,8 @@ router.get("/", async (req, res, next) => {
   }
 });
 
-// Formulario de nuevo pedido
-router.get("/nuevo", async (req, res, next) => {
+// Formulario de nuevo pedido (SOLO SuperAdmin y Administrativo)
+router.get("/nuevo", puedeCrearPedido, async (req, res, next) => {
   try {
     const { clientes, productos, repartidores } = await pedidosController.obtenerDatosNuevoPedidoParaVista();
     res.render("pedidos/nuevo", { titulo: "Nuevo Pedido", clientes, productos, repartidores });
@@ -36,8 +45,8 @@ router.get("/nuevo", async (req, res, next) => {
   }
 });
 
-// Guardar pedido. Si hay un error de datos (ej: sin stock), se vuelve a mostrar el formulario con el mensaje.
-router.post("/guardar", async (req, res, next) => {
+// Guardar pedido (SOLO SuperAdmin y Administrativo)
+router.post("/guardar", puedeCrearPedido, async (req, res, next) => {
   try {
     await pedidosController.crearPedidoParaVista(
       { cliente: req.body.cliente, repartidor: req.body.repartidor, items: armarItemsDesdeFormulario(req.body) },
@@ -63,11 +72,21 @@ router.post("/guardar", async (req, res, next) => {
   }
 });
 
-// Cancelar un pedido
+// Cancelar un pedido (SuperAdmin, Gerente y Administrativo pueden cancelar)
 router.post("/:id/cancelar", async (req, res, next) => {
   try {
     await pedidosController.cambiarEstadoParaVista(req.params.id, "Cancelado", res.locals.usuarioLogueado);
     res.redirect("/pedidos");
+  } catch (error) {
+    next(error);
+  }
+});
+
+// Ver detalle de un pedido
+router.get("/detalle/:id", async (req, res, next) => {
+  try {
+    const pedido = await pedidosController.obtenerPedidoParaVista(req.params.id, res.locals.usuarioLogueado);
+    res.render("pedidos/detalle", { titulo: "Detalle del Pedido", pedido });
   } catch (error) {
     next(error);
   }

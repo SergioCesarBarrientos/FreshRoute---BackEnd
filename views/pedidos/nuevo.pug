@@ -38,7 +38,10 @@ block content
                 select(name="repartidor" id="repartidor" required)
                     option(value="") Seleccioná un repartidor
                     each r in repartidores
-                        option(value=r._id)= r.nombre + ' ' + r.apellido + (r.vehiculo ? ' — ' + r.vehiculo : '') + ' (' + r.estado + ')'
+                        option(
+                            value=r._id 
+                            disabled=(r.estado !== 'Disponible')
+                        )= r.nombre + ' ' + r.apellido + (r.vehiculo ? ' — ' + r.vehiculo : '') + ' (' + r.estado + ')'
             else
                 p.mensaje-error No hay repartidores disponibles. Cargá un empleado con rol repartidor antes de crear pedidos.
 
