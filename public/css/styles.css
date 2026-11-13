@@ -1,34 +1,30 @@
-/* ============================================
-   VARIABLES
-   ============================================ */
 :root {
-    --bg-body: #0a0e27;
-    --bg-card: #0f172a;
-    --bg-hover: #1a2236;
-    --border: #1e293b;
-    --border-hover: #334155;
-    --text-primary: #f1f5f9;
-    --text-secondary: #94a3b8;
-    --accent: #38bdf8;
-    --accent-hover: #7dd3fc;
-    --radius: 12px;
-}
-/* :root {
-    --bg-body: #0a1410;
-    --bg-card: #0f1f1a;
-    --bg-hover: #1a2e26;
-    --border: #1f3a2f;
-    --border-hover: #2d5545;
-    --text-primary: #ecfdf5;
-    --text-secondary: #86a89a;
-    --accent: #34d399;
-    --accent-hover: #6ee7b7;
-    --radius: 12px;
-} */
+    --bg-body: #f5f6f8;
+    --bg-card: #ffffff;
+    --bg-hover: #fff1f1;
 
-/* ============================================
-   GENERAL
-   ============================================ */
+    --border: #e3e6ea;
+    --border-hover: #d8aaaa;
+
+    --text-primary: #303b46;
+    --text-secondary: #77818b;
+
+    --accent: #c83b3b;
+    --accent-hover: #a92e32;
+    --accent-light: #fff0f0;
+
+    --navy: #343d48;
+    --orange: #e99a55;
+
+    --success: #26966f;
+    --danger: #c83b3b;
+
+    --radius: 9px;
+    --shadow: 0 2px 8px rgba(40, 40, 40, 0.05);
+}
+
+
+
 * {
     margin: 0;
     padding: 0;
@@ -36,55 +32,253 @@
 }
 
 body {
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-    max-width: 880px;
-    margin: 48px auto;
+    font-family: 'Segoe UI', Arial, sans-serif;
+    max-width: 1080px;
+    margin: 30px auto;
     padding: 0 24px;
-    background-color: var(--bg-body);
-    background-image: radial-gradient(circle at 20% 80%, rgba(0, 212, 255, 0.05) 0%, transparent 60%);
+
+    background:
+        linear-gradient(rgba(255, 255, 255, 0.20), rgba(255, 255, 255, 0.20)),
+        url('/img/bg.jpg') center / cover no-repeat;
     color: var(--text-primary);
-    line-height: 1.6;
+
+    line-height: 1.5;
     min-height: 100vh;
 }
 
 h1 {
-    font-weight: 600;
-    font-size: 28px;
-    letter-spacing: -0.5px;
-    padding-bottom: 16px;
+    font-size: 25px;
+    font-weight: 700;
+    color: var(--navy);
+    letter-spacing: -0.4px;
+    padding-bottom: 12px;
     border-bottom: 1px solid var(--border);
-    margin-bottom: 32px;
+    margin-bottom: 20px;
+}
+
+h1 i {
+    color: var(--accent);
+    margin-right: 7px;
+}
+
+h2 {
+    font-size: 18px;
+    font-weight: 650;
+    color: var(--navy);
+
+    margin-top: 24px;
+    margin-bottom: 12px;
+}
+
+a {
+    transition: 0.2s;
+}
+
+button,
+input,
+select,
+textarea {
+    font-family: inherit;
 }
 
 /* ============================================
-   NAVEGACIÓN
+   3. NAVEGACIÓN
    ============================================ */
+
 .nav {
     display: flex;
-    gap: 12px;
-    margin-bottom: 28px;
+    gap: 8px;
+    margin-bottom: 22px;
     flex-wrap: wrap;
 }
 
 .nav a {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+
     color: var(--text-secondary);
+    background: var(--bg-card);
+
     text-decoration: none;
-    padding: 8px 20px;
+    padding: 7px 14px;
+
     border: 1px solid var(--border);
-    border-radius: 40px;
-    font-size: 14px;
-    transition: all 0.25s;
+    border-radius: 6px;
+
+    font-size: 13px;
+    font-weight: 500;
+
+    transition: 0.2s;
 }
 
 .nav a:hover {
-    background: var(--bg-hover);
-    color: var(--text-primary);
-    border-color: var(--border-hover);
+    background: var(--accent-light);
+    color: var(--accent-hover);
+    border-color: var(--accent);
+}
+
+/* Botón agregar */
+
+.nav a.btn-agregar {
+    background: var(--accent);
+    color: #ffffff;
+    border-color: var(--accent);
+}
+
+.nav a.btn-agregar:hover {
+    background: var(--accent-hover);
+    color: #ffffff;
+    border-color: var(--accent-hover);
+}
+
+/* Link volver */
+
+a.volver {
+    display: inline-block;
+
+    color: var(--accent);
+    text-decoration: none;
+    font-size: 13px;
+    font-weight: 500;
+
+    margin-bottom: 13px;
+}
+
+a.volver:hover {
+    color: var(--accent-hover);
 }
 
 /* ============================================
-   LISTA
+   4. MENÚ PRINCIPAL
    ============================================ */
+
+.nav-principal {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+    margin-top: 22px;
+}
+
+.nav-principal a {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    padding: 15px 18px;
+
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--accent);
+    border-radius: var(--radius);
+
+    color: var(--text-primary);
+    font-size: 14px;
+    font-weight: 600;
+    text-decoration: none;
+
+    box-shadow: var(--shadow);
+    transition: 0.2s;
+}
+
+.nav-principal a:hover {
+    border-color: var(--border-hover);
+    border-left-color: var(--accent-hover);
+    background: var(--accent-light);
+    color: var(--accent-hover);
+}
+
+.nav-principal a i {
+    color: var(--accent);
+    font-size: 17px;
+    margin-right: 10px;
+    width: 21px;
+    text-align: center;
+}
+
+.nav-principal a:hover i {
+    color: var(--accent-hover);
+}
+
+.nav-principal .flecha {
+    color: #9aabba;
+    font-size: 18px;
+    transition: 0.2s;
+}
+
+.nav-principal a:hover .flecha {
+    color: var(--accent);
+    transform: translateX(3px);
+}
+
+/* ============================================
+   5. NAVBAR
+   ============================================ */
+
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    background: #ffffff;
+    padding: 13px 19px;
+
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--accent);
+    border-radius: var(--radius);
+
+    margin-bottom: 25px;
+    box-shadow: var(--shadow);
+}
+
+.navbar-brand a {
+    font-size: 19px;
+    font-weight: 750;
+    color: var(--navy);
+    text-decoration: none;
+}
+
+.navbar-brand a i {
+    color: var(--accent);
+    margin-right: 6px;
+}
+
+.navbar-menu {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.navbar-menu span {
+    font-size: 13px;
+    color: var(--text-secondary);
+}
+
+.navbar-menu a {
+    font-size: 12px;
+    font-weight: 600;
+
+    color: var(--accent);
+    background: #ffffff;
+    text-decoration: none;
+
+    border: 1px solid var(--accent);
+    padding: 7px 13px;
+    border-radius: 6px;
+
+    transition: 0.2s;
+}
+
+.navbar-menu a:hover {
+    background: var(--accent);
+    color: #ffffff;
+    border-color: var(--accent);
+}
+
+/* ============================================
+   6. LISTAS GENERALES
+   ============================================ */
+
 ul {
     list-style: none;
     padding: 0;
@@ -94,114 +288,997 @@ li {
     background: var(--bg-card);
     border: 1px solid var(--border);
     border-radius: var(--radius);
-    padding: 18px 22px;
-    margin-bottom: 14px;
+
+    padding: 13px 17px;
+    margin-bottom: 9px;
+
     display: flex;
     justify-content: space-between;
     align-items: center;
-    flex-wrap: wrap;
-    gap: 14px;
-    transition: all 0.3s;
+    gap: 12px;
+
+    box-shadow: var(--shadow);
+    transition: border-color 0.2s, box-shadow 0.2s;
 }
 
 li:hover {
     border-color: var(--border-hover);
-    background: var(--bg-hover);
-    transform: translateY(-2px);
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+    background: #fcfdff;
 }
 
-.info strong {
-    color: var(--text-primary);
-    font-weight: 600;
-    display: block;
-    margin-bottom: 4px;
-    font-size: 16px;
-}
+/* Información de cada elemento */
 
 .info {
     color: var(--text-secondary);
-    font-size: 14px;
+    font-size: 13px;
     flex: 1;
+    min-width: 0;
+}
+
+.info strong {
+    display: block;
+    color: var(--text-primary);
+    font-size: 14px;
+    font-weight: 650;
+    margin-bottom: 3px;
 }
 
 .info span {
     display: inline-block;
-    margin-right: 16px;
+    margin-right: 12px;
 }
 
 /* ============================================
-   PÁGINA PRINCIPAL
+   7. CUADRÍCULA DE EMPLEADOS
+   También utilizada por clientes
    ============================================ */
-.nav-principal {
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
-    margin-top: 40px;
+
+.grid-empleados {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 13px;
+
+    list-style: none;
+    padding: 0;
+    margin-top: 18px;
 }
 
-.nav-principal a {
-    display: block;
-    padding: 20px 24px;
+.grid-empleados li {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+
     background: var(--bg-card);
     border: 1px solid var(--border);
     border-radius: var(--radius);
-    color: var(--text-primary);
-    font-size: 18px;
-    font-weight: 500;
-    text-decoration: none;
-    transition: all 0.3s;
-    position: relative;
-    overflow: hidden;
+
+    padding: 16px;
+    margin-bottom: 0;
+
+    box-shadow: var(--shadow);
+    transition: border-color 0.2s, box-shadow 0.2s;
 }
 
-.nav-principal a::before {
-    content: '';
-    position: absolute;
-    left: 0;
-    top: 0;
-    height: 100%;
-    width: 4px;
-    background: var(--accent);
-    transform: scaleY(0);
-    transition: transform 0.3s;
+.grid-empleados li:hover {
+    border-color: var(--border-hover);
+    box-shadow: 0 4px 13px rgba(40, 40, 40, 0.08);
 }
 
-.nav-principal a:hover {
-    border-color: var(--accent);
-    transform: translateX(8px);
-}
-
-.nav-principal a:hover::before {
-    transform: scaleY(1);
-}
-
-.nav-principal a {
+.grid-empleados .info {
     display: flex;
-    justify-content: space-between;
-    align-items: center;
+    flex-direction: column;
+    gap: 5px;
+    margin-bottom: 12px;
 }
 
-.nav-principal .flecha {
+.grid-empleados .info strong {
+    font-size: 15px;
+    color: var(--navy);
+
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 7px;
+    margin-bottom: 5px;
+}
+
+.grid-empleados .info span {
+    font-size: 12px;
     color: var(--text-secondary);
-    font-size: 20px;
-    transition: transform 0.3s, color 0.3s;
+
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-right: 0;
 }
 
-.nav-principal a:hover .flecha {
-    color: var(--accent);
-    transform: translateX(6px);
+/* Nombre personalizado de empleado */
+
+.grid-empleados .nombre-empleado {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+
+    color: var(--navy);
+    font-size: 16px;
+
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--border);
 }
-/* ============================================
-   FOOTER
-   ============================================ */
-footer {
-    margin-top: 64px;
-    padding-top: 24px;
-    border-top: 1px solid var(--border);
+
+.grid-empleados .nombre-empleado i {
+    color: var(--accent);
+    font-size: 21px;
+}
+
+/* Iconos de información */
+
+.grid-empleados .info strong i,
+.grid-empleados .info span i {
+    color: var(--accent);
+}
+
+.grid-empleados .info strong i {
+    margin-right: 7px;
+}
+
+.grid-empleados .info span i {
+    width: 17px;
     text-align: center;
+}
+
+/* ============================================
+   8. BOTONES GENERALES
+   ============================================ */
+
+button {
+    padding: 7px 14px;
+
+    border: 1px solid var(--accent);
+    border-radius: 6px;
+
+    cursor: pointer;
+    font-size: 12px;
+    font-weight: 600;
+
+    background: #ffffff;
+    color: var(--accent);
+
+    transition: background 0.2s, color 0.2s, border-color 0.2s;
+}
+
+button:hover {
+    background: var(--accent);
+    color: #ffffff;
+    border-color: var(--accent);
+}
+
+/* Editar */
+
+.btn-editar {
+    background: #ffffff;
+    color: #2878a9;
+    border: 1px solid #2878a9;
+}
+
+.btn-editar:hover {
+    background: #2878a9;
+    color: #ffffff;
+    border-color: #2878a9;
+}
+
+/* Eliminar */
+
+.btn-eliminar {
+    background: #ffffff;
+    color: var(--danger);
+    border: 1px solid var(--danger);
+}
+
+.btn-eliminar:hover {
+    background: var(--danger);
+    color: #ffffff;
+    border-color: var(--danger);
+}
+
+/* Acciones generales */
+
+.acciones {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    flex-wrap: wrap;
+}
+
+.grid-empleados .acciones {
+    display: flex;
+    gap: 8px;
+    justify-content: flex-end;
+    margin-top: auto;
+}
+
+/* Formularios de acciones dentro de tarjetas */
+
+.grid-empleados .acciones form,
+.acciones-pedidos form {
+    display: inline-block !important;
+    width: auto !important;
+    max-width: none !important;
+
+    padding: 0 !important;
+    margin: 0 !important;
+
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+}
+
+.grid-empleados .acciones button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+
+    width: auto !important;
+    margin: 0 !important;
+    padding: 8px 13px !important;
+}
+
+.grid-empleados .acciones button i,
+.acciones-pedidos button i {
+    color: inherit !important;
+}
+
+/* Formularios en línea */
+
+.form-inline {
+    background: transparent !important;
+    border: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    max-width: none !important;
+    width: auto !important;
+    display: inline-block;
+    box-shadow: none !important;
+}
+
+/* ============================================
+   9. ESTADOS DE BOTONES
+   ============================================ */
+
+button:focus-visible,
+a:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 3px;
+}
+
+button:disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+}
+
+button:disabled:hover {
+    background: #ffffff;
+    color: var(--accent);
+    border-color: var(--accent);
+}
+
+/* ============================================
+   10. FORMULARIOS GENERALES
+   ============================================ */
+
+/* Los formularios de acciones y filtros
+   tienen sus propias excepciones */
+
+form:not(.form-inline):not(.buscador):not(.filtro-empleados):not(.filtro-pedidos) {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+
+    padding: 22px;
+    margin: 18px auto;
+
+    width: 100%;
+    max-width: 500px;
+
+    box-shadow: var(--shadow);
+}
+/* Etiquetas */
+
+form label {
+    display: block;
+    margin-top: 12px;
+    margin-bottom: 5px;
+
+    color: var(--text-primary);
+    font-size: 13px;
+    font-weight: 600;
+}
+
+form label:first-child {
+    margin-top: 0;
+}
+
+/* Campos */
+
+form input,
+form select,
+form textarea {
+    width: 100%;
+    padding: 9px 11px;
+
+    background: #ffffff;
+    border: 1px solid #d8e1ea;
+    border-radius: 6px;
+
+    color: var(--text-primary);
+    font-size: 13px;
+
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+/* Enfoque */
+
+form input:focus,
+form select:focus,
+form textarea:focus {
+    border-color: var(--accent);
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(200, 59, 59, 0.10);
+}
+
+form select {
+    cursor: pointer;
+}
+
+/* Botones de formularios */
+
+form:not(.form-inline) button {
+    margin-top: 18px;
+    padding: 9px 20px;
+
+    background: var(--accent);
+    color: #ffffff;
+    border: 1px solid var(--accent);
+    border-radius: 6px;
+
+    font-size: 13px;
+    font-weight: 600;
+}
+
+form:not(.form-inline) button:hover {
+    background: var(--accent-hover);
+    color: #ffffff;
+    border-color: var(--accent-hover);
+}
+
+/* Botones dentro de grupos de acciones */
+
+form .acciones-form {
+    display: flex;
+    gap: 9px;
+    align-items: center;
+    margin-top: 18px;
+    flex-wrap: wrap;
+}
+
+form .acciones-form button {
+    margin-top: 0;
+}
+
+/* Cancelar */
+
+form .btn-cancelar,
+.buscador .btn-cancelar,
+.buscador .btn-limpiar,
+.filtro-empleados .btn-limpiar,
+.filtro-pedidos .btn-limpiar {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+
+    padding: 9px 13px;
+
+    background: #ffffff;
+    color: var(--text-secondary);
+
+    border: 1px solid var(--border);
+    border-radius: 6px;
+
+    text-decoration: none;
+    font-size: 12px;
+    font-weight: 600;
+
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+form .btn-cancelar:hover,
+.buscador .btn-cancelar:hover,
+.buscador .btn-limpiar:hover,
+.filtro-empleados .btn-limpiar:hover,
+.filtro-pedidos .btn-limpiar:hover {
+    background: #f1f2f4;
+    color: var(--text-primary);
+    border-color: #b8c0c8;
+}
+
+/* Formularios transparentes de perfil */
+
+.perfil-datos-personales form,
+.perfil-password form {
+    background: transparent;
+    border: none;
+    padding: 0;
+    margin-top: 12px;
+    max-width: 100%;
+    box-shadow: none;
+}
+
+/* ============================================
+   11. BUSCADORES Y FILTROS UNIFICADOS
+   ============================================ */
+
+/* Contenedor común */
+
+.buscador,
+.filtro-empleados,
+.filtro-pedidos {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 10px;
+
+    width: 100%;
+    max-width: 100%;
+
+    padding: 12px 15px;
+    margin: 18px 0 22px;
+
+    background: #ffffff;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+
+    box-shadow: var(--shadow);
+}
+
+/* Etiquetas de filtros */
+
+.buscador label,
+.filtro-empleados label,
+.filtro-pedidos label {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+
+    margin: 0;
+    white-space: nowrap;
+
+    color: var(--navy);
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.buscador label i,
+.filtro-empleados label i,
+.filtro-pedidos label i {
+    color: var(--accent);
+}
+
+/* Campos de buscadores y filtros */
+
+.buscador input,
+.buscador select,
+.filtro-empleados input,
+.filtro-empleados select,
+.filtro-pedidos input,
+.filtro-pedidos select {
+    width: auto;
+    min-width: 0;
+    padding: 9px 12px;
+
+    background: #f8f9fb;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+
+    color: var(--text-primary);
+    font-size: 13px;
+}
+
+/* Buscador con campo flexible */
+
+.buscador input[type="text"] {
+    flex: 1;
+    min-width: 150px;
+}
+
+/* Filtro de empleados */
+
+.filtro-empleados select {
+    width: 220px;
+}
+
+/* Filtro de pedidos */
+
+.filtro-pedidos select {
+    flex: 1;
+}
+
+/* Contenedor con icono de búsqueda */
+
+.buscador-input,
+.filtro-pedidos-select {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+
+    flex: 1;
+    min-width: 0;
+    padding: 0 12px;
+
+    background: #f8f9fb;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+}
+
+.buscador-input i,
+.filtro-pedidos-select i {
+    color: var(--accent);
+    font-size: 14px;
+}
+
+.buscador-input input,
+.filtro-pedidos-select select {
+    width: 100%;
+    min-width: 0;
+
+    border: none;
+    outline: none;
+    box-shadow: none;
+    background: transparent;
+
+    padding: 10px 0;
+}
+
+.buscador-input input:focus,
+.filtro-pedidos-select select:focus {
+    border: none;
+    outline: none;
+    box-shadow: none;
+}
+
+/* Botones de búsqueda y filtros */
+
+.buscador button,
+.filtro-empleados button,
+.filtro-pedidos button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+
+    margin: 0;
+    padding: 10px 18px;
+
+    background: var(--accent);
+    color: #ffffff;
+    border: 1px solid var(--accent);
+    border-radius: 6px;
+
+    font-size: 13px;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.buscador button:hover,
+.filtro-empleados button:hover,
+.filtro-pedidos button:hover {
+    background: var(--accent-hover);
+    color: #ffffff;
+    border-color: var(--accent-hover);
+}
+
+/* Iconos */
+
+.buscador button i,
+.filtro-empleados button i,
+.filtro-pedidos button i {
+    color: inherit;
+}
+
+/* ============================================
+   12. ICONOS GENERALES
+   ============================================ */
+
+.nav-principal a i {
+    margin-right: 8px;
+    font-size: 17px;
+    color: var(--accent);
+}
+
+/* ============================================
+   13. ETIQUETAS DE ROLES
+   ============================================ */
+
+.etiqueta-rol {
+    display: inline-block !important;
+    width: fit-content;
+
+    padding: 3px 9px;
+    margin-left: 3px;
+
+    border-radius: 20px;
+
+    font-size: 11px !important;
+    font-weight: 700;
+
+    text-transform: capitalize;
+}
+
+.rol-gerente {
+    background: #fff0f0;
+    color: #b52e35 !important;
+}
+
+.rol-administrativo {
+    background: #edf4ff;
+    color: #3266a5 !important;
+}
+
+.rol-repartidor {
+    background: #eaf7f0;
+    color: #26845b !important;
+}
+
+/* ============================================
+   14. ESTADOS DE REPARTIDORES
+   ============================================ */
+
+.estado {
+    display: inline-block !important;
+    width: fit-content;
+
+    padding: 3px 9px;
+    margin-left: 3px;
+
+    border-radius: 20px;
+
+    font-size: 11px !important;
+    font-weight: 700;
+}
+
+.estado-disponible {
+    background: #e6f6ed;
+    color: #208653 !important;
+}
+
+.estado-ocupado {
+    background: #fff3df;
+    color: #b47718 !important;
+}
+
+.estado-inactivo {
+    background: #ffeded;
+    color: #c43c3c !important;
+}
+
+.estado-otro {
+    background: #edf0f3;
+    color: #64717d !important;
+}
+
+/* ============================================
+   15. ESTADOS DE USUARIOS
+   ============================================ */
+
+/* Activo: siempre verde */
+
+.estado-usuario.activo {
+    background: #e6f6ed !important;
+    color: #208653 !important;
+}
+
+.estado-usuario.activo i {
+    color: #208653 !important;
+}
+
+/* Inactivo: siempre rojo */
+
+.estado-usuario.inactivo {
+    background: #ffeded !important;
+    color: #c43c3c !important;
+}
+
+.estado-usuario.inactivo i {
+    color: #c43c3c !important;
+}
+
+/* ============================================
+   16. MENSAJES SIN RESULTADOS
+   ============================================ */
+
+.mensaje-vacio {
+    background: #ffffff;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+
+    padding: 35px 20px;
+    margin-top: 20px;
+
+    text-align: center;
+    box-shadow: var(--shadow);
+}
+
+.mensaje-vacio > i {
+    display: block;
+    font-size: 32px;
+    color: var(--accent);
+    margin-bottom: 12px;
+}
+
+.mensaje-vacio h2 {
+    margin: 0 0 7px;
+    font-size: 17px;
+}
+
+.mensaje-vacio p {
     color: var(--text-secondary);
     font-size: 13px;
+}
+
+/* ============================================
+   17. CONTENEDOR DE TABLAS
+   ============================================ */
+
+.tabla-contenedor {
+    width: 100%;
+    overflow-x: auto;
+    margin-top: 18px;
+
+    border-radius: var(--radius);
+    border: 1px solid var(--border);
+
+    background: #ffffff;
+    box-shadow: var(--shadow);
+}
+
+/* ============================================
+   18. TABLA DE PEDIDOS
+   ============================================ */
+
+.tabla-pedidos {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 12px;
+}
+
+.tabla-pedidos th {
+    background: var(--accent-light);
+    color: var(--accent-hover);
+
+    font-size: 12px;
+    font-weight: 650;
+    text-align: left;
+
+    padding: 11px 13px;
+    border-bottom: 1px solid var(--border);
+
+    white-space: nowrap;
+}
+
+.tabla-pedidos th i {
+    color: var(--accent);
+    margin-right: 5px;
+}
+
+.tabla-pedidos td {
+    padding: 13px 12px;
+    border-bottom: 1px solid #edf1f5;
+
+    color: var(--text-primary);
+    font-size: 12px;
+    vertical-align: middle;
+}
+
+.tabla-pedidos tbody tr {
+    transition: background 0.2s;
+}
+
+.tabla-pedidos tbody tr:hover td {
+    background: #fff7f7;
+}
+
+.tabla-pedidos td:last-child {
+    text-align: right;
+}
+
+/* Fecha */
+
+.fecha-pedido {
+    white-space: nowrap;
+    color: var(--text-secondary) !important;
+}
+
+.fecha-pedido i {
+    color: var(--accent);
+    margin-right: 5px;
+}
+
+/* Cliente */
+
+.nombre-cliente {
+    color: var(--navy);
+    font-size: 12px;
+}
+
+.nombre-cliente i {
+    color: var(--accent);
+    margin-right: 5px;
+}
+
+/* Total */
+
+.total-pedido {
+    color: #208653 !important;
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+/* Repartidor */
+
+.repartidor-pedido {
+    color: var(--text-secondary) !important;
+    white-space: nowrap;
+}
+
+.repartidor-pedido > i {
+    color: var(--accent);
+    margin-right: 5px;
+}
+
+.sin-repartidor {
+    color: #929ba4;
+    font-style: italic;
+}
+
+/* ============================================
+   19. ESTADOS DE PEDIDOS
+   ============================================ */
+
+/* Formato general */
+
+.estado-pedido,
+.tabla-pedidos .estado {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+
+    width: fit-content;
+
+    padding: 5px 10px;
+    border-radius: 20px;
+
+    font-size: 11px;
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+.estado-pedido i,
+.tabla-pedidos .estado i {
+    font-size: 7px;
+    color: inherit !important;
+}
+
+/* Asignado */
+
+.estado-asignado {
+    background: #fff3df;
+    color: #b47718 !important;
+}
+
+/* En camino */
+
+.estado-en-camino {
+    background: #edf4ff;
+    color: #3266a5 !important;
+}
+
+/* Entregado */
+
+.estado-entregado {
+    background: #e6f6ed;
+    color: #208653 !important;
+}
+
+/* Cancelado */
+
+.estado-cancelado {
+    background: #ffeded;
+    color: #c43c3c !important;
+}
+
+/* ============================================
+   20. ACCIONES DE PEDIDOS
+   ============================================ */
+
+.acciones-pedidos {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 6px;
+    flex-wrap: nowrap;
+}
+
+.acciones-pedidos button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+
+    width: auto !important;
+    padding: 7px 10px !important;
+    margin: 0 !important;
+
+    font-size: 11px;
+    white-space: nowrap;
+}
+
+.acciones-pedidos button i {
+    color: inherit !important;
+}
+
+/* ============================================
+   21. PERFIL DE USUARIO
+   ============================================ */
+
+.perfil-container {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.perfil-datos,
+.perfil-datos-personales,
+.perfil-password {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+
+    padding: 18px;
+    box-shadow: var(--shadow);
+}
+
+.perfil-datos h2,
+.perfil-datos-personales h2,
+.perfil-password h2 {
+    margin-top: 0;
+    margin-bottom: 13px;
+
+    font-size: 16px;
+    color: var(--navy);
+
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 9px;
+}
+
+.perfil-datos p,
+.perfil-datos-personales p {
+    margin-bottom: 7px;
+    font-size: 13px;
+}
+
+/* ============================================
+   22. FOOTER
+   ============================================ */
+
+footer {
+    margin-top: 42px;
+    padding-top: 16px;
+
+    border-top: 1px solid var(--border);
+
+    text-align: center;
+    color: var(--text-secondary);
+    font-size: 12px;
     line-height: 1.8;
 }
 
@@ -210,187 +1287,999 @@ footer p {
 }
 
 footer strong {
-    color: var(--text-primary);
+    color: var(--navy);
     font-weight: 600;
 }
+
+/* CORRECCIÓN: ALINEACIÓN DE BOTONES DE BÚSQUEDA */
+
+.buscador button,
+.filtro-pedidos button {
+    margin-top: 0 !important;
+    align-self: center;
+}
+
+.buscador .btn-limpiar,
+.filtro-pedidos .btn-limpiar {
+    margin-top: 0 !important;
+    align-self: center;
+}
+
+
+
 /* ============================================
-   BOTONES
+   PANEL DE REPARTIDOR - FRESHROUTE
    ============================================ */
-button {
-    padding: 6px 18px;
-    border: 1px solid var(--border);
-    border-radius: 40px;
-    cursor: pointer;
-    font-size: 13px;
-    font-weight: 500;
-    background: transparent;
-    color: var(--text-secondary);
-    transition: all 0.25s;
+
+.repartidor-panel {
+    width: 100%;
+    margin-top: 15px;
 }
 
-button:hover {
-    background: var(--bg-hover);
-    color: var(--text-primary);
-    border-color: var(--border-hover);
-}
+/* Encabezado */
 
-.btn-editar {
-    color: var(--text-primary);
-}
-
-.btn-editar:hover {
-    color: var(--accent);
-    border-color: var(--accent);
-}
-
-.btn-eliminar {
-    color: var(--text-primary);
-}
-
-.btn-eliminar:hover {
-    color: #f87171;
-    border-color: #f87171;
-}
-
-.acciones {
+.panel-header {
     display: flex;
-    gap: 8px;
-    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 22px;
 }
 
-/* ============================================
-   FORMULARIOS
-   ============================================ */
-form {
+.panel-titulo h1 {
+    margin-bottom: 5px;
+}
+
+.panel-titulo p {
+    color: var(--text-secondary);
+    font-size: 13px;
+}
+
+.usuario-info {
+    display: flex;
+    align-items: center;
+    gap: 10px;
     background: var(--bg-card);
     border: 1px solid var(--border);
     border-radius: var(--radius);
-    padding: 24px;
-    margin-top: 24px;
-    max-width: 500px;
-}
-
-form label {
-    display: block;
-    margin-top: 16px;
-    margin-bottom: 6px;
-    color: var(--text-secondary);
-    font-size: 14px;
-    font-weight: 500;
-}
-
-form label:first-child {
-    margin-top: 0;
-}
-
-form input {
-    width: 100%;
     padding: 10px 14px;
-    background: var(--bg-body);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    color: var(--text-primary);
-    font-size: 15px;
-    transition: all 0.25s;
-    box-sizing: border-box;
 }
 
-form input:focus {
-    border-color: var(--accent);
-    outline: none;
-    box-shadow: 0 0 0 3px rgba(0, 212, 255, 0.1);
-}
-
-form button {
-    margin-top: 24px;
-    padding: 10px 28px;
-    background: var(--accent);
-    color: var(--bg-body);
-    border: none;
-    border-radius: var(--radius);
-    font-size: 15px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.25s;
-}
-
-form button:hover {
-    background: var(--accent-hover);
-    transform: translateY(-1px);
-}
-
-/* ============================================
-   TÍTULOS DE SECCIÓN
-   ============================================ */
-h2 {
-    font-size: 20px;
-    font-weight: 600;
-    margin-top: 32px;
-    margin-bottom: 16px;
-    color: var(--text-primary);
-}
-
-
-
-/* ============================================
-   BOTONES DE FORMULARIO (Guardar + Cancelar)
-   ============================================ */
-form .acciones-form {
+.usuario-avatar {
+    width: 38px;
+    height: 38px;
     display: flex;
-    gap: 12px;
+    justify-content: center;
     align-items: center;
-    margin-top: 24px;
-    flex-wrap: wrap;
+    background: var(--accent-light);
+    color: var(--accent);
+    border-radius: 50%;
 }
 
-form .acciones-form button {
-    margin-top: 0;
+.usuario-datos {
+    display: flex;
+    flex-direction: column;
 }
 
-form .btn-cancelar {
-    padding: 10px 28px;
-    background: transparent;
+.nombre-usuario {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--navy);
+}
+
+.usuario-datos small {
+    font-size: 11px;
     color: var(--text-secondary);
+}
+
+/* Vehículo */
+
+.vehiculo-bar {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    margin-bottom: 22px;
+}
+
+.vehiculo-info,
+.temperatura-info,
+.ruta-info {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 15px;
+    background: var(--bg-card);
     border: 1px solid var(--border);
     border-radius: var(--radius);
-    font-size: 15px;
-    font-weight: 500;
-    text-decoration: none;
-    transition: all 0.25s;
-    cursor: pointer;
-    display: inline-block;
+    box-shadow: var(--shadow);
 }
 
-form .btn-cancelar:hover {
-    background: var(--bg-hover);
-    color: var(--text-primary);
-    border-color: var(--border-hover);
-}
-
-/* ============================================
-   LINK VOLVER
-   ============================================ */
-a.volver {
-    display: inline-block;
-    color: var(--text-secondary);
-    text-decoration: none;
-    font-size: 14px;
-    margin-bottom: 16px;
-    transition: color 0.25s;
-}
-
-a.volver:hover {
+.vehiculo-info > i,
+.temperatura-info > i,
+.ruta-info > i {
+    font-size: 22px;
     color: var(--accent);
 }
 
-/* ============================================
-   FORMULARIOS EN LÍNEA (para botones de lista)
-   ============================================ */
-.form-inline {
-    background: transparent;
-    border: none;
-    padding: 0;
+.vehiculo-bar div div {
+    display: flex;
+    flex-direction: column;
+}
+
+.vehiculo-bar small {
+    color: var(--text-secondary);
+    font-size: 11px;
+}
+
+.vehiculo-bar strong {
+    color: var(--navy);
+    font-size: 13px;
+}
+
+/* Títulos de secciones */
+
+.seccion-titulo {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 14px;
+}
+
+.seccion-titulo h2 {
     margin: 0;
-    max-width: none;
-    display: inline;
+    font-size: 17px;
+    color: var(--navy);
+}
+
+.seccion-titulo h2 i {
+    color: var(--accent);
+    margin-right: 7px;
+}
+
+.total-pedidos {
+    background: var(--accent-light);
+    color: var(--accent);
+    padding: 5px 11px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 700;
+}
+
+/* Resumen */
+
+.resumen-dia {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 18px;
+    margin-bottom: 25px;
+    box-shadow: var(--shadow);
+}
+
+.resumen-dia .seccion-titulo {
+    margin-bottom: 17px;
+}
+
+.contadores {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+}
+
+.contador-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 12px;
+    background: #f8f9fb;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+}
+
+.contador-icono {
+    width: 38px;
+    height: 38px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 8px;
+    background: var(--accent-light);
+    color: var(--accent);
+    font-size: 17px;
+}
+
+.contador-datos {
+    display: flex;
+    flex-direction: column;
+}
+
+.contador-datos strong {
+    font-size: 21px;
+    color: var(--navy);
+    line-height: 1.2;
+}
+
+.contador-datos small {
+    font-size: 10px;
+    color: var(--text-secondary);
+    font-weight: 700;
+}
+
+/* Lista de entregas */
+
+.lista-entregas {
+    margin-bottom: 25px;
+}
+
+.entregas-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 14px;
+}
+
+/* Tarjetas */
+
+.tarjeta-pedido {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 17px;
+    box-shadow: var(--shadow);
+    transition: 0.2s;
+}
+
+.tarjeta-pedido:hover {
+    border-color: var(--border-hover);
+    box-shadow: 0 4px 13px rgba(40, 40, 40, 0.08);
+}
+
+.tarjeta-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 10px;
+    padding-bottom: 13px;
+    border-bottom: 1px solid var(--border);
+}
+
+.cliente-info {
+    min-width: 0;
+}
+
+.cliente-info h3 {
+    color: var(--navy);
+    font-size: 15px;
+    margin-bottom: 8px;
+    overflow-wrap: anywhere;
+}
+
+.cliente-info h3 i {
+    color: var(--accent);
+    margin-right: 6px;
+}
+
+.cliente-info small {
+    display: block;
+    color: var(--text-secondary);
+    font-size: 11px;
+    margin-bottom: 5px;
+    overflow-wrap: anywhere;
+}
+
+.cliente-info small i {
+    color: var(--accent);
+    margin-right: 5px;
+}
+
+.cliente-info .id-pedido {
+    font-size: 10px;
+    color: #9aa3ac;
+}
+
+.estado-contenedor {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 5px;
+    flex-shrink: 0;
+}
+
+.estado-contenedor > small {
+    color: var(--text-secondary);
+    font-size: 9px;
+    font-weight: 700;
+}
+
+.estado-pedido {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 5px 9px;
+    border-radius: 20px;
+    font-size: 9px;
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+.estado-entregado {
+    background: #e6f6ed;
+    color: #208653;
+}
+
+.estado-cancelado {
+    background: #ffeded;
+    color: #c43c3c;
+}
+
+.estado-asignado {
+    background: #fff3df;
+    color: #b47718;
+}
+
+.estado-en-camino {
+    background: #edf4ff;
+    color: #3266a5;
+}
+
+/* Detalles */
+
+.tarjeta-detalles {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    padding: 14px 0;
+}
+
+.detalle-item {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    color: var(--text-secondary);
+    font-size: 12px;
+}
+
+.detalle-item i {
+    color: var(--accent);
+}
+
+/* Acciones */
+
+.tarjeta-acciones {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 7px;
+    padding-top: 12px;
+    border-top: 1px solid var(--border);
+}
+
+.tarjeta-acciones form {
+    display: inline-flex !important;
+    width: auto !important;
+    max-width: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    border: none !important;
+    background: transparent !important;
+    box-shadow: none !important;
+}
+
+.tarjeta-acciones button,
+.tarjeta-acciones a {
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    gap: 5px;
+    padding: 7px 10px;
+    margin: 0;
+    border-radius: 6px;
+    font-size: 10px;
+    font-weight: 700;
+    text-decoration: none;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.tarjeta-acciones button i,
+.tarjeta-acciones a i {
+    color: inherit;
+}
+
+/* Entregado */
+
+.btn-entregado {
+    background: #ffffff;
+    color: #208653;
+    border: 1px solid #26966f;
+}
+
+.btn-entregado:hover {
+    background: #26966f;
+    color: #ffffff;
+}
+
+/* Cancelar */
+
+.tarjeta-acciones .btn-cancelar-pedido {
+    background: #ffffff;
+    color: #c83b3b;
+    border: 1px solid #c83b3b;
+}
+
+.tarjeta-acciones .btn-cancelar-pedido:hover {
+    background: #c83b3b;
+    color: #ffffff;
+}
+
+/* No entregado */
+
+.btn-no-entregado {
+    background: #ffffff;
+    color: #b47718;
+    border: 1px solid #d99a35;
+}
+
+.btn-no-entregado:hover {
+    background: #d99a35;
+    color: #ffffff;
+}
+
+/* Revertir */
+
+.btn-revertir {
+    background: #ffffff;
+    color: #2878a9;
+    border: 1px solid #2878a9;
+}
+
+.btn-revertir:hover {
+    background: #2878a9;
+    color: #ffffff;
+}
+
+/* Ver detalle */
+
+.tarjeta-acciones .btn-detalle {
+    background: #ffffff;
+    color: var(--text-secondary);
+    border: 1px solid var(--border);
+}
+
+.tarjeta-acciones .btn-detalle:hover {
+    background: #f1f2f4;
+    color: var(--navy);
+}
+
+/* Mensaje vacío */
+
+.repartidor-panel .mensaje-vacio {
+    padding: 40px 20px;
+}
+
+.repartidor-panel .mensaje-vacio > i {
+    font-size: 36px;
+}
+
+/* Navegación inferior */
+
+.repartidor-nav {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    gap: 10px;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 13px;
+    margin-top: 25px;
+    box-shadow: var(--shadow);
+}
+
+.repartidor-nav .nav-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 5px;
+    flex: 1;
+    color: var(--text-secondary);
+    text-decoration: none;
+    font-size: 11px;
+    font-weight: 600;
+    transition: 0.2s;
+}
+
+.repartidor-nav .nav-item i {
+    font-size: 19px;
+}
+
+.repartidor-nav .nav-item:hover,
+.repartidor-nav .nav-item.activo {
+    color: var(--accent);
+}
+
+
+
+  
+
+/* ============================================
+   RESPONSIVE 
+   ============================================ */
+/* ============================================
+   RESPONSIVE - TABLETS Y PANTALLAS MEDIANAS
+   ============================================ */
+
+@media (max-width: 900px) {
+
+    body {
+        max-width: 100%;
+        margin: 20px auto;
+        padding: 0 18px;
+    }
+
+    .nav-principal {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .grid-empleados,
+    .entregas-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .vehiculo-bar {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .contadores {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .panel-header {
+        align-items: flex-start;
+    }
+
+    .tabla-contenedor {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .tabla-pedidos {
+        min-width: 750px;
+    }
+}
+
+/* ============================================
+   RESPONSIVE - TABLETS PEQUEÑAS Y MÓVILES
+   ============================================ */
+
+@media (max-width: 768px) {
+
+    /* NAVBAR */
+
+    .navbar {
+        padding: 12px;
+        gap: 10px;
+        flex-wrap: wrap;
+    }
+
+    .navbar-brand a {
+        font-size: 17px;
+    }
+
+    .navbar-menu {
+        gap: 8px;
+        flex-wrap: wrap;
+        justify-content: flex-end;
+    }
+
+    .navbar-menu > span {
+        font-size: 12px;
+        line-height: 1.3;
+        text-align: center;
+    }
+
+    .navbar-menu .btn-perfil span,
+    .navbar-menu .btn-salir span {
+        display: none;
+    }
+
+    .navbar-menu .btn-perfil,
+    .navbar-menu .btn-salir {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 10px 12px;
+        min-width: 40px;
+    }
+
+    .navbar-menu .btn-perfil i,
+    .navbar-menu .btn-salir i {
+        margin: 0;
+        font-size: 18px;
+    }
+
+
+    /* NAVEGACIÓN */
+
+    .nav {
+        gap: 7px;
+    }
+
+    .nav a {
+        padding: 7px 10px;
+        font-size: 12px;
+    }
+
+    .nav-principal {
+        grid-template-columns: 1fr;
+        gap: 10px;
+    }
+
+    .nav-principal a {
+        padding: 13px 15px;
+    }
+
+
+    /* LISTAS Y EMPLEADOS */
+
+    li {
+        padding: 12px;
+        gap: 9px;
+    }
+
+    .info {
+        font-size: 12px;
+    }
+
+    .info strong {
+        font-size: 13px;
+    }
+
+    .grid-empleados {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 10px;
+    }
+
+    .grid-empleados li {
+        padding: 13px;
+    }
+
+    .grid-empleados .nombre-empleado {
+        font-size: 14px;
+    }
+
+    .grid-empleados .info span {
+        font-size: 11px;
+        overflow-wrap: anywhere;
+    }
+
+    .grid-empleados .acciones {
+        justify-content: flex-start;
+        flex-wrap: wrap;
+    }
+
+    .grid-empleados .acciones button {
+        padding: 7px 9px !important;
+        font-size: 11px;
+    }
+
+
+    /* TARJETAS DE PEDIDOS */
+
+    .tarjeta-pedido {
+        padding: 13px;
+    }
+
+    .tarjeta-detalles {
+        gap: 10px;
+    }
+
+    .detalle-item {
+        font-size: 11px;
+    }
+
+    .tarjeta-acciones {
+        flex-wrap: wrap;
+    }
+
+    .tarjeta-acciones button,
+    .tarjeta-acciones a {
+        font-size: 10px;
+        padding: 7px 8px;
+    }
+
+
+    /* BUSCADORES Y FILTROS */
+
+    .buscador,
+    .filtro-empleados,
+    .filtro-pedidos {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 10px;
+        padding: 12px;
+    }
+
+    .buscador label,
+    .filtro-empleados label,
+    .filtro-pedidos label {
+        white-space: normal;
+    }
+
+    .buscador input,
+    .buscador select,
+    .filtro-empleados input,
+    .filtro-empleados select,
+    .filtro-pedidos input,
+    .filtro-pedidos select {
+        width: 100%;
+        min-width: 0;
+    }
+
+    .buscador-input,
+    .filtro-pedidos-select {
+        width: 100%;
+    }
+
+    .buscador button,
+    .filtro-empleados button,
+    .filtro-pedidos button {
+        width: 100%;
+    }
+
+
+    /* FORMULARIOS */
+
+    form:not(.form-inline):not(.buscador):not(.filtro-empleados):not(.filtro-pedidos) {
+        padding: 17px;
+        margin: 15px auto;
+    }
+
+    form .acciones-form {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    form .acciones-form button {
+        width: 100%;
+    }
+
+
+    /* PERFIL */
+
+    .perfil-datos,
+    .perfil-datos-personales,
+    .perfil-password {
+        padding: 15px;
+    }
+
+
+    /* PANEL DEL REPARTIDOR */
+
+    .repartidor-panel {
+        margin-top: 10px;
+    }
+
+    .panel-header {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 12px;
+    }
+
+    .panel-titulo h1 {
+        font-size: 21px;
+    }
+
+    .usuario-info {
+        width: 100%;
+        padding: 9px 12px;
+    }
+
+    .vehiculo-bar {
+        grid-template-columns: 1fr;
+        gap: 9px;
+    }
+
+    .vehiculo-info,
+    .temperatura-info,
+    .ruta-info {
+        padding: 12px;
+    }
+
+    .resumen-dia {
+        padding: 13px;
+    }
+
+    .contadores {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 9px;
+    }
+
+    .contador-item {
+        padding: 11px 9px;
+        gap: 8px;
+    }
+
+    .contador-icono {
+        width: 32px;
+        height: 32px;
+        font-size: 14px;
+        flex-shrink: 0;
+    }
+
+    .contador-datos strong {
+        font-size: 18px;
+    }
+
+    .contador-datos small {
+        font-size: 9px;
+    }
+
+    .entregas-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .tarjeta-top {
+        gap: 7px;
+    }
+
+    .cliente-info h3 {
+        font-size: 14px;
+    }
+
+    .estado-pedido {
+        font-size: 9px;
+    }
+
+    .seccion-titulo h2 {
+        font-size: 15px;
+    }
+
+
+    /* NAVEGACIÓN INFERIOR DEL REPARTIDOR */
+
+    .repartidor-nav {
+        flex-wrap: wrap;
+        gap: 5px;
+        padding: 10px 5px;
+    }
+
+    .repartidor-nav .nav-item {
+        font-size: 10px;
+    }
+}
+
+/* ============================================
+   RESPONSIVE - CELULARES PEQUEÑOS
+   ============================================ */
+
+@media (max-width: 480px) {
+
+    /* CUERPO Y TÍTULOS */
+
+    body {
+        margin: 12px auto;
+        padding: 0 11px;
+    }
+
+    h1 {
+        font-size: 20px;
+        margin-bottom: 15px;
+    }
+
+    h2 {
+        font-size: 16px;
+    }
+
+
+    /* NAVBAR */
+
+    .navbar {
+        padding: 10px;
+    }
+
+    .navbar-brand a {
+        font-size: 15px;
+    }
+
+    .navbar-menu {
+        gap: 6px;
+    }
+
+    .navbar-menu > span {
+        font-size: 11px;
+    }
+
+    .navbar-menu .btn-perfil,
+    .navbar-menu .btn-salir {
+        width: 35px;
+        height: 35px;
+        padding: 8px;
+    }
+
+    .navbar-menu .btn-perfil i,
+    .navbar-menu .btn-salir i {
+        font-size: 15px;
+    }
+
+
+    /* NAVEGACIÓN */
+
+    .nav a {
+        font-size: 11px;
+        padding: 7px 9px;
+    }
+
+    .nav-principal a {
+        font-size: 13px;
+        padding: 12px;
+    }
+
+
+    /* EMPLEADOS */
+
+    .grid-empleados {
+        grid-template-columns: 1fr;
+    }
+
+
+    /* CONTADORES */
+
+    .contadores {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .contador-item {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+
+    /* TÍTULOS DE SECCIONES */
+
+    .seccion-titulo {
+        align-items: flex-start;
+        flex-wrap: wrap;
+    }
+
+    .total-pedidos {
+        font-size: 10px;
+    }
+
+
+    /* ACCIONES DE PEDIDOS */
+
+    .tarjeta-acciones button,
+    .tarjeta-acciones a {
+        flex: 1 1 auto;
+    }
+
+
+    /* NAVEGACIÓN DEL REPARTIDOR */
+
+    .repartidor-nav .nav-item {
+        font-size: 9px;
+    }
+
+    .repartidor-nav .nav-item i {
+        font-size: 17px;
+    }
+
+
+    /* MENSAJES */
+
+    .mensaje-vacio {
+        padding: 25px 13px;
+    }
+
+    .mensaje-vacio h2 {
+        font-size: 15px;
+    }
+
+
+    /* FOOTER */
+
+    footer {
+        font-size: 10px;
+        margin-top: 30px;
+    }
 }

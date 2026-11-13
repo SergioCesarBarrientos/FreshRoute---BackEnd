@@ -1,0 +1,67 @@
+extends ../layout
+
+block content
+    a.volver(href=usuarioLogueado.rol === 'repartidor' ? '/repartidores/entregas' : '/pedidos') ← Volver
+
+    h1 Detalle del Pedido
+
+    .perfil-container
+        //- Datos Generales
+        .perfil-datos
+            h2 Información General
+            p
+                strong Fecha: 
+                | #{pedido.createdAt ? pedido.createdAt.toLocaleDateString('es-AR') : '—'}
+            p
+                strong Estado: 
+                span(class="estado estado-" + pedido.estado.toLowerCase().replace(' ', '-'))= pedido.estado
+            p
+                strong Total: 
+                | $#{pedido.total.toLocaleString('es-AR')}
+
+        //- Datos del Cliente
+        if pedido.cliente
+            .perfil-datos-personales
+                h2 Cliente
+                p
+                    strong Nombre: 
+                    | #{pedido.cliente.nombre}
+                p
+                    strong CUIT: 
+                    | #{pedido.cliente.cuit}
+                p
+                    strong Teléfono: 
+                    | #{pedido.cliente.telefono}
+                p
+                    strong Dirección: 
+                    | #{pedido.cliente.direccion}
+
+        //- Datos del Repartidor
+        if pedido.repartidor
+            .perfil-datos-personales
+                h2 Repartidor
+                p
+                    strong Nombre: 
+                    | #{pedido.repartidor.nombre} #{pedido.repartidor.apellido}
+
+        //- Productos del Pedido
+        .perfil-datos-personales
+            h2 Productos
+            table.tabla-pedidos
+                thead
+                    tr
+                        th Producto
+                        th Cantidad
+                        th Precio Unitario
+                        th Subtotal
+                tbody
+                    each item in pedido.items
+                        tr
+                            td= item.producto ? item.producto.nombre : '(producto eliminado)'
+                            td= item.cantidad
+                            td $#{item.precioUnitario.toLocaleString('es-AR')}
+                            td $#{(item.cantidad * item.precioUnitario).toLocaleString('es-AR')}
+                tfoot
+                    tr
+                        td(colspan="3") Total
+                        td $#{pedido.total.toLocaleString('es-AR')}

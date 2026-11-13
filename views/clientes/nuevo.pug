@@ -19,6 +19,16 @@ block content
             )
 
         div
+            label(for="cuit") CUIT:
+            input(
+                type="text"
+                name="cuit"
+                id="cuit"
+                placeholder="Ej. 20-12345678-9"
+                required
+            )
+
+        div
             label(for="email") Correo electrónico:
             input(
                 type="email"
@@ -35,6 +45,16 @@ block content
                 name="telefono"
                 id="telefono"
                 placeholder="Ej. 3811234567"
+                required
+            )
+
+        div
+            label(for="direccion") Dirección:
+            input(
+                type="text"
+                name="direccion"
+                id="direccion"
+                placeholder="Ej. Av. Siempre Viva 123"
                 required
             )
 

@@ -1,0 +1,184 @@
+extends ../layout
+
+block content
+    h1
+        i.fas.fa-truck-fast
+        |  Panel de Repartidor
+
+    nav.nav
+        a(href="/")
+            i.fas.fa-arrow-left
+            |  Volver al inicio
+
+    .repartidor-panel
+
+        .panel-header
+            .panel-titulo
+                h2
+                    i.fas.fa-user-circle
+                    |  Información del repartidor
+                p Sistema de gestión de entregas.
+
+            .usuario-info
+                .usuario-avatar
+                    i.fas.fa-user
+                .usuario-datos
+                    span.nombre-usuario= usuario ? `${usuario.nombre} ${usuario.apellido || ''}` : 'Repartidor'
+                    small Panel de repartidor
+
+        //- Estado del vehículo (real, no inventado)
+        section.vehiculo-bar
+            .vehiculo-info
+                i.fas.fa-truck
+                div
+                    small Vehículo
+                    strong #{usuario ? (usuario.vehiculo || 'Sin vehículo') + (usuario.patente ? ' — ' + usuario.patente : '') : 'No asignado'}
+
+        //- Resumen del día
+        section.resumen-dia
+            h2
+                i.fas.fa-chart-pie
+                |  Resumen del día
+
+            .contadores
+                .contador-item.contador-entregados
+                    .contador-icono
+                        i.fas.fa-check-circle
+                    .contador-datos
+                        strong #{resumen ? resumen.entregados : 0}
+                        small ENTREGADOS
+
+                .contador-item.contador-ruta
+                    .contador-icono
+                        i.fas.fa-truck-fast
+                    .contador-datos
+                        strong #{resumen ? resumen.enRuta : 0}
+                        small EN RUTA
+
+                .contador-item.contador-pendientes
+                    .contador-icono
+                        i.fas.fa-clock
+                    .contador-datos
+                        strong #{resumen ? resumen.pendientes : 0}
+                        small PENDIENTES
+
+                .contador-item.contador-incidencias
+                    .contador-icono
+                        i.fas.fa-exclamation-triangle
+                    .contador-datos
+                        strong #{resumen ? resumen.incidencia : 0}
+                        small INCIDENCIAS
+
+        //- Lista de entregas
+        section.lista-entregas
+
+            .seccion-titulo
+                h2
+                    i.fas.fa-clipboard-list
+                    |  Lista de entregas
+
+                span.total-pedidos #{pedidos ? pedidos.length : 0} pedidos
+
+            if pedidos && pedidos.length > 0
+                .entregas-grid
+                    each pedido in pedidos
+                        article.tarjeta-pedido
+
+                            //- Información del cliente
+                            .tarjeta-top
+                                .cliente-info
+                                    h3
+                                        i.fas.fa-user
+                                        |  #{pedido.cliente ? pedido.cliente.nombre : 'Cliente'}
+
+                                    small
+                                        i.fas.fa-map-marker-alt
+                                        |  #{pedido.cliente ? pedido.cliente.direccion : 'Sin dirección'}
+
+                                    small.id-pedido ID: #{pedido._id}
+
+                                .estado-contenedor
+                                    small ESTADO
+
+                                    if pedido.estado === 'Entregado'
+                                        span.estado-pedido.estado-entregado
+                                            i.fas.fa-check-circle
+                                            |  ENTREGADO
+
+                                    else if pedido.estado === 'Cancelado' || pedido.estado === 'No Entregado'
+                                        span.estado-pedido.estado-cancelado
+                                            i.fas.fa-times-circle
+                                            |  #{pedido.estado.toUpperCase()}
+
+                                    else if pedido.estado === 'En camino'
+                                        span.estado-pedido.estado-en-camino
+                                            i.fas.fa-truck
+                                            |  EN CAMINO
+
+                                    else
+                                        span.estado-pedido.estado-asignado
+                                            i.fas.fa-clock
+                                            |  #{pedido.estado ? pedido.estado.toUpperCase() : 'PENDIENTE'}
+
+                            //- Detalles del pedido
+                            .tarjeta-detalles
+                                .detalle-item
+                                    i.fas.fa-box
+                                    span #{pedido.items ? pedido.items.length : 1} Bultos
+
+                            //- Acciones del pedido
+                            .tarjeta-acciones
+
+                                if pedido.estado === 'Entregado'
+                                    a(href=`/repartidores/detalle/${pedido._id}` class="btn-detalle")
+                                        i.fas.fa-eye
+                                        |  Ver detalle
+
+                                else if pedido.estado === 'En camino'
+                                    form(action=`/api/pedidos/${pedido._id}/estado` method="POST" class="form-inline")
+                                        input(type="hidden" name="estado" value="Entregado")
+                                        button(type="submit" class="btn-entregado")
+                                            i.fas.fa-check
+                                            |  Entregado
+
+                                    form(action=`/api/pedidos/${pedido._id}/estado` method="POST" class="form-inline")
+                                        input(type="hidden" name="estado" value="No Entregado")
+                                        button(type="submit" class="btn-no-entregado")
+                                            i.fas.fa-exclamation-triangle
+                                            |  No entregado
+
+                                    a(href=`/repartidores/detalle/${pedido._id}` class="btn-detalle")
+                                        i.fas.fa-eye
+                                        |  Ver detalle
+
+                                else
+                                    //- Estado "Asignado": solo puede pasar a "En camino"
+                                    form(action=`/api/pedidos/${pedido._id}/estado` method="POST" class="form-inline")
+                                        input(type="hidden" name="estado" value="En camino")
+                                        button(type="submit" class="btn-en-camino")
+                                            i.fas.fa-truck
+                                            |  En camino
+
+                                    a(href=`/repartidores/detalle/${pedido._id}` class="btn-detalle")
+                                        i.fas.fa-eye
+                                        |  Ver detalle
+
+            else
+                .mensaje-vacio
+                    i.fas.fa-box-open
+                    h2 No tienes entregas asignadas
+                    p Por el momento no hay pedidos asignados para entregar.
+
+        //- Navegación inferior
+        nav.repartidor-nav
+            a.nav-item(href="#" onclick="alert('Próximamente: Mapa de entregas')")
+                i.fas.fa-map-marked-alt
+                span Mapa
+
+            a.nav-item.activo(href="/repartidores/entregas")
+                i.fas.fa-clipboard-list
+                span Pedidos
+
+            a.nav-item(href="#" onclick="alert('Próximamente: Soporte al repartidor')")
+                i.fas.fa-comments
+                span Soporte

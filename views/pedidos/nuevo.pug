@@ -1,0 +1,229 @@
+extends ../layout
+
+block content
+    a.volver(href="/pedidos") ← Volver a la lista
+
+    h1 Nuevo Pedido
+
+    p Elegí el cliente, el repartidor y agregá los productos del pedido.
+
+    if error
+        p.mensaje-error= error
+
+    form(action="/pedidos/guardar" method="POST" id="form-pedido")
+        h2 Cliente
+
+        div
+            label(for="buscar-cliente") Cliente:
+            input(type="text" id="buscar-cliente" list="lista-clientes" placeholder="Escribí el nombre del cliente y elegí una sugerencia..." autocomplete="off")
+            datalist#lista-clientes
+                each c in clientes
+                    option(value=c.nombre + ' — ' + c.cuit data-id=c._id data-nombre=c.nombre data-cuit=c.cuit data-telefono=c.telefono data-direccion=c.direccion)
+            //- Acá se guarda el ID del cliente elegido, que es lo que se envía al servidor
+            input(type="hidden" name="cliente" id="cliente")
+            p#aviso-cliente.mensaje-error(hidden) Elegí un cliente de la lista de sugerencias.
+
+        //- Datos del cliente elegido (se completan con JavaScript)
+        .datos-cliente#datos-cliente(hidden)
+            p #[strong Nombre:] #[span#dc-nombre]
+            p #[strong CUIT:] #[span#dc-cuit]
+            p #[strong Teléfono:] #[span#dc-telefono]
+            p #[strong Dirección:] #[span#dc-direccion]
+
+        h2 Repartidor
+
+        div
+            label(for="repartidor") Repartidor:
+            if repartidores && repartidores.length > 0
+                select(name="repartidor" id="repartidor" required)
+                    option(value="") Seleccioná un repartidor
+                    each r in repartidores
+                        option(
+                            value=r._id 
+                            disabled=(r.estado !== 'Disponible')
+                        )= r.nombre + ' ' + r.apellido + (r.vehiculo ? ' — ' + r.vehiculo : '') + ' (' + r.estado + ')'
+            else
+                p.mensaje-error No hay repartidores disponibles. Cargá un empleado con rol repartidor antes de crear pedidos.
+
+        h2 Agregar productos
+
+        div
+            label(for="producto") Producto:
+            select(id="producto")
+                option(value="") Seleccioná un producto
+                each prod in productos
+                    option(value=prod._id data-nombre=prod.nombre data-precio=prod.precio data-stock=prod.stock)= prod.nombre + ' — $' + prod.precio + ' (stock: ' + prod.stock + ')'
+
+        div
+            label(for="cantidad") Cantidad:
+            input(type="number" id="cantidad" min="1" step="1" value="1")
+
+        button(type="button" id="btn-agregar") Agregar
+
+        h2 Detalle del pedido
+
+        p#sin-items Todavía no agregaste productos.
+
+        table.tabla-pedidos#tabla-detalle(hidden)
+            thead
+                tr
+                    th Producto
+                    th Cantidad
+                    th Precio unitario
+                    th Subtotal
+                    th
+            tbody#detalle
+            tfoot
+                tr
+                    td(colspan="3") Total
+                    td#total $0
+                    td
+
+        div.acciones-form
+            button(type="submit") Guardar Pedido
+            a(href="/pedidos" class="btn-cancelar") Cancelar
+
+    script.
+        (function () {
+            var form = document.getElementById('form-pedido');
+
+            // ---------- Búsqueda y datos del cliente ----------
+            var inputCliente = document.getElementById('buscar-cliente');
+            var hiddenCliente = document.getElementById('cliente');
+            var sugerencias = document.getElementById('lista-clientes').options;
+            var avisoCliente = document.getElementById('aviso-cliente');
+            var datosCliente = document.getElementById('datos-cliente');
+
+            // Devuelve la sugerencia cuyo texto coincide exactamente con lo escrito (o null)
+            function buscarSugerencia(texto) {
+                for (var i = 0; i < sugerencias.length; i++) {
+                    if (sugerencias[i].value === texto) return sugerencias[i];
+                }
+                return null;
+            }
+
+            // Cada vez que se escribe o se elige una sugerencia, se actualiza el cliente elegido
+            function actualizarCliente() {
+                var texto = inputCliente.value.trim();
+                var opcion = buscarSugerencia(texto);
+                if (!opcion) {
+                    hiddenCliente.value = '';
+                    datosCliente.hidden = true;
+                    avisoCliente.hidden = texto === '';
+                    return;
+                }
+                hiddenCliente.value = opcion.dataset.id;
+                document.getElementById('dc-nombre').textContent = opcion.dataset.nombre;
+                document.getElementById('dc-cuit').textContent = opcion.dataset.cuit;
+                document.getElementById('dc-telefono').textContent = opcion.dataset.telefono;
+                document.getElementById('dc-direccion').textContent = opcion.dataset.direccion;
+                datosCliente.hidden = false;
+                avisoCliente.hidden = true;
+            }
+            inputCliente.addEventListener('input', actualizarCliente);
+            inputCliente.addEventListener('change', actualizarCliente);
+
+            // ---------- Detalle del pedido ----------
+            var selectProducto = document.getElementById('producto');
+            var inputCantidad = document.getElementById('cantidad');
+            var detalle = document.getElementById('detalle');
+            var tabla = document.getElementById('tabla-detalle');
+            var sinItems = document.getElementById('sin-items');
+            var totalEl = document.getElementById('total');
+            var lineas = {}; // id del producto -> { nombre, precio, stock, cantidad }
+
+            function celda(texto) {
+                var td = document.createElement('td');
+                td.textContent = texto;
+                return td;
+            }
+
+            function dibujarDetalle() {
+                detalle.innerHTML = '';
+                var total = 0;
+                Object.keys(lineas).forEach(function (id) {
+                    var l = lineas[id];
+                    var subtotal = l.precio * l.cantidad;
+                    total += subtotal;
+
+                    var tr = document.createElement('tr');
+                    tr.appendChild(celda(l.nombre));
+                    tr.appendChild(celda(l.cantidad));
+                    tr.appendChild(celda('$' + l.precio.toLocaleString('es-AR')));
+                    tr.appendChild(celda('$' + subtotal.toLocaleString('es-AR')));
+
+                    // Campos ocultos que se envían con el formulario
+                    var tdAccion = document.createElement('td');
+                    var hiddenProducto = document.createElement('input');
+                    hiddenProducto.type = 'hidden';
+                    hiddenProducto.name = 'producto';
+                    hiddenProducto.value = id;
+                    var hiddenCantidad = document.createElement('input');
+                    hiddenCantidad.type = 'hidden';
+                    hiddenCantidad.name = 'cantidad';
+                    hiddenCantidad.value = l.cantidad;
+                    var quitar = document.createElement('button');
+                    quitar.type = 'button';
+                    quitar.className = 'btn-eliminar';
+                    quitar.textContent = 'Quitar';
+                    quitar.addEventListener('click', function () {
+                        delete lineas[id];
+                        dibujarDetalle();
+                    });
+                    tdAccion.appendChild(hiddenProducto);
+                    tdAccion.appendChild(hiddenCantidad);
+                    tdAccion.appendChild(quitar);
+                    tr.appendChild(tdAccion);
+
+                    detalle.appendChild(tr);
+                });
+                totalEl.textContent = '$' + total.toLocaleString('es-AR');
+                var hayItems = Object.keys(lineas).length > 0;
+                tabla.hidden = !hayItems;
+                sinItems.hidden = hayItems;
+            }
+
+            document.getElementById('btn-agregar').addEventListener('click', function () {
+                var opcion = selectProducto.options[selectProducto.selectedIndex];
+                if (!opcion || !opcion.value) {
+                    alert('Seleccioná un producto.');
+                    return;
+                }
+                var cantidad = parseInt(inputCantidad.value, 10);
+                if (isNaN(cantidad) || cantidad < 1) {
+                    alert('La cantidad debe ser un número entero mayor a 0.');
+                    return;
+                }
+                var id = opcion.value;
+                var stock = parseInt(opcion.dataset.stock, 10);
+                var acumulada = (lineas[id] ? lineas[id].cantidad : 0) + cantidad;
+                if (acumulada > stock) {
+                    alert('Stock insuficiente: hay ' + stock + ' unidades de ' + opcion.dataset.nombre + '.');
+                    return;
+                }
+                lineas[id] = {
+                    nombre: opcion.dataset.nombre,
+                    precio: parseFloat(opcion.dataset.precio),
+                    stock: stock,
+                    cantidad: acumulada
+                };
+                inputCantidad.value = 1;
+                selectProducto.selectedIndex = 0;
+                dibujarDetalle();
+            });
+
+            // Antes de enviar, se comprueba que haya cliente, repartidor y al menos un producto
+            form.addEventListener('submit', function (evento) {
+                var selectRepartidor = document.getElementById('repartidor');
+                if (!hiddenCliente.value) {
+                    evento.preventDefault();
+                    alert('Elegí un cliente de la lista de sugerencias.');
+                } else if (!selectRepartidor || !selectRepartidor.value) {
+                    evento.preventDefault();
+                    alert('Seleccioná un repartidor.');
+                } else if (Object.keys(lineas).length === 0) {
+                    evento.preventDefault();
+                    alert('Agregá al menos un producto al pedido.');
+                }
+            });
+        })();

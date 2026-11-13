@@ -1,14 +1,67 @@
+
 extends layout
 
 block content
-    h1 🚚 FreshRoute
+    h1
+        i.fas.fa-truck-fast
+        |  FreshRoute
 
     p Sistema de gestión de distribución de pedidos.
 
     .nav-principal
-        a(href="/clientes")
-            span 👥 Clientes
-            span.flecha →
-        a(href="/productos")
-            span 📦 Productos
-            span.flecha →
+        if usuarioLogueado && (usuarioLogueado.rol === 'superadmin' || usuarioLogueado.rol === 'gerente')
+            a(href="/clientes")
+                span
+                    i.fas.fa-users
+                    |  Clientes
+                span.flecha →
+
+            a(href="/productos")
+                span
+                    i.fas.fa-box
+                    |  Productos
+                span.flecha →
+
+            a(href="/empleados")
+                span
+                    i.fas.fa-user-tie
+                    |  Empleados
+                span.flecha →
+
+            a(href="/usuarios/lista")
+                span
+                    i.fas.fa-user
+                    |  Usuarios
+                span.flecha →
+
+            a(href="/pedidos")
+                span
+                    i.fas.fa-clipboard-list
+                    |  Pedidos
+                span.flecha →
+
+        else if usuarioLogueado && usuarioLogueado.rol === 'administrativo'
+            a(href="/clientes")
+                span
+                    i.fas.fa-users
+                    |  Clientes
+                span.flecha →
+
+            a(href="/productos")
+                span
+                    i.fas.fa-box
+                    |  Productos
+                span.flecha →
+
+            a(href="/pedidos")
+                span
+                    i.fas.fa-clipboard-list
+                    |  Pedidos
+                span.flecha →
+
+        else if usuarioLogueado && usuarioLogueado.rol === 'repartidor'
+            a(href="/repartidores/entregas")
+                span
+                    i.fas.fa-truck
+                    |  Mis Entregas
+                span.flecha →
