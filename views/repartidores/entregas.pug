@@ -26,25 +26,13 @@ block content
                     span.nombre-usuario= usuario ? `${usuario.nombre} ${usuario.apellido || ''}` : 'Repartidor'
                     small Panel de repartidor
 
-        //- Estado del vehículo
+        //- Estado del vehículo (real, no inventado)
         section.vehiculo-bar
             .vehiculo-info
                 i.fas.fa-truck
                 div
                     small Vehículo
-                    strong Cámara frigorífica
-
-            .temperatura-info
-                i.fas.fa-snowflake
-                div
-                    small Temperatura
-                    strong -5.8°C
-
-            .ruta-info
-                i.fas.fa-route
-                div
-                    small Ruta asignada
-                    strong NORTE-A
+                    strong #{usuario ? (usuario.vehiculo || 'Sin vehículo') + (usuario.patente ? ' — ' + usuario.patente : '') : 'No asignado'}
 
         //- Resumen del día
         section.resumen-dia
@@ -138,25 +126,15 @@ block content
                                     i.fas.fa-box
                                     span #{pedido.items ? pedido.items.length : 1} Bultos
 
-                                .detalle-item
-                                    i.fas.fa-snowflake
-                                    span Temperatura: 8.2°C
-
                             //- Acciones del pedido
                             .tarjeta-acciones
 
                                 if pedido.estado === 'Entregado'
-                                    form(action=`/api/pedidos/${pedido._id}/estado` method="POST" class="form-inline")
-                                        input(type="hidden" name="estado" value="Asignado")
-                                        button(type="submit" class="btn-revertir")
-                                            i.fas.fa-undo
-                                            |  Revertir
-
-                                    a(href=`/pedidos/${pedido._id}` class="btn-detalle")
+                                    a(href=`/repartidores/detalle/${pedido._id}` class="btn-detalle")
                                         i.fas.fa-eye
                                         |  Ver detalle
 
-                                else
+                                else if pedido.estado === 'En camino'
                                     form(action=`/api/pedidos/${pedido._id}/estado` method="POST" class="form-inline")
                                         input(type="hidden" name="estado" value="Entregado")
                                         button(type="submit" class="btn-entregado")
@@ -164,18 +142,24 @@ block content
                                             |  Entregado
 
                                     form(action=`/api/pedidos/${pedido._id}/estado` method="POST" class="form-inline")
-                                        input(type="hidden" name="estado" value="Cancelado")
-                                        button(type="submit" class="btn-cancelar-pedido")
-                                            i.fas.fa-times
-                                            |  Cancelar
-
-                                    form(action=`/api/pedidos/${pedido._id}/estado` method="POST" class="form-inline")
                                         input(type="hidden" name="estado" value="No Entregado")
                                         button(type="submit" class="btn-no-entregado")
                                             i.fas.fa-exclamation-triangle
                                             |  No entregado
 
-                                    a(href=`/pedidos/${pedido._id}` class="btn-detalle")
+                                    a(href=`/repartidores/detalle/${pedido._id}` class="btn-detalle")
+                                        i.fas.fa-eye
+                                        |  Ver detalle
+
+                                else
+                                    //- Estado "Asignado": solo puede pasar a "En camino"
+                                    form(action=`/api/pedidos/${pedido._id}/estado` method="POST" class="form-inline")
+                                        input(type="hidden" name="estado" value="En camino")
+                                        button(type="submit" class="btn-en-camino")
+                                            i.fas.fa-truck
+                                            |  En camino
+
+                                    a(href=`/repartidores/detalle/${pedido._id}` class="btn-detalle")
                                         i.fas.fa-eye
                                         |  Ver detalle
 
@@ -187,7 +171,7 @@ block content
 
         //- Navegación inferior
         nav.repartidor-nav
-            a.nav-item(href="#")
+            a.nav-item(href="#" onclick="alert('Próximamente: Mapa de entregas')")
                 i.fas.fa-map-marked-alt
                 span Mapa
 
@@ -195,6 +179,6 @@ block content
                 i.fas.fa-clipboard-list
                 span Pedidos
 
-            a.nav-item(href="#")
+            a.nav-item(href="#" onclick="alert('Próximamente: Soporte al repartidor')")
                 i.fas.fa-comments
                 span Soporte
