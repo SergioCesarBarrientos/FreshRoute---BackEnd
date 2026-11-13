@@ -4,6 +4,18 @@
 
 El sistema cuenta con distintos niveles de acceso según el rol del usuario, ofreciendo herramientas específicas para la administración y para los repartidores.
 
+## 📌 Enlaces del proyecto
+
+- **Repositorio GitHub:** https://github.com/SergioCesarBarrientos/FreshRoute---BackEnd
+- **Despliegue en Vercel:** fresh-route-kohl.vercel.app
+
+## 👨‍💻 Integrantes
+
+- Miguel Marcaida
+- Carolina Silva Cotto
+- Sergio Cesar Barrientos
+- Mariana Sosa
+
 ## 🎯 Objetivo del proyecto
 
 Desarrollar una aplicación web que permita administrar las principales operaciones de FreshRoute, mejorar la organización de los pedidos y facilitar el seguimiento de las entregas mediante una plataforma centralizada.
@@ -222,10 +234,6 @@ El login bloquea a los usuarios inactivos (activo: false). Además, cuenta con m
 
 El manejador centralizado de errores controla distintos tipos de excepciones: errores de validación de Mongoose, CastError (ID inválido), JSON mal formado y errores inesperados (500).
 
-## 📌 Enlaces del proyecto
-
-- **Repositorio GitHub:** https://github.com/SergioCesarBarrientos/FreshRoute---BackEnd
-- **Despliegue en Vercel:** [Pendiente]
 
 ## 🤖 Uso de Inteligencia Artificial
 
@@ -238,19 +246,6 @@ Durante el desarrollo del proyecto se utilizó inteligencia artificial (ChatGPT)
 
 **Nota:** Todo el contenido generado por IA fue revisado, adaptado e integrado al proyecto por los integrantes del equipo, asegurando su correcto funcionamiento dentro de la arquitectura del sistema. La IA se utilizó como herramienta de apoyo y no como reemplazo del trabajo de desarrollo.
 
-## 🎓 Información académica
-
-**Institución:** IFTS N.º 29  
-**Materia:** Desarrollo de Sistemas Web (Back End)  
-**Período:** Segundo cuatrimestre de 2026  
-**Equipo:** TechLab – Grupo 3
-
-## 👨‍💻 Integrantes
-
-- Miguel Marcaida
-- Carolina Silva Cotto
-- Sergio Cesar Barrientos
-- Mariana Sosa
 
 ## 📌 Estado del proyecto
 
