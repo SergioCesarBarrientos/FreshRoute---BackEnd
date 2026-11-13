@@ -6,8 +6,8 @@ El sistema cuenta con distintos niveles de acceso según el rol del usuario, ofr
 
 ## 📌 Enlaces del proyecto
 
-- **Repositorio GitHub:** https://github.com/SergioCesarBarrientos/FreshRoute---BackEnd
-- **Despliegue en Vercel:** fresh-route-kohl.vercel.app
+- **Repositorio GitHub:** [FreshRoute - BackEnd](https://github.com/SergioCesarBarrientos/FreshRoute---BackEnd)
+- **Despliegue en Vercel:** [FreshRoute](https://fresh-route-kohl.vercel.app)
 
 ## 👨‍💻 Integrantes
 
