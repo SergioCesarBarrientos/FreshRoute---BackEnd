@@ -1,97 +1,200 @@
 extends ../layout
 
 block content
-  .container.repartidor-panel
-    //- 1. Encabezado del Repartidor
-    header.panel-header(style="display: flex; justify-content: space-between; align-items: center; padding: 15px 0; border-bottom: 1px solid #2d3748;")
-      h1(style="margin: 0; font-size: 1.5rem;") FreshRoute - Repartidor
-      .usuario-info(style="display: flex; align-items: center; gap: 10px;")
-        span= usuario ? `${usuario.nombre} ${usuario.apellido || ''}` : 'Repartidor'
-        span(style="font-size: 1.5rem;") 👤
+    h1
+        i.fas.fa-truck-fast
+        |  Panel de Repartidor
 
-    //- 2. Barra de estado del vehículo y ruta
-    .vehiculo-bar(style="display: flex; justify-content: space-between; background: #1a202c; padding: 12px 20px; border-radius: 8px; margin: 15px 0; border: 1px solid #2d3748;")
-      span 🚚 Cámara frigorífica: 
-        strong -5.8°
-      span Ruta: 
-        strong NORTE-A
+    nav.nav
+        a(href="/")
+            i.fas.fa-arrow-left
+            |  Volver al inicio
 
-    //- 3. Resumen del día (Contadores)
-    section.resumen-dia(style="background: #1a202c; padding: 15px 20px; border-radius: 8px; margin-bottom: 20px; border: 1px solid #2d3748;")
-      h3(style="margin-top: 0; font-size: 0.9rem; color: #a0aec0; text-transform: uppercase;") Resumen del día
-      .contadores(style="display: grid; grid-template-columns: repeat(4, 1fr); text-align: center; gap: 10px;")
-        .contador-item
-          div(style="font-size: 1.5rem; font-weight: bold;") #{resumen ? resumen.entregados : 0}/#{pedidos ? pedidos.length : 0}
-          small(style="color: #a0aec0;") ENTREGADOS
-        .contador-item
-          div(style="font-size: 1.5rem; font-weight: bold;") #{resumen ? resumen.enRuta : 0}
-          small(style="color: #a0aec0;") EN RUTA
-        .contador-item
-          div(style="font-size: 1.5rem; font-weight: bold;") #{resumen ? resumen.pendientes : 0}
-          small(style="color: #a0aec0;") PENDIENTES
-        .contador-item
-          div(style="font-size: 1.5rem; font-weight: bold;") #{resumen ? resumen.incidencia : 0}
-          small(style="color: #a0aec0;") INCIDENCIA
+    .repartidor-panel
 
-    //- 4. Lista de Entregas (Tarjetas dinámicas)
-    section.lista-entregas
-      h3(style="font-size: 0.9rem; color: #a0aec0; text-transform: uppercase;") Lista de Entregas
+        .panel-header
+            .panel-titulo
+                h2
+                    i.fas.fa-user-circle
+                    |  Información del repartidor
+                p Sistema de gestión de entregas.
 
-      if pedidos && pedidos.length > 0
-        each pedido in pedidos
-          .tarjeta-pedido(style="background: #1a202c; padding: 20px; border-radius: 8px; margin-bottom: 15px; border: 1px solid #2d3748;")
-            //- Cabecera de la tarjeta: Cliente y Estado
-            .tarjeta-top(style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px;")
-              div
-                h4(style="margin: 0 0 5px 0; font-size: 1.2rem;")= pedido.cliente ? pedido.cliente.nombre : 'Cliente'
-                small(style="color: #a0aec0;") ID: #{pedido._id}  |  #{pedido.cliente ? pedido.cliente.direccion : 'Sin dirección'}
-              
-              div
-                span(style="color: #a0aec0; font-size: 0.85rem;") ESTADO: 
-                if pedido.estado === 'Entregado'
-                  strong(style="color: #48bb78;") ENTREGADO
-                else if pedido.estado === 'Cancelado' || pedido.estado === 'No Entregado'
-                  strong(style="color: #f56565;")= pedido.estado.toUpperCase()
-                else
-                  strong(style="color: #ed8936;")= pedido.estado ? pedido.estado.toUpperCase() : 'PENDIENTE'
+            .usuario-info
+                .usuario-avatar
+                    i.fas.fa-user
+                .usuario-datos
+                    span.nombre-usuario= usuario ? `${usuario.nombre} ${usuario.apellido || ''}` : 'Repartidor'
+                    small Panel de repartidor
 
-            //- Detalles de carga (Bultos / Temperatura)
-            .tarjeta-detalles(style="display: flex; gap: 20px; margin: 15px 0; font-size: 0.95rem;")
-              span 📦 #{pedido.items ? pedido.items.length : 1} Bultos
-              span ❄️ 8.2°C
+        //- Estado del vehículo
+        section.vehiculo-bar
+            .vehiculo-info
+                i.fas.fa-truck
+                div
+                    small Vehículo
+                    strong Cámara frigorífica
 
-            //- Botones de acción según el estado del pedido
-            .tarjeta-acciones(style="display: flex; gap: 10px; flex-wrap: wrap; margin-top: 15px;")
-              if pedido.estado === 'Entregado'
-                form(action=`/api/pedidos/${pedido._id}/estado` method="POST" style="margin: 0;")
-                  input(type="hidden" name="estado" value="Asignado")
-                  button(type="submit" style="background: #4a5568; color: white; border: none; padding: 8px 16px; border-radius: 5px; cursor: pointer;") REVERTIR
-                a(href=`/pedidos/${pedido._id}` style="background: transparent; color: #63b3ed; border: 1px solid #63b3ed; padding: 8px 16px; border-radius: 5px; text-decoration: none;") VER DETALLE
-              else
-                form(action=`/api/pedidos/${pedido._id}/estado` method="POST" style="margin: 0;")
-                  input(type="hidden" name="estado" value="Entregado")
-                  button(type="submit" style="background: #38a169; color: white; border: none; padding: 8px 20px; border-radius: 5px; cursor: pointer; font-weight: bold;") ENTREGADO
-                
-                form(action=`/api/pedidos/${pedido._id}/estado` method="POST" style="margin: 0;")
-                  input(type="hidden" name="estado" value="Cancelado")
-                  button(type="submit" style="background: #e53e3e; color: white; border: none; padding: 8px 20px; border-radius: 5px; cursor: pointer; font-weight: bold;") CANCELAR
-                
-                form(action=`/api/pedidos/${pedido._id}/estado` method="POST" style="margin: 0;")
-                  input(type="hidden" name="estado" value="No Entregado")
-                  button(type="submit" style="background: #dd6b20; color: white; border: none; padding: 8px 20px; border-radius: 5px; cursor: pointer; font-weight: bold;") NO ENTREGADO
-                
-                a(href=`/pedidos/${pedido._id}` style="background: transparent; color: #a0aec0; border: 1px solid #4a5568; padding: 8px 16px; border-radius: 5px; text-decoration: none; margin-left: auto;") Ver detalle
-      else
-        p(style="text-align: center; color: #a0aec0; padding: 30px; background: #1a202c; border-radius: 8px;") No tienes pedidos asignados por el momento.
+            .temperatura-info
+                i.fas.fa-snowflake
+                div
+                    small Temperatura
+                    strong -5.8°C
 
-    //- 5. Barra de navegación inferior
-    nav.bottom-nav(style="display: flex; justify-content: space-around; background: #1a202c; padding: 15px; border-radius: 8px; margin-top: 25px; border-top: 1px solid #2d3748;")
-      a(href="#" style="color: #cbd5e0; text-decoration: none; text-align: center;")
-        div 📍
-        small Mapa
-      a(href="/repartidores/entregas" style="color: #63b3ed; text-decoration: none; text-align: center; font-weight: bold;")
-        div 📋
-        small Pedidos
-      a(href="#" style="color: #cbd5e0; text-decoration: none; text-align: center;")
-        div 💬
-        small Soporte
+            .ruta-info
+                i.fas.fa-route
+                div
+                    small Ruta asignada
+                    strong NORTE-A
+
+        //- Resumen del día
+        section.resumen-dia
+            h2
+                i.fas.fa-chart-pie
+                |  Resumen del día
+
+            .contadores
+                .contador-item.contador-entregados
+                    .contador-icono
+                        i.fas.fa-check-circle
+                    .contador-datos
+                        strong #{resumen ? resumen.entregados : 0}
+                        small ENTREGADOS
+
+                .contador-item.contador-ruta
+                    .contador-icono
+                        i.fas.fa-truck-fast
+                    .contador-datos
+                        strong #{resumen ? resumen.enRuta : 0}
+                        small EN RUTA
+
+                .contador-item.contador-pendientes
+                    .contador-icono
+                        i.fas.fa-clock
+                    .contador-datos
+                        strong #{resumen ? resumen.pendientes : 0}
+                        small PENDIENTES
+
+                .contador-item.contador-incidencias
+                    .contador-icono
+                        i.fas.fa-exclamation-triangle
+                    .contador-datos
+                        strong #{resumen ? resumen.incidencia : 0}
+                        small INCIDENCIAS
+
+        //- Lista de entregas
+        section.lista-entregas
+
+            .seccion-titulo
+                h2
+                    i.fas.fa-clipboard-list
+                    |  Lista de entregas
+
+                span.total-pedidos #{pedidos ? pedidos.length : 0} pedidos
+
+            if pedidos && pedidos.length > 0
+                .entregas-grid
+                    each pedido in pedidos
+                        article.tarjeta-pedido
+
+                            //- Información del cliente
+                            .tarjeta-top
+                                .cliente-info
+                                    h3
+                                        i.fas.fa-user
+                                        |  #{pedido.cliente ? pedido.cliente.nombre : 'Cliente'}
+
+                                    small
+                                        i.fas.fa-map-marker-alt
+                                        |  #{pedido.cliente ? pedido.cliente.direccion : 'Sin dirección'}
+
+                                    small.id-pedido ID: #{pedido._id}
+
+                                .estado-contenedor
+                                    small ESTADO
+
+                                    if pedido.estado === 'Entregado'
+                                        span.estado-pedido.estado-entregado
+                                            i.fas.fa-check-circle
+                                            |  ENTREGADO
+
+                                    else if pedido.estado === 'Cancelado' || pedido.estado === 'No Entregado'
+                                        span.estado-pedido.estado-cancelado
+                                            i.fas.fa-times-circle
+                                            |  #{pedido.estado.toUpperCase()}
+
+                                    else if pedido.estado === 'En camino'
+                                        span.estado-pedido.estado-en-camino
+                                            i.fas.fa-truck
+                                            |  EN CAMINO
+
+                                    else
+                                        span.estado-pedido.estado-asignado
+                                            i.fas.fa-clock
+                                            |  #{pedido.estado ? pedido.estado.toUpperCase() : 'PENDIENTE'}
+
+                            //- Detalles del pedido
+                            .tarjeta-detalles
+                                .detalle-item
+                                    i.fas.fa-box
+                                    span #{pedido.items ? pedido.items.length : 1} Bultos
+
+                                .detalle-item
+                                    i.fas.fa-snowflake
+                                    span Temperatura: 8.2°C
+
+                            //- Acciones del pedido
+                            .tarjeta-acciones
+
+                                if pedido.estado === 'Entregado'
+                                    form(action=`/api/pedidos/${pedido._id}/estado` method="POST" class="form-inline")
+                                        input(type="hidden" name="estado" value="Asignado")
+                                        button(type="submit" class="btn-revertir")
+                                            i.fas.fa-undo
+                                            |  Revertir
+
+                                    a(href=`/pedidos/${pedido._id}` class="btn-detalle")
+                                        i.fas.fa-eye
+                                        |  Ver detalle
+
+                                else
+                                    form(action=`/api/pedidos/${pedido._id}/estado` method="POST" class="form-inline")
+                                        input(type="hidden" name="estado" value="Entregado")
+                                        button(type="submit" class="btn-entregado")
+                                            i.fas.fa-check
+                                            |  Entregado
+
+                                    form(action=`/api/pedidos/${pedido._id}/estado` method="POST" class="form-inline")
+                                        input(type="hidden" name="estado" value="Cancelado")
+                                        button(type="submit" class="btn-cancelar-pedido")
+                                            i.fas.fa-times
+                                            |  Cancelar
+
+                                    form(action=`/api/pedidos/${pedido._id}/estado` method="POST" class="form-inline")
+                                        input(type="hidden" name="estado" value="No Entregado")
+                                        button(type="submit" class="btn-no-entregado")
+                                            i.fas.fa-exclamation-triangle
+                                            |  No entregado
+
+                                    a(href=`/pedidos/${pedido._id}` class="btn-detalle")
+                                        i.fas.fa-eye
+                                        |  Ver detalle
+
+            else
+                .mensaje-vacio
+                    i.fas.fa-box-open
+                    h2 No tienes entregas asignadas
+                    p Por el momento no hay pedidos asignados para entregar.
+
+        //- Navegación inferior
+        nav.repartidor-nav
+            a.nav-item(href="#")
+                i.fas.fa-map-marked-alt
+                span Mapa
+
+            a.nav-item.activo(href="/repartidores/entregas")
+                i.fas.fa-clipboard-list
+                span Pedidos
+
+            a.nav-item(href="#")
+                i.fas.fa-comments
+                span Soporte
