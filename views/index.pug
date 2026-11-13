@@ -3,7 +3,7 @@ extends layout
 
 block content
     h1
-        i.fa-solid.fa-truck-fast
+        i.fas.fa-truck-fast
         |  FreshRoute
 
     p Sistema de gestión de distribución de pedidos.
@@ -12,56 +12,56 @@ block content
         if usuarioLogueado && (usuarioLogueado.rol === 'superadmin' || usuarioLogueado.rol === 'gerente')
             a(href="/clientes")
                 span
-                    i.fa-solid.fa-users
+                    i.fas.fa-users
                     |  Clientes
                 span.flecha →
 
             a(href="/productos")
                 span
-                    i.fa-solid.fa-box
+                    i.fas.fa-box
                     |  Productos
                 span.flecha →
 
             a(href="/empleados")
                 span
-                    i.fa-solid.fa-user-tie
+                    i.fas.fa-user-tie
                     |  Empleados
                 span.flecha →
 
             a(href="/usuarios/lista")
                 span
-                    i.fa-solid.fa-user
+                    i.fas.fa-user
                     |  Usuarios
                 span.flecha →
 
             a(href="/pedidos")
                 span
-                    i.fa-solid.fa-clipboard-list
+                    i.fas.fa-clipboard-list
                     |  Pedidos
                 span.flecha →
 
         else if usuarioLogueado && usuarioLogueado.rol === 'administrativo'
             a(href="/clientes")
                 span
-                    i.fa-solid.fa-users
+                    i.fas.fa-users
                     |  Clientes
                 span.flecha →
 
             a(href="/productos")
                 span
-                    i.fa-solid.fa-box
+                    i.fas.fa-box
                     |  Productos
                 span.flecha →
 
             a(href="/pedidos")
                 span
-                    i.fa-solid.fa-clipboard-list
+                    i.fas.fa-clipboard-list
                     |  Pedidos
                 span.flecha →
 
         else if usuarioLogueado && usuarioLogueado.rol === 'repartidor'
-
             a(href="/repartidores/entregas")
-                  i.fa-solid.fa-truck
+                span
+                    i.fas.fa-truck
                     |  Mis Entregas
                 span.flecha →
