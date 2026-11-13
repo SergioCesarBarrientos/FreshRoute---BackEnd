@@ -2,21 +2,29 @@ extends ../layout
 
 block content
     h1 Lista de Productos
-    .nav
-        a(href="/") Volver al inicio
-        a(href="/productos/nuevo") Agregar producto
 
-    ul
-        each producto in productos
-            li
-                .info
-                    strong #{producto.nombre}
-                    span Precio: $#{producto.precio}
-                    span Stock: #{producto.stock}
-                .acciones
-                    form(action=`/productos/editar/${producto.id}` method="GET" class="form-inline")
-                        button(type="submit").btn-editar Editar
-                    form(action=`/productos/eliminar/${producto.id}` method="POST" class="form-inline")
-                        button(type="submit" onclick="return confirm('¿Eliminar este producto?')").btn-eliminar Eliminar
-        else
-            li No hay productos registrados.
+    nav.nav
+        a(href="/") Volver al inicio
+        //- Solo SuperAdmin y Gerente ven el botón de agregar
+        if usuarioLogueado && (usuarioLogueado.rol === 'superadmin' || usuarioLogueado.rol === 'gerente')
+            a(href="/productos/nuevo") Agregar producto
+
+    if productos && productos.length > 0
+        ul
+            each producto in productos
+                li
+                    div.info
+                        strong= producto.nombre
+                        span 💰 Precio: $#{producto.precio}
+                        span 📦 Stock: #{producto.stock}
+
+                    div.acciones
+                        //- Solo SuperAdmin y Gerente pueden editar o eliminar
+                        if usuarioLogueado && (usuarioLogueado.rol === 'superadmin' || usuarioLogueado.rol === 'gerente')
+                            form(action="/productos/editar/" + producto._id method="GET" class="form-inline")
+                                button(type="submit" class="btn-editar") Editar
+
+                            form(action="/productos/eliminar/" + producto._id method="POST" class="form-inline")
+                                button(type="submit" class="btn-eliminar" onclick="return confirm('¿Eliminar este producto?')") Eliminar
+    else
+        p No hay productos registrados.

@@ -1,12 +1,11 @@
-
 extends ../layout
 
 block content
+    a.volver(href="/clientes") ← Volver a la lista
+
     h1 Nuevo Cliente
 
     p Completá los siguientes datos para registrar un cliente.
-
-    a(href="/clientes") Volver a la lista
 
     form(action="/clientes/guardar" method="POST")
         div
@@ -16,6 +15,16 @@ block content
                 name="nombre"
                 id="nombre"
                 placeholder="Ingresá el nombre del cliente"
+                required
+            )
+
+        div
+            label(for="cuit") CUIT:
+            input(
+                type="text"
+                name="cuit"
+                id="cuit"
+                placeholder="Ej. 20-12345678-9"
                 required
             )
 
@@ -40,5 +49,15 @@ block content
             )
 
         div
+            label(for="direccion") Dirección:
+            input(
+                type="text"
+                name="direccion"
+                id="direccion"
+                placeholder="Ej. Av. Siempre Viva 123"
+                required
+            )
+
+        div.acciones-form
             button(type="submit") Guardar Cliente
-            a(href="/clientes") Cancelar
+            a(href="/clientes" class="btn-cancelar") Cancelar

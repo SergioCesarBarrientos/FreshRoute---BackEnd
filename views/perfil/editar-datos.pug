@@ -1,0 +1,24 @@
+extends ../layout
+
+block content
+    a.volver(href="/perfil") ← Volver a mi perfil
+
+    h1 Editar Mis Datos
+
+    .perfil-container
+        //- Formulario de Datos Personales
+        .perfil-datos-personales
+            h2 Datos de Contacto
+            form(action="/perfil/actualizar-datos" method="POST")
+                div
+                    label(for="telefono") Teléfono:
+                    input(type="text" name="telefono" id="telefono" value=empleado.telefono required)
+                
+                div
+                    label(for="direccion") Dirección:
+                    input(type="text" name="direccion" id="direccion" value=empleado.direccion required)
+                
+                div.acciones-form
+                    button(type="submit") Guardar Datos
+
+        

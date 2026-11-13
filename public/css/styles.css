@@ -3,16 +3,28 @@
    ============================================ */
 :root {
     --bg-body: #0a0e27;
-    --bg-card: #151b3d;
-    --bg-hover: #1e2650;
-    --border: #2a3155;
-    --border-hover: #3a4370;
-    --text-primary: #e8eaf6;
-    --text-secondary: #8b92b8;
-    --accent: #00d4ff;
-    --accent-hover: #33ddff;
+    --bg-card: #0f172a;
+    --bg-hover: #1a2236;
+    --border: #1e293b;
+    --border-hover: #334155;
+    --text-primary: #f1f5f9;
+    --text-secondary: #94a3b8;
+    --accent: #38bdf8;
+    --accent-hover: #7dd3fc;
     --radius: 12px;
 }
+/* :root {
+    --bg-body: #0a1410;
+    --bg-card: #0f1f1a;
+    --bg-hover: #1a2e26;
+    --border: #1f3a2f;
+    --border-hover: #2d5545;
+    --text-primary: #ecfdf5;
+    --text-secondary: #86a89a;
+    --accent: #34d399;
+    --accent-hover: #6ee7b7;
+    --radius: 12px;
+} */
 
 /* ============================================
    GENERAL
@@ -164,6 +176,22 @@ li:hover {
     transform: scaleY(1);
 }
 
+.nav-principal a {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.nav-principal .flecha {
+    color: var(--text-secondary);
+    font-size: 20px;
+    transition: transform 0.3s, color 0.3s;
+}
+
+.nav-principal a:hover .flecha {
+    color: var(--accent);
+    transform: translateX(6px);
+}
 /* ============================================
    FOOTER
    ============================================ */
@@ -174,9 +202,17 @@ footer {
     text-align: center;
     color: var(--text-secondary);
     font-size: 13px;
+    line-height: 1.8;
 }
 
+footer p {
+    margin: 0;
+}
 
+footer strong {
+    color: var(--text-primary);
+    font-weight: 600;
+}
 /* ============================================
    BOTONES
    ============================================ */
@@ -294,6 +330,59 @@ h2 {
     color: var(--text-primary);
 }
 
+
+
+/* ============================================
+   BOTONES DE FORMULARIO (Guardar + Cancelar)
+   ============================================ */
+form .acciones-form {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    margin-top: 24px;
+    flex-wrap: wrap;
+}
+
+form .acciones-form button {
+    margin-top: 0;
+}
+
+form .btn-cancelar {
+    padding: 10px 28px;
+    background: transparent;
+    color: var(--text-secondary);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    font-size: 15px;
+    font-weight: 500;
+    text-decoration: none;
+    transition: all 0.25s;
+    cursor: pointer;
+    display: inline-block;
+}
+
+form .btn-cancelar:hover {
+    background: var(--bg-hover);
+    color: var(--text-primary);
+    border-color: var(--border-hover);
+}
+
+/* ============================================
+   LINK VOLVER
+   ============================================ */
+a.volver {
+    display: inline-block;
+    color: var(--text-secondary);
+    text-decoration: none;
+    font-size: 14px;
+    margin-bottom: 16px;
+    transition: color 0.25s;
+}
+
+a.volver:hover {
+    color: var(--accent);
+}
+
 /* ============================================
    FORMULARIOS EN LÍNEA (para botones de lista)
    ============================================ */
@@ -304,4 +393,226 @@ h2 {
     margin: 0;
     max-width: none;
     display: inline;
+}
+
+
+/* ============================================
+   NAVBAR
+   ============================================ */
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: var(--bg-card);
+    padding: 16px 24px;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 32px;
+}
+
+.navbar-brand a {
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--text-primary);
+    text-decoration: none;
+}
+
+.navbar-menu {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.navbar-menu span {
+    font-size: 14px;
+    color: var(--text-secondary);
+}
+
+.navbar-menu a {
+    font-size: 14px;
+    color: var(--text-primary);
+    text-decoration: none;
+    border: 1px solid var(--border);
+    padding: 8px 16px;
+    border-radius: 40px;
+    transition: all 0.25s;
+}
+
+.navbar-menu a:hover {
+    background-color: var(--bg-hover);
+    border-color: var(--accent);
+    color: var(--accent);
+}
+
+/* ============================================
+   SELECTS (Para el rol de usuario)
+   ============================================ */
+form select {
+    width: 100%;
+    padding: 10px 14px;
+    background: var(--bg-body);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    color: var(--text-primary);
+    font-size: 15px;
+    transition: all 0.25s;
+    box-sizing: border-box;
+    cursor: pointer;
+}
+
+form select:focus {
+    border-color: var(--accent);
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(0, 212, 255, 0.1);
+}
+
+/* ============================================
+   PERFIL
+   ============================================ */
+.perfil-container {
+    display: flex;
+    flex-direction: column;
+    gap: 32px; /* Separa los bloques */
+}
+
+.perfil-datos,
+.perfil-datos-personales,
+.perfil-password {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 24px;
+}
+
+.perfil-datos h2,
+.perfil-datos-personales h2,
+.perfil-password h2 {
+    margin-top: 0;
+    margin-bottom: 16px;
+    font-size: 18px;
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 8px;
+}
+
+.perfil-datos p,
+.perfil-datos-personales p {
+    margin-bottom: 8px;
+    font-size: 14px;
+}
+
+.perfil-datos-personales form,
+.perfil-password form {
+    background: transparent;
+    border: none;
+    padding: 0;
+    margin-top: 16px;
+    max-width: 100%;
+}
+
+/* ============================================
+   CUADRÍCULA DE EMPLEADOS (GRID)
+   ============================================ */
+.grid-empleados {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 20px;
+    list-style: none;
+    padding: 0;
+    margin-top: 24px;
+}
+
+.grid-empleados li {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 20px;
+    margin-bottom: 0;
+    transition: all 0.3s;
+}
+
+.grid-empleados li:hover {
+    border-color: var(--border-hover);
+    transform: translateY(-4px);
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.4);
+}
+
+.grid-empleados .info {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin-bottom: 16px;
+}
+
+.grid-empleados .info strong {
+    font-size: 18px;
+    color: var(--text-primary);
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 8px;
+    margin-bottom: 8px;
+}
+
+.grid-empleados .info span {
+    font-size: 13px;
+    color: var(--text-secondary);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.grid-empleados .acciones {
+    display: flex;
+    gap: 10px;
+    justify-content: flex-end;
+    margin-top: auto;
+}
+
+/* ============================================
+   TABLA DE PEDIDOS
+   ============================================ */
+.tabla-contenedor {
+    overflow-x: auto;
+    margin-top: 24px;
+    border-radius: var(--radius);
+    border: 1px solid var(--border);
+}
+
+.tabla-pedidos {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+}
+
+.tabla-pedidos th {
+    background: var(--bg-card);
+    color: var(--text-secondary);
+    font-weight: 600;
+    text-align: left;
+    padding: 16px;
+    border-bottom: 2px solid var(--border);
+    white-space: nowrap;
+}
+
+.tabla-pedidos td {
+    padding: 16px;
+    border-bottom: 1px solid var(--border);
+    color: var(--text-primary);
+    vertical-align: middle;
+}
+
+.tabla-pedidos tr:hover td {
+    background: var(--bg-hover);
+}
+
+.tabla-pedidos td:last-child {
+    text-align: right;
+}
+
+.tabla-pedidos .acciones {
+    display: flex;
+    gap: 8px;
+    justify-content: flex-end;
+    flex-direction: row; /* Asegura que vayan uno al lado del otro */
+    flex-wrap: nowrap; /* Evita que se bajen a la otra línea */
 }
