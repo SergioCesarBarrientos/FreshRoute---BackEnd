@@ -53,7 +53,7 @@ h1 {
     letter-spacing: -0.4px;
     padding-bottom: 12px;
     border-bottom: 1px solid var(--border);
-    margin-bottom: 20px;
+    margin-bottom: 10px;
 }
 
 h1 i {
@@ -82,7 +82,7 @@ textarea {
 }
 
 /* ============================================
-   3. NAVEGACIÓN
+   NAVEGACIÓN
    ============================================ */
 
 .nav {
@@ -150,7 +150,7 @@ a.volver:hover {
 }
 
 /* ============================================
-   4. MENÚ PRINCIPAL
+MENÚ PRINCIPAL
    ============================================ */
 
 .nav-principal {
@@ -212,7 +212,7 @@ a.volver:hover {
 }
 
 /* ============================================
-   5. NAVBAR
+   NAVBAR
    ============================================ */
 
 .navbar {
@@ -276,7 +276,7 @@ a.volver:hover {
 }
 
 /* ============================================
-   6. LISTAS GENERALES
+   LISTAS GENERALES
    ============================================ */
 
 ul {
@@ -328,8 +328,120 @@ li:hover {
     margin-right: 12px;
 }
 
+/* panel login */
+
+.login-container {
+    width: 100%;
+    max-width: 440px;
+    margin: 25px auto;
+    text-align: center;
+}
+
+.login-container h1 {
+    text-align: center;
+}
+
+.login-form {
+    text-align: left;
+    margin: 18px auto !important;
+}
+
+.login-form button {
+    width: 100%;
+}
+
+/* Panel de usuarios de prueba */
+
+.test-users {
+    width: 100%;
+    max-width: 440px;
+    margin: 20px auto;
+    padding: 19px;
+
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+
+    box-shadow: var(--shadow);
+    text-align: center;
+}
+
+.test-users h3 {
+    color: var(--navy);
+    font-size: 16px;
+    font-weight: 700;
+
+    padding-bottom: 11px;
+    margin-bottom: 12px;
+
+    border-bottom: 1px solid var(--border);
+}
+
+/* Lista de usuarios */
+
+.test-users-list {
+    display: flex;
+    flex-direction: column;
+    gap: 9px;
+}
+
+.test-users-list p {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 5px;
+
+    color: var(--text-secondary);
+    font-size: 13px;
+    line-height: 1.5;
+}
+
+.test-users-list strong {
+    color: var(--navy);
+    font-weight: 700;
+}
+
+.test-users-list span {
+    color: var(--text-secondary);
+}
+
+/* Contraseña */
+
+.test-users-password {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 6px;
+
+    margin-top: 15px;
+    padding: 11px;
+
+    background: var(--accent-light);
+    border: 1px solid #f1dada;
+    border-radius: 7px;
+
+    color: var(--accent-hover);
+    font-size: 12px;
+}
+
+.test-users-password i {
+    color: var(--accent);
+}
+
+.test-users-password strong {
+    font-weight: 600;
+}
+
+.test-users-password span {
+    font-weight: 800;
+    font-size: 15px;
+    letter-spacing: 1px;
+}
+
+
 /* ============================================
-   7. CUADRÍCULA DE EMPLEADOS
+CUADRÍCULA DE EMPLEADOS
    También utilizada por clientes
    ============================================ */
 
@@ -426,7 +538,7 @@ li:hover {
 }
 
 /* ============================================
-   8. BOTONES GENERALES
+   BOTONES GENERALES
    ============================================ */
 
 button {
@@ -541,7 +653,7 @@ button:hover {
 }
 
 /* ============================================
-   9. ESTADOS DE BOTONES
+   ESTADOS DE BOTONES
    ============================================ */
 
 button:focus-visible,
@@ -562,7 +674,7 @@ button:disabled:hover {
 }
 
 /* ============================================
-   10. FORMULARIOS GENERALES
+   FORMULARIOS GENERALES
    ============================================ */
 
 /* Los formularios de acciones y filtros
@@ -715,7 +827,7 @@ form .btn-cancelar:hover,
 }
 
 /* ============================================
-   11. BUSCADORES Y FILTROS UNIFICADOS
+   BUSCADORES Y FILTROS UNIFICADOS
    ============================================ */
 
 /* Contenedor común */
@@ -886,7 +998,7 @@ form .btn-cancelar:hover,
 }
 
 /* ============================================
-   12. ICONOS GENERALES
+   ICONOS GENERALES
    ============================================ */
 
 .nav-principal a i {
@@ -896,7 +1008,7 @@ form .btn-cancelar:hover,
 }
 
 /* ============================================
-   13. ETIQUETAS DE ROLES
+ ETIQUETAS DE ROLES
    ============================================ */
 
 .etiqueta-rol {
@@ -930,7 +1042,7 @@ form .btn-cancelar:hover,
 }
 
 /* ============================================
-   14. ESTADOS DE REPARTIDORES
+    ESTADOS DE REPARTIDORES
    ============================================ */
 
 .estado {
@@ -967,7 +1079,7 @@ form .btn-cancelar:hover,
 }
 
 /* ============================================
-   15. ESTADOS DE USUARIOS
+ ESTADOS DE USUARIOS
    ============================================ */
 
 /* Activo: siempre verde */
@@ -993,7 +1105,7 @@ form .btn-cancelar:hover,
 }
 
 /* ============================================
-   16. MENSAJES SIN RESULTADOS
+   MENSAJES SIN RESULTADOS
    ============================================ */
 
 .mensaje-vacio {
@@ -1026,7 +1138,7 @@ form .btn-cancelar:hover,
 }
 
 /* ============================================
-   17. CONTENEDOR DE TABLAS
+   CONTENEDOR DE TABLAS
    ============================================ */
 
 .tabla-contenedor {
@@ -1042,7 +1154,7 @@ form .btn-cancelar:hover,
 }
 
 /* ============================================
-   18. TABLA DE PEDIDOS
+    TABLA DE PEDIDOS
    ============================================ */
 
 .tabla-pedidos {
@@ -1141,7 +1253,7 @@ form .btn-cancelar:hover,
 }
 
 /* ============================================
-   19. ESTADOS DE PEDIDOS
+   ESTADOS DE PEDIDOS
    ============================================ */
 
 /* Formato general */
@@ -1197,7 +1309,7 @@ form .btn-cancelar:hover,
 }
 
 /* ============================================
-   20. ACCIONES DE PEDIDOS
+   ACCIONES DE PEDIDOS
    ============================================ */
 
 .acciones-pedidos {
@@ -1227,7 +1339,7 @@ form .btn-cancelar:hover,
 }
 
 /* ============================================
-   21. PERFIL DE USUARIO
+   PERFIL DE USUARIO
    ============================================ */
 
 .perfil-container {
@@ -1267,12 +1379,12 @@ form .btn-cancelar:hover,
 }
 
 /* ============================================
-   22. FOOTER
+   FOOTER
    ============================================ */
 
 footer {
-    margin-top: 42px;
-    padding-top: 16px;
+    margin-top: 10px;
+    padding-top: 15px;
 
     border-top: 1px solid var(--border);
 
