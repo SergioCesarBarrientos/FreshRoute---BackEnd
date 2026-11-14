@@ -2,7 +2,7 @@
 
 const mongoose = require('mongoose');
 
-const ESTADOS = ['Asignado', 'En camino', 'Entregado', 'Cancelado'];
+const ESTADOS = ['Asignado', 'En camino', 'Entregado', 'Cancelado','No Entregado'];
 
 // Cada ítem guarda el precio del producto al momento del pedido, para que un cambio
 // de precio posterior no modifique los pedidos ya hechos.

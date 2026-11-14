@@ -202,8 +202,9 @@ const cambiarEstadoParaVista = async (id, nuevoEstado, usuario) => {
   }
 
   if (usuario.rol === 'repartidor') {
-    if (!['En camino', 'Entregado'].includes(nuevoEstado)) {
-      throw new AppError('Un repartidor solo puede marcar un pedido como "En camino" o "Entregado"', 403);
+    // ✅ CORREGIDO: ahora el repartidor puede marcar "No Entregado"
+    if (!['En camino', 'Entregado', 'No Entregado'].includes(nuevoEstado)) {
+      throw new AppError('Un repartidor solo puede marcar un pedido como "En camino", "Entregado" o "No Entregado"', 403);
     }
     const empleado = await obtenerEmpleadoDeUsuario(usuario);
     if (!empleado || String(pedido.repartidor) !== String(empleado._id)) {
@@ -214,7 +215,7 @@ const cambiarEstadoParaVista = async (id, nuevoEstado, usuario) => {
   pedido.estado = nuevoEstado;
   const pedidoActualizado = await pedido.save();
 
-  if (nuevoEstado === 'Entregado' || nuevoEstado === 'Cancelado') {
+  if (nuevoEstado === 'Entregado' || nuevoEstado === 'Cancelado' || nuevoEstado === 'No Entregado') {
     await actualizarEstadoRepartidor(pedido.repartidor);
   }
 
