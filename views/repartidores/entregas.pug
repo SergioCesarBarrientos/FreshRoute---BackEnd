@@ -134,6 +134,15 @@ block content
                                         i.fas.fa-eye
                                         |  Ver detalle
 
+                                else if pedido.estado === 'No Entregado' || pedido.estado === 'Cancelado'
+                                    //- Estado final sin acciones: solo mostramos el detalle
+                                    span.estado-final
+                                        i.fas.fa-lock
+                                        |  Entrega cerrada
+                                    a(href=`/repartidores/detalle/${pedido._id}` class="btn-detalle")
+                                        i.fas.fa-eye
+                                        |  Ver detalle
+
                                 else if pedido.estado === 'En camino'
                                     form(action=`/api/pedidos/${pedido._id}/estado` method="POST" class="form-inline")
                                         input(type="hidden" name="estado" value="Entregado")
